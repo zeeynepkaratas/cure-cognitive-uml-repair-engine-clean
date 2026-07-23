@@ -37,7 +37,7 @@ Proje üç ana parçadan oluşur:
   - Döngüsel bağımlılık tespiti.
   - Tekrarlanan sınıf adı tespiti.
   - Diyagram karmaşıklığı uyarısı.
-- IEEE/ISO 29148 yaklaşımına dayalı semantik sadakat skoru.
+- IEEE/ISO 29148'den esinlenen, proje içi ağırlıklandırmalı semantik sadakat skoru.
 - SVG tabanlı offline UML önizleme üretimi.
 - PNG data URI çıktısı ile frontend sözleşmesi uyumluluğu.
 - Çoklu ajan tabanlı otonom onarım akışı:

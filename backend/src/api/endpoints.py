@@ -275,7 +275,7 @@ def uml_dogrula(girdi: UMLDogrulamaGirdisi):
 
 @app.post("/api/evaluate")
 def semantik_degerlendir(girdi: TamAnalizGirdisi):
-    """SRS metni ile PlantUML'i IEEE/ISO 29148 kriterlerine gore karsilastirir."""
+    """SRS metni ile PlantUML'i proje ici semantik kriterlere gore karsilastirir."""
     if not girdi.plantuml_kodu:
         raise HTTPException(status_code=400, detail="Degerlendirme icin plantuml_kodu gerekli")
     try:

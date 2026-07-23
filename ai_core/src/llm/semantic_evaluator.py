@@ -6,7 +6,7 @@ from langchain_core.prompts import PromptTemplate
 # Loglama ayarları
 logger = logging.getLogger("SemanticEvaluator")
 
-# Output şeması standardı (Week 4 görevi)[cite: 2]
+# Output şeması standardı (Week 4 görevi)
 class SemanticFidelityScore(BaseModel):
     score: int = Field(description="1-5 arası Semantic Fidelity skoru. 1: Çok Kötü, 5: Kusursuz")
     justification: str = Field(description="Verilen skorun kısa akademik gerekçesi")
@@ -18,7 +18,7 @@ class LLMAsAJudge:
         # with_structured_output ile LLM'i zorla belirttiğimiz Pydantic formatında (JSON) yanıt vermeye itiyoruz.
         self.llm = ChatOpenAI(model=model_name, temperature=temperature).with_structured_output(SemanticFidelityScore)
         
-        # Skorlama promptu geliştirme (Week 4 görevi)[cite: 2]
+        # Skorlama promptu geliştirme (Week 4 görevi)
         self.eval_prompt = PromptTemplate(
             input_variables=["requirements", "final_uml"],
             template="""
@@ -43,7 +43,7 @@ class LLMAsAJudge:
 
     def evaluate_diagram(self, requirements_text: str, final_uml: str) -> dict:
         """
-        Pipeline entegrasyonu için çağrılacak ana fonksiyon (Week 4 görevi)[cite: 2]
+        Pipeline entegrasyonu için çağrılacak ana fonksiyon (Week 4 görevi)
         """
         logger.info("Semantic Fidelity skorlaması başlatıldı...")
         try:
@@ -52,7 +52,7 @@ class LLMAsAJudge:
                 self.eval_prompt.format(requirements=requirements_text, final_uml=final_uml)
             )
             
-            # Eşik değer (Threshold) kontrolü[cite: 2]
+            # Eşik değer (Threshold) kontrolü
             threshold_passed = result.score >= 4
             
             eval_output = {

@@ -144,7 +144,7 @@ def hesapla_f1(tahmin: set, gercek: set) -> dict:
 
 def calculate_semantic_fidelity(srs_metni: str, plantuml_kodu: str) -> dict:
     """
-    IEEE/ISO 29148 standartlarına göre semantik sadakat değerlendirmesi.
+    IEEE/ISO 29148'den esinlenen proje içi semantik sadakat değerlendirmesi.
 
     Kriterler:
         C1 (0.35): Sınıf doğruluğu — F1 skoru
@@ -207,4 +207,4 @@ if __name__ == "__main__":
     print("Skor:", ev["yuzde"])
     print("Halüsinasyonlar:", ev["halusinasyonlar"])
     print("Eksik:", ev["eksik_siniflar"])
-    print("IEEE:", ev["ieee_kriterleri"])
+    print("Criteria:", ev["ieee_kriterleri"])

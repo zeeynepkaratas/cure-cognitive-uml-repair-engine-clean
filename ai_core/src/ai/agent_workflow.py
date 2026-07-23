@@ -6,12 +6,12 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from rag.ocl_retriever import OCLRetrieverEngine
 
-# Loglama entegrasyonu[cite: 2]
+# Loglama entegrasyonu
 logging.basicConfig(filename='agent_workflow.log', level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("MultiAgentWorkflow")
 
-# LangGraph state güncellemesi: iteration_count eklendi[cite: 2]
+# LangGraph state güncellemesi: iteration_count eklendi
 class WorkflowState(TypedDict):
     original_text: str
     current_uml: str
@@ -33,7 +33,7 @@ class UMLMultiAgentSystem:
         #RAG modülü başlatılıyor
         self.retriever = OCLRetrieverEngine()
         
-        # Critic hata tespit promptu [cite: 2]
+        # Critic hata tespit promptu
         self.critic_prompt = PromptTemplate(
         input_variables=["original_text", "current_uml", "ocl_rules"],
         template="""
@@ -51,7 +51,7 @@ class UMLMultiAgentSystem:
         """
     )
         
-        # Onarım promptu[cite: 2]
+        # Onarım promptu
         self.healer_prompt = PromptTemplate(
             input_variables=["current_uml", "errors"],
             template="""
@@ -103,12 +103,12 @@ class UMLMultiAgentSystem:
         
         state["current_uml"] = response.content.strip()
         state["errors"] = [] 
-        # State'e deneme sayısı yazma[cite: 2]
+        # State'e deneme sayısı yazma
         state["iteration_count"] += 1 
         logger.info(f"Healer yeni UML üretti. Yeni iterasyon sayacı: {state['iteration_count']}")
         return state
 
-    # Döngü kırma senaryoları ve 3 iterasyon limiti[cite: 2]
+    # Döngü kırma senaryoları ve 3 iterasyon limiti
     def routing_logic(self, state: WorkflowState) -> str:
         if state["is_valid"]:
             logger.info("Sistem başarılı. Süreç sonlandırılıyor.")
@@ -142,7 +142,7 @@ class UMLMultiAgentSystem:
             errors=[],
             error_categories=[],
             is_valid=False,
-            iteration_count=1  # Sayaç 1'den başlar[cite: 2]
+            iteration_count=1  # Sayaç 1'den başlar
         )
         final_state = self.workflow.invoke(initial_state)
         self.last_final_state = final_state

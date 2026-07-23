@@ -21,7 +21,7 @@ from src.api.performance import (
 SRS_BASIT = """
 The UserManager handles user authentication and registration.
 The DiagramService generates PlantUML diagrams from SRS documents.
-The ValidationEngine validates diagrams against OCL constraints.
+The ValidationEngine validates diagrams with OCL-like structural checks.
 The UserManager uses the DiagramService to process uploaded documents.
 """
 
@@ -29,8 +29,8 @@ SRS_KARMASIK = """
 The SystemController manages the entire application lifecycle.
 The AuthenticationService handles user login, logout, and session management.
 The DiagramGenerator creates PlantUML class diagrams from natural language requirements.
-The OCLValidator validates generated diagrams against formal OCL constraints.
-The SemanticEvaluator compares UML diagrams with source SRS documents using IEEE standards.
+The OCLValidator validates generated diagrams with OCL-like structural checks.
+The SemanticEvaluator compares UML diagrams with source SRS documents using project-defined criteria inspired by IEEE/ISO 29148.
 The ReportService generates PDF and CSV reports from evaluation results.
 The DatabaseManager stores and retrieves diagram versions and evaluation logs.
 The SystemController uses the AuthenticationService for access control.

@@ -381,10 +381,14 @@ LLM-based autonomous repair endpoint are evaluated on the same cases, with
 | Deterministic backend repair | 50 | 31 | 62.0% | 48.2%-74.1% |
 | LLM autonomous repair (`gpt-4o-mini`) | 50 | 47 | 94.0% | 83.8%-97.9% |
 
+In compact notation, these correspond to 31/50 deterministic repairs and 47/50
+LLM autonomous repairs on the same S01-S50 benchmark.
+
 Primary benchmark files:
 
 ```text
 backend/evaluation/shared_repair_benchmark_cases.py
+backend/evaluation/repair_benchmark_utils.py
 backend/evaluation/shared_benchmark_deterministic_experiment.py
 backend/evaluation/shared_benchmark_llm_experiment.py
 backend/evaluation/results/shared_benchmark_deterministic_experiment.*
@@ -404,10 +408,6 @@ $env:OPENAI_API_KEY="sk-..."
 python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
 ```
 
-The older 20-case deterministic smoke-test script is retained only for helper
-functions and backward-compatible development checks. The old autonomous repair
-experiment files were removed; they are not the main paper evidence for the
-current revision.
 
 ## Veri Hazırlık Araçları
 

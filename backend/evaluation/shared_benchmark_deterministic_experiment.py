@@ -20,7 +20,7 @@ EVALUATION_ROOT = Path(__file__).resolve().parent
 if str(EVALUATION_ROOT) not in sys.path:
     sys.path.insert(0, str(EVALUATION_ROOT))
 
-from deterministic_repair_experiment import (
+from repair_benchmark_utils import (
     MAX_ITERATIONS,
     compile_check,
     deterministic_backend_repair,

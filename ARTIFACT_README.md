@@ -7,6 +7,7 @@ It intentionally excludes Git history, branch names, commit metadata, author met
 Key reproducibility entry points:
 
 - `backend/evaluation/shared_repair_benchmark_cases.py`
+- `backend/evaluation/repair_benchmark_utils.py`
 - `backend/evaluation/shared_benchmark_deterministic_experiment.py`
 - `backend/evaluation/shared_benchmark_llm_experiment.py`
 - `backend/evaluation/results/shared_benchmark_deterministic_experiment.*`

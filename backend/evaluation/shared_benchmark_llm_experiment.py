@@ -23,7 +23,7 @@ EVALUATION_ROOT = Path(__file__).resolve().parent
 if str(EVALUATION_ROOT) not in sys.path:
     sys.path.insert(0, str(EVALUATION_ROOT))
 
-from deterministic_repair_experiment import wilson_interval
+from repair_benchmark_utils import wilson_interval
 from shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
 
 

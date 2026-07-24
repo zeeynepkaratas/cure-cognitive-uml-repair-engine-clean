@@ -7,8 +7,8 @@ class-diagram scenarios (`S01`-`S50`). The deterministic backend repair layer
 and the real LLM-based `/api/autonomous-repair` endpoint are evaluated on the
 same cases.
 
-This replaces the earlier paper-risky comparison where deterministic and LLM
-repair evidence came from separate 20-case scenario sets.
+This shared benchmark is the sole repair-evaluation basis for the current
+paper revision.
 
 ## Main Results
 
@@ -25,6 +25,7 @@ success rate.
 
 ```text
 backend/evaluation/shared_repair_benchmark_cases.py
+backend/evaluation/repair_benchmark_utils.py
 backend/evaluation/shared_benchmark_deterministic_experiment.py
 backend/evaluation/shared_benchmark_llm_experiment.py
 backend/evaluation/results/shared_benchmark_deterministic_experiment.csv

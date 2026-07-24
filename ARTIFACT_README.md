@@ -1,8 +1,8 @@
-# CURE Anonymous Software Artifact
+# CURE Cleaned Source-Code Artifact
 
-This package is an anonymized source-code snapshot accompanying the CURE submission.
+This package is a cleaned source-code snapshot accompanying the CURE submission.
 
-It intentionally excludes Git history, branch names, commit metadata, author metadata, and repository-owner information. The included files correspond to the final source tree used for the reported S01-S50 shared repair benchmark results.
+It excludes development branch history and commit-level metadata. The included files correspond to the final source tree used for the reported S01-S50 shared repair benchmark results.
 
 Key reproducibility entry points:
 

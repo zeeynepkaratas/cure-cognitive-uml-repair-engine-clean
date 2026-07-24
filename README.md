@@ -174,8 +174,8 @@ Backend ve AI modülleri ayrı `requirements.txt` dosyalarına sahiptir. Temel b
 ### Depoyu Klonlama
 
 ```bash
-git clone <ANONYMIZED_REPOSITORY_URL>
-cd cure-cognitive-uml-repair-engine
+git clone https://github.com/zeeynepkaratas/cure-cognitive-uml-repair-engine-clean.git
+cd cure-cognitive-uml-repair-engine-clean
 ```
 
 ### Backend Kurulumu

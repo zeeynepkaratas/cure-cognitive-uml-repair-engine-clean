@@ -407,6 +407,10 @@ on the S01-S50 run, 8/50 cases ended with `agent_is_valid=True`, 5/50 were both
 final-valid and agent-terminal-valid, and 42/47 final-valid cases still had
 `agent_is_valid=False`. This distinction is expected because the endpoint
 performs an independent final compile/OCL check after the Critic-Healer loop.
+Because the Critic receives a strict prompt together with the same fixed curated
+OCL-rule retrieval context, `agent_is_valid` may also reflect retrieval-rule
+mismatch or over-strict Critic behavior. It is therefore retained as an internal
+diagnostic signal, not as an independent semantic-correctness measurement.
 
 For the PURE-derived pilot, deterministic repair reached perfect graph-level F1
 only on the seven structurally repaired cases because it mainly restores

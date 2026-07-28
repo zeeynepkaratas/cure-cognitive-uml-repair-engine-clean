@@ -13,15 +13,15 @@ class OCLRetrieverEngine:
         Critic ajanı için OCL kural setini vektör arama ile bağlama (Week 3 görevi)
         """
         self.embeddings = OpenAIEmbeddings()
-        # Not: Gerçek senaryoda bu vektör veritabanı 'data_pipeline' tarafından önceden oluşturulmuş 
-        # ve diske kaydedilmiş olmalıdır. Biz şu an test için bellekte in-memory olarak başlatıyoruz.
+        # Reported experiments use a small curated in-memory OCL rule index.
+        # The requirement-level persisted vector repository is future work.
         self.vector_store = None
-        self._initialize_dummy_knowledge_base()
+        self._initialize_curated_rule_index()
 
-    def _initialize_dummy_knowledge_base(self):
+    def _initialize_curated_rule_index(self):
         """
-        Veri boru hattı tam hazır olana kadar, Critic'in test edilebilmesi için 
-        örnek OCL (Object Constraint Language) kurallarını içeren sahte bir bilgi tabanı.
+        Critic agent için kullanılan küçük, elle seçilmiş OCL-inspired kural dizini.
+        Bu dizin PURE gereksinimlerinden türetilmiş bağımsız bir bilgi tabanı değildir.
         """
         sample_ocl_rules = [
             Document(page_content="OCL Kuralı 1: Bir User nesnesinin age özelliği mutlaka 18'den büyük veya eşit olmalıdır. (context: age >= 18)"),

@@ -43,6 +43,9 @@ Success is defined by the endpoint's final syntax/OCL validation. The
 `agent_is_valid` field is a secondary LangGraph terminal-state diagnostic; in
 this pilot, 0/10 cases ended with `agent_is_valid=True` even though 10/10
 reached final structural validity.
+Because the Critic uses a strict prompt and the same fixed curated OCL-rule
+retrieval context, this field may reflect retrieval-rule mismatch or over-strict
+Critic behavior rather than an independent semantic verdict.
 
 This result should be reported as a preliminary PURE-derived pilot, not as a
 broad real-world generalization claim.

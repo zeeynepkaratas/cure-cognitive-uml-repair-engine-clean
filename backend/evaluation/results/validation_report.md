@@ -21,6 +21,7 @@ Current repair results:
 - Deterministic repair: 31/50 successful repairs (62.0%; Wilson 95% CI: 48.2%-74.1%).
 - LLM autonomous repair: 47/50 successful repairs (94.0%; Wilson 95% CI: 83.8%-97.9%).
 - LLM agent terminal-state diagnostic: 8/50 `agent_is_valid=True`; 5/50 both final-valid and agent-terminal-valid.
+- The agent terminal-state diagnostic may be affected by fixed OCL-rule retrieval mismatch or over-strict Critic behavior.
 
 Primary output files:
 - `backend/evaluation/results/shared_benchmark_deterministic_experiment.json`

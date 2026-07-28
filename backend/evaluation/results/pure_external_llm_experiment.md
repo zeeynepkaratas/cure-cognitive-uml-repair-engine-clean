@@ -20,6 +20,9 @@ Success is defined by the endpoint's final syntax/OCL validation. The
 `agent_is_valid` field is a secondary LangGraph terminal-state diagnostic
 from the internal Critic-Healer loop and should not be interpreted as the
 primary repair-success criterion.
+Because the Critic receives a strict prompt and fixed curated OCL-rule
+retrieval context, this field may reflect retrieval-rule mismatch or
+over-strict Critic behavior rather than independent semantic correctness.
 
 ## Case Results
 

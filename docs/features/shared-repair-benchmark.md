@@ -28,6 +28,10 @@ field is reported only as a secondary terminal-state diagnostic. In the reported
 S01-S50 run, 8/50 cases ended with `agent_is_valid=True`, 5/50 were both
 final-valid and agent-terminal-valid, and 42/47 final-valid cases still had
 `agent_is_valid=False`.
+Because the Critic uses a strict prompt and the same fixed curated OCL-rule
+retrieval context, this diagnostic may also reflect retrieval-rule mismatch or
+over-strict Critic behavior. It should not be treated as an independent
+semantic-correctness measurement.
 
 ## Files
 

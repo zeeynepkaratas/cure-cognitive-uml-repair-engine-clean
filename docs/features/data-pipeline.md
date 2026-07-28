@@ -23,7 +23,6 @@ Yok.
 
 ```bash
 python data_pipeline/preprocessing/xml_to_csv.py
-python data_pipeline/preprocessing/cure_veri_hazirlik.py
 ```
 
 ## Bagimliliklar
@@ -33,7 +32,6 @@ Mevcut scriptlerin kendi importlari kullanilir.
 ## Dosya Yapisi
 
 - `data_pipeline/datasets/pure_dataset.csv`
-- `data_pipeline/preprocessing/cure_veri_hazirlik.py`
 - `data_pipeline/preprocessing/xml_to_csv.py`
 - `data_pipeline/vector_db/README.md`
 - `docs/ground_truth_manual_review.md`

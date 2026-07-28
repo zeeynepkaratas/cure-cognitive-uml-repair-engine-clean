@@ -9,5 +9,6 @@ Bu klasor, CURE veri hazirlik akislarini kok dizinden ayirir.
 Manuel kontrol notlari data pipeline altinda tutulmaz. Sınırlı elle inceleme
 tablosu icin `docs/ground_truth_manual_review.md` dosyasina bakilmalidir.
 
-Kok dizindeki eski `pure_dataset.csv`, `cure_veri_hazirlik.py` ve `xml_to_csv.py`
-dosyalari bu yapi altina tasinmistir.
+Kok dizindeki eski veri dosyalari ve `xml_to_csv.py` donusum scripti bu yapi
+altina tasinmistir. Raporlanan deneylerde kullanilmayan eski yardimci
+vektor-indeks hazirlik scripti temiz kaynak paketinden cikarilmistir.

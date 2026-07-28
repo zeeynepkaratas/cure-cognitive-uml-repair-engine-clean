@@ -150,7 +150,6 @@ ai_core/src/ai/agent_workflow.py
 │   ├── datasets/
 │   │   └── pure_dataset.csv
 │   ├── preprocessing/
-│   │   ├── cure_veri_hazirlik.py
 │   │   └── xml_to_csv.py
 │   └── vector_db/
 ├── docs/
@@ -464,7 +463,7 @@ python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
 Veri hazırlık dosyaları `data_pipeline/` altında toplanmıştır:
 
 - `data_pipeline/preprocessing/xml_to_csv.py`: XML tabanlı veri kaynaklarını CSV formatına dönüştürmek için kullanılır.
-- `data_pipeline/preprocessing/cure_veri_hazirlik.py`: CURE veri hazırlık akışında kullanılan yardımcı script.
+- `data_pipeline/preprocessing/xml_to_csv.py`: PURE XML/requirement kaynaklarını temizlenmiş CSV formatına dönüştürmek için kullanılan veri hazırlık scripti.
 
 Ana veri dosyası:
 

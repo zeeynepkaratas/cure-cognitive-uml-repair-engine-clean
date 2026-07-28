@@ -88,7 +88,7 @@
 
 | Görev | Açıklama | Sorumlu | Durum |
 | --- | --- | --- | --- |
-| Vektör veritabanı kurulumu | ChromaDB veya FAISS | Data Specialist | ⬜ |
+| Vektör veritabanı kurulumu | FAISS / in-memory rule retrieval prototype | Data Specialist | ⬜ |
 | Veri klasörü oluşturma | vector_db dizini | Data Specialist | ⬜ |
 | OCL kurallarını chunking | Metin parçalama | Data Specialist | ⬜ |
 | Embedding oluşturma | Vektör dönüşümü | Data Specialist | ⬜ |

@@ -384,6 +384,23 @@ LLM-based autonomous repair endpoint are evaluated on the same cases, with
 In compact notation, these correspond to 31/50 deterministic repairs and 47/50
 LLM autonomous repairs on the same S01-S50 benchmark.
 
+As a preliminary external check, the repository also includes a small
+PURE-derived repair pilot with 10 selected requirement excerpts, curated
+reference UML models, and controlled injected PlantUML defects. This pilot does
+not replace the S01-S50 benchmark; it is intended to check whether structural
+repair behavior transfers to requirement-derived cases and whether graph-level
+semantic preservation remains stable.
+
+| Pilot repair mode | Cases | Structurally valid repairs | Success rate | Mean class F1 | Mean relationship F1 |
+|---|---:|---:|---:|---:|---:|
+| Deterministic backend repair | 10 | 7 | 70.0% | 1.000 | 1.000 |
+| LLM autonomous repair (`gpt-4o-mini`) | 10 | 10 | 100.0% | 0.773 | 0.845 |
+
+The PURE-derived pilot should be interpreted cautiously: the LLM repaired all
+10 cases to final structural validity, but graph-level comparison against the
+curated reference UML models shows that structural validity does not guarantee
+perfect semantic preservation.
+
 Primary benchmark files:
 
 ```text
@@ -391,8 +408,14 @@ backend/evaluation/shared_repair_benchmark_cases.py
 backend/evaluation/repair_benchmark_utils.py
 backend/evaluation/shared_benchmark_deterministic_experiment.py
 backend/evaluation/shared_benchmark_llm_experiment.py
+backend/evaluation/pure_external_repair_cases.py
+backend/evaluation/pure_external_metrics.py
+backend/evaluation/pure_external_deterministic_experiment.py
+backend/evaluation/pure_external_llm_experiment.py
 backend/evaluation/results/shared_benchmark_deterministic_experiment.*
 backend/evaluation/results/shared_benchmark_llm_experiment.*
+backend/evaluation/results/pure_external_deterministic_experiment.*
+backend/evaluation/results/pure_external_llm_experiment.*
 ```
 
 Reproduce the deterministic benchmark:
@@ -406,6 +429,14 @@ Reproduce the LLM benchmark:
 ```bash
 $env:OPENAI_API_KEY="sk-..."
 python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
+```
+
+Reproduce the PURE-derived external pilot:
+
+```bash
+python backend/evaluation/pure_external_deterministic_experiment.py
+$env:OPENAI_API_KEY="sk-..."
+python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
 ```
 
 
@@ -427,6 +458,8 @@ Güncel ortak onarım benchmarklarını tekrar üretmek için:
 ```bash
 python backend/evaluation/shared_benchmark_deterministic_experiment.py
 python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
+python backend/evaluation/pure_external_deterministic_experiment.py
+python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
 ```
 
 ## Ortam Değişkenleri

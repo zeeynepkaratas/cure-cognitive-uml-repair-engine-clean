@@ -2,7 +2,7 @@
 
 This package is a cleaned source-code snapshot accompanying the CURE submission.
 
-It excludes development branch history and commit-level metadata. The included files correspond to the final source tree used for the reported S01-S50 shared repair benchmark results and the preliminary PURE-derived external repair pilot.
+It excludes development branch history and commit-level metadata. The included files correspond to the final source tree used for the reported S01-S50 shared repair benchmark results and the preliminary PURE-derived repair pilot.
 
 Key reproducibility entry points:
 

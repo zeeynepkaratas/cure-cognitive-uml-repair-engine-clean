@@ -1,4 +1,4 @@
-# PURE-Derived External Deterministic Repair Pilot
+# PURE-Derived Deterministic Repair Pilot
 
 This preliminary pilot does not replace the shared S01-S50 benchmark.
 It uses selected PURE requirement excerpts, curated reference UML models, and controlled injected PlantUML defects.

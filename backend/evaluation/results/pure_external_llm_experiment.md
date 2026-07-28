@@ -1,4 +1,4 @@
-# PURE-Derived External LLM Repair Pilot
+# PURE-Derived LLM Repair Pilot
 
 This preliminary pilot does not replace the shared S01-S50 benchmark.
 It uses selected PURE requirement excerpts, curated reference UML models, and controlled injected PlantUML defects.
@@ -12,6 +12,14 @@ It uses selected PURE requirement excerpts, curated reference UML models, and co
 - Wilson 95% CI: 72.2%-100.0%
 - Mean class F1 against reference UML: 0.773
 - Mean relationship F1 against reference UML: 0.845
+- Agent terminal-state valid: 0
+- Final-valid and agent-terminal-valid: 0
+- Final-valid but agent-terminal-invalid: 10
+
+Success is defined by the endpoint's final syntax/OCL validation. The
+`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic
+from the internal Critic-Healer loop and should not be interpreted as the
+primary repair-success criterion.
 
 ## Case Results
 

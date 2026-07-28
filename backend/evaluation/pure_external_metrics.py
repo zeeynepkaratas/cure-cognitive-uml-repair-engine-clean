@@ -1,4 +1,4 @@
-"""Graph-level metrics for PURE-derived external repair pilot cases."""
+"""Graph-level metrics for preliminary PURE-derived repair pilot cases."""
 
 from __future__ import annotations
 

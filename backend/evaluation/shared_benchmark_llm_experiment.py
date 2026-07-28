@@ -171,6 +171,13 @@ def build_report(max_iterations: int) -> dict:
 
     total = len(rows)
     successes = sum(1 for row in rows if row["basarili"])
+    agent_terminal_valid = sum(1 for row in rows if row.get("agent_is_valid") is True)
+    both_final_and_agent_valid = sum(
+        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is True
+    )
+    final_valid_agent_invalid = sum(
+        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is not True
+    )
     interval = wilson_interval(successes, total)
     return {
         "metadata": {
@@ -192,6 +199,10 @@ def build_report(max_iterations: int) -> dict:
             "failed_repairs": total - successes,
             "success_rate": round(successes / total, 4),
             "success_rate_percent": round(successes / total * 100, 1),
+            "agent_terminal_valid": agent_terminal_valid,
+            "both_final_compile_and_agent_terminal_valid": both_final_and_agent_valid,
+            "final_compile_valid_but_agent_terminal_invalid": final_valid_agent_invalid,
+            "success_definition": "final syntax/OCL validation after the autonomous repair endpoint returns",
         },
         "wilson_95_ci": {
             "successes": interval["successes"],
@@ -260,8 +271,16 @@ def write_markdown(report: dict) -> None:
         f"- Failed repairs: {report['summary']['failed_repairs']}",
         f"- Success rate: {report['summary']['success_rate_percent']}%",
         f"- Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        f"- Agent terminal-state valid: {report['summary']['agent_terminal_valid']}",
+        f"- Final-valid and agent-terminal-valid: {report['summary']['both_final_compile_and_agent_terminal_valid']}",
+        f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
         f"- Model: {report['metadata']['openai_model']}",
         f"- Max iterations: {report['metadata']['max_iterations']}",
+        "",
+        "Success is defined by the endpoint's final syntax/OCL validation. The",
+        "`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic",
+        "from the internal Critic-Healer loop and should not be interpreted as the",
+        "primary repair-success criterion.",
         "",
         "## Case Results",
         "",

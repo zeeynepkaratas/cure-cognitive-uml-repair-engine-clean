@@ -9,7 +9,7 @@ It covers only the backend-owned OCL-like structural validator and deterministic
 - Semantic cases: 5/5 passed.
 - Autonomous repair success rate is not reproduced by this validation script.
 - The main repair evidence is the shared S01-S50 benchmark in `backend/evaluation/results/`.
-- A preliminary PURE-derived external pilot is reported separately as a supplementary check.
+- A preliminary PURE-derived pilot is reported separately as a supplementary check.
 
 ## Shared Repair Benchmark Note
 
@@ -20,14 +20,15 @@ on the same S01-S50 cases with `max_iterations=3`.
 Current repair results:
 - Deterministic repair: 31/50 successful repairs (62.0%; Wilson 95% CI: 48.2%-74.1%).
 - LLM autonomous repair: 47/50 successful repairs (94.0%; Wilson 95% CI: 83.8%-97.9%).
+- LLM agent terminal-state diagnostic: 8/50 `agent_is_valid=True`; 5/50 both final-valid and agent-terminal-valid.
 
 Primary output files:
 - `backend/evaluation/results/shared_benchmark_deterministic_experiment.json`
 - `backend/evaluation/results/shared_benchmark_llm_experiment.json`
 
-## PURE-derived External Pilot Note
+## PURE-derived Pilot Note
 
-The repository also includes a preliminary 10-case external pilot using selected
+The repository also includes a preliminary 10-case pilot using selected
 PURE requirement excerpts, curated reference UML models, and controlled injected
 PlantUML defects. This pilot supplements, but does not replace, the shared
 S01-S50 repair benchmark.

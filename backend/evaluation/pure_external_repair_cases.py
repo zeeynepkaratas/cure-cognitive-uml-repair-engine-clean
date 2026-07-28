@@ -1,7 +1,7 @@
-"""Small PURE-derived external repair pilot cases.
+"""Small PURE-derived repair pilot cases.
 
 These cases are not a replacement for the shared S01-S50 controlled benchmark.
-They provide a preliminary external check based on selected PURE requirement
+They provide a preliminary supplementary check based on selected PURE requirement
 statements, manually curated reference UML models, and controlled injected
 PlantUML defects.
 """

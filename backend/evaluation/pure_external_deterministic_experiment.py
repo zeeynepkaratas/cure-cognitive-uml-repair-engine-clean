@@ -1,4 +1,4 @@
-"""Run deterministic repair on the PURE-derived external pilot benchmark."""
+"""Run deterministic repair on the preliminary PURE-derived pilot benchmark."""
 
 from __future__ import annotations
 
@@ -82,9 +82,9 @@ def build_report() -> dict:
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "python": sys.version,
             "platform": platform.platform(),
-            "benchmark": "PURE-derived external repair pilot",
+            "benchmark": "PURE-derived repair pilot",
             "scope": (
-                "Preliminary external evaluation using selected PURE requirement excerpts, "
+                "Preliminary pilot using selected PURE requirement excerpts, "
                 "curated reference UML, and controlled injected PlantUML defects."
             ),
             "case_count": total,
@@ -156,7 +156,7 @@ def write_outputs(report: dict) -> None:
             )
 
     lines = [
-        "# PURE-Derived External Deterministic Repair Pilot",
+        "# PURE-Derived Deterministic Repair Pilot",
         "",
         "This preliminary pilot does not replace the shared S01-S50 benchmark.",
         "It uses selected PURE requirement excerpts, curated reference UML models, and controlled injected PlantUML defects.",

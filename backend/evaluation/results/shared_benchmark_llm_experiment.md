@@ -10,8 +10,16 @@ on the shared S01-S50 invalid PlantUML benchmark.
 - Failed repairs: 3
 - Success rate: 94.0%
 - Wilson 95% CI: 83.8% - 97.9%
+- Agent terminal-state valid: 8
+- Final-valid and agent-terminal-valid: 5
+- Final-valid but agent-terminal-invalid: 42
 - Model: gpt-4o-mini
 - Max iterations: 3
+
+Success is defined by the endpoint's final syntax/OCL validation. The
+`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic
+from the internal Critic-Healer loop and should not be interpreted as the
+primary repair-success criterion.
 
 ## Case Results
 

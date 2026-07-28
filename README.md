@@ -384,7 +384,7 @@ LLM-based autonomous repair endpoint are evaluated on the same cases, with
 In compact notation, these correspond to 31/50 deterministic repairs and 47/50
 LLM autonomous repairs on the same S01-S50 benchmark.
 
-As a preliminary external check, the repository also includes a small
+As a preliminary supplementary check, the repository also includes a small
 PURE-derived repair pilot with 10 selected requirement excerpts, curated
 reference UML models, and controlled injected PlantUML defects. This pilot does
 not replace the S01-S50 benchmark; it is intended to check whether structural
@@ -400,6 +400,25 @@ The PURE-derived pilot should be interpreted cautiously: the LLM repaired all
 10 cases to final structural validity, but graph-level comparison against the
 curated reference UML models shows that structural validity does not guarantee
 perfect semantic preservation.
+
+The LLM repair success rate is defined by final syntax/OCL validation after the
+`/api/autonomous-repair` endpoint returns. The internal LangGraph
+`agent_is_valid` field is reported only as a secondary terminal-state diagnostic:
+on the S01-S50 run, 8/50 cases ended with `agent_is_valid=True`, 5/50 were both
+final-valid and agent-terminal-valid, and 42/47 final-valid cases still had
+`agent_is_valid=False`. This distinction is expected because the endpoint
+performs an independent final compile/OCL check after the Critic-Healer loop.
+
+For the PURE-derived pilot, deterministic repair reached perfect graph-level F1
+only on the seven structurally repaired cases because it mainly restores
+boundaries without adding new semantic content; this should not be read as
+evidence that the deterministic layer is semantically stronger overall. The LLM
+pilot used the same prototype retrieval context as the main agent workflow,
+including the fixed curated OCL rules in `ai_core/src/rag/ocl_retriever.py`.
+Those fixed rules can encourage extra classes or relations such as `Order`,
+`OrderItem`, `Product`, or `User`, so the lower F1 values should be interpreted
+as a semantic-preservation limitation and possible retrieval confound rather
+than as a pure LLM capability measure.
 
 Primary benchmark files:
 
@@ -431,7 +450,7 @@ $env:OPENAI_API_KEY="sk-..."
 python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
 ```
 
-Reproduce the PURE-derived external pilot:
+Reproduce the PURE-derived pilot:
 
 ```bash
 python backend/evaluation/pure_external_deterministic_experiment.py

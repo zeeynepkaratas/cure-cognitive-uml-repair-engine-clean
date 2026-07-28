@@ -1,4 +1,4 @@
-"""Run real LLM repair on the PURE-derived external pilot benchmark."""
+"""Run real LLM repair on the preliminary PURE-derived pilot benchmark."""
 
 from __future__ import annotations
 
@@ -99,7 +99,7 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
     partial = {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "benchmark": "PURE-derived external repair pilot",
+            "benchmark": "PURE-derived repair pilot",
             "scope": "partial interrupted/ongoing LLM pilot output; do not report as final paper result",
             "max_iterations": max_iterations,
             "completed_cases": len(rows),
@@ -129,6 +129,13 @@ def build_report(max_iterations: int) -> dict:
 
     total = len(rows)
     successes = sum(1 for row in rows if row["basarili"])
+    agent_terminal_valid = sum(1 for row in rows if row.get("agent_is_valid") is True)
+    both_final_and_agent_valid = sum(
+        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is True
+    )
+    final_valid_agent_invalid = sum(
+        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is not True
+    )
     interval = wilson_interval(successes, total)
     return {
         "metadata": {
@@ -136,7 +143,7 @@ def build_report(max_iterations: int) -> dict:
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "python": sys.version,
             "platform": platform.platform(),
-            "benchmark": "PURE-derived external repair pilot",
+            "benchmark": "PURE-derived repair pilot",
             "scope": "real LLM-based /api/autonomous-repair endpoint on selected PURE-derived pilot cases",
             "max_iterations": max_iterations,
             "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
@@ -151,6 +158,10 @@ def build_report(max_iterations: int) -> dict:
             "success_rate_percent": round(successes / total * 100, 1),
             "mean_class_f1": round(sum(row["reference_metrics"]["class_f1"] for row in rows) / total, 3),
             "mean_relationship_f1": round(sum(row["reference_metrics"]["relationship_f1"] for row in rows) / total, 3),
+            "agent_terminal_valid": agent_terminal_valid,
+            "both_final_compile_and_agent_terminal_valid": both_final_and_agent_valid,
+            "final_compile_valid_but_agent_terminal_invalid": final_valid_agent_invalid,
+            "success_definition": "final syntax/OCL validation after the autonomous repair endpoint returns",
         },
         "wilson_95_ci": {
             "successes": interval["successes"],
@@ -210,7 +221,7 @@ def write_csv_rows(path: Path, rows: list[dict]) -> None:
 
 def write_markdown(report: dict) -> None:
     lines = [
-        "# PURE-Derived External LLM Repair Pilot",
+        "# PURE-Derived LLM Repair Pilot",
         "",
         "This preliminary pilot does not replace the shared S01-S50 benchmark.",
         "It uses selected PURE requirement excerpts, curated reference UML models, and controlled injected PlantUML defects.",
@@ -224,6 +235,14 @@ def write_markdown(report: dict) -> None:
         f"- Wilson 95% CI: {report['wilson_95_ci']['lower_percent']}%-{report['wilson_95_ci']['upper_percent']}%",
         f"- Mean class F1 against reference UML: {report['summary']['mean_class_f1']}",
         f"- Mean relationship F1 against reference UML: {report['summary']['mean_relationship_f1']}",
+        f"- Agent terminal-state valid: {report['summary']['agent_terminal_valid']}",
+        f"- Final-valid and agent-terminal-valid: {report['summary']['both_final_compile_and_agent_terminal_valid']}",
+        f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
+        "",
+        "Success is defined by the endpoint's final syntax/OCL validation. The",
+        "`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic",
+        "from the internal Critic-Healer loop and should not be interpreted as the",
+        "primary repair-success criterion.",
         "",
         "## Case Results",
         "",

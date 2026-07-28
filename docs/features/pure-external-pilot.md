@@ -1,4 +1,4 @@
-# PURE-Derived External Repair Pilot
+# PURE-Derived Repair Pilot
 
 ## Scope
 
@@ -26,8 +26,26 @@ validity on all 10 pilot cases. However, graph-level comparison against the
 curated reference UML models showed imperfect semantic preservation, mainly due
 to extra classes or relationships introduced during repair.
 
-This result should be reported as a preliminary external pilot, not as a broad
-real-world generalization claim.
+The deterministic F1=1.000 values apply only to the structurally repaired
+deterministic cases. They should not be interpreted as evidence that the
+deterministic layer is semantically stronger overall; the deterministic repair
+mostly restores simple boundaries and therefore avoids adding new graph content,
+but it also leaves three pilot cases unrepaired.
+
+The LLM pilot used the same prototype retrieval context as the main
+Critic-Healer workflow, including the fixed curated OCL rules in
+`ai_core/src/rag/ocl_retriever.py`. These rules can encourage extra classes or
+relations such as `Order`, `OrderItem`, `Product`, or `User`, so lower
+graph-level F1 values should be interpreted as a semantic-preservation
+limitation and possible retrieval confound.
+
+Success is defined by the endpoint's final syntax/OCL validation. The
+`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic; in
+this pilot, 0/10 cases ended with `agent_is_valid=True` even though 10/10
+reached final structural validity.
+
+This result should be reported as a preliminary PURE-derived pilot, not as a
+broad real-world generalization claim.
 
 ## Files
 

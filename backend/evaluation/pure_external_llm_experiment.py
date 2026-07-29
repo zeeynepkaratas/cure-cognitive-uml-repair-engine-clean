@@ -96,19 +96,20 @@ def run_case(case: dict, max_iterations: int) -> dict:
 
 def write_partial(rows: list[dict], max_iterations: int) -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
+    partial_metadata = execution_metadata(
+        benchmark="PURE-derived repair pilot",
+        scope="partial interrupted/ongoing LLM pilot output; do not report as final paper result",
+        max_iterations=max_iterations,
+        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+        completed_cases=len(rows),
+    )
     partial = {
-        "metadata": execution_metadata(
-            benchmark="PURE-derived repair pilot",
-            scope="partial interrupted/ongoing LLM pilot output; do not report as final paper result",
-            max_iterations=max_iterations,
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
-            completed_cases=len(rows),
-        ),
+        "metadata": partial_metadata,
         "cases": rows,
     }
     PARTIAL_JSON.write_text(json.dumps(partial, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_csv_rows(PARTIAL_CSV, rows)
+    write_csv_rows(PARTIAL_CSV, rows, partial_metadata)
 
 
 def build_report(max_iterations: int) -> dict:
@@ -176,8 +177,15 @@ def build_report(max_iterations: int) -> dict:
     }
 
 
-def write_csv_rows(path: Path, rows: list[dict]) -> None:
+def write_csv_rows(path: Path, rows: list[dict], metadata: dict) -> None:
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "pure_row",
         "category",
@@ -200,6 +208,13 @@ def write_csv_rows(path: Path, rows: list[dict]) -> None:
             metrics = row["reference_metrics"]
             writer.writerow(
                 {
+                    "commit_sha": metadata["commit_sha"],
+                    "generated_at_utc": metadata["generated_at_utc"],
+                    "python": metadata["python"],
+                    "platform": metadata["platform"],
+                    "model": metadata["model"],
+                    "temperature": metadata["temperature"],
+                    "max_iterations": metadata["max_iterations"],
                     "case_id": row["case_id"],
                     "pure_row": row["pure_row"],
                     "category": row["category"],
@@ -238,6 +253,16 @@ def write_markdown(report: dict) -> None:
         f"- Final-valid and agent-terminal-valid: {report['summary']['both_final_compile_and_agent_terminal_valid']}",
         f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
         "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{report['metadata']['commit_sha']}`",
+        f"- Generated at UTC: `{report['metadata']['generated_at_utc']}`",
+        f"- Python: `{report['metadata']['python']}`",
+        f"- Platform: `{report['metadata']['platform']}`",
+        f"- Model: `{report['metadata']['model']}`",
+        f"- Temperature: `{report['metadata']['temperature']}`",
+        f"- Max iterations: `{report['metadata']['max_iterations']}`",
+        "",
         "Success is defined by the endpoint's final syntax/OCL validation. The",
         "`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic",
         "from the internal Critic-Healer loop and should not be interpreted as the",
@@ -271,7 +296,7 @@ def main() -> int:
     report = build_report(max_iterations=args.max_iterations)
     RESULTS.mkdir(parents=True, exist_ok=True)
     OUTPUT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_csv_rows(OUTPUT_CSV, report["cases"])
+    write_csv_rows(OUTPUT_CSV, report["cases"], report["metadata"])
     write_markdown(report)
     print(f"JSON: {OUTPUT_JSON}")
     print(f"CSV: {OUTPUT_CSV}")

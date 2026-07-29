@@ -123,6 +123,13 @@ def write_outputs(report: dict) -> None:
     OUTPUT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "pure_row",
         "category",
@@ -144,6 +151,13 @@ def write_outputs(report: dict) -> None:
             metrics = row["reference_metrics"]
             writer.writerow(
                 {
+                    "commit_sha": report["metadata"]["commit_sha"],
+                    "generated_at_utc": report["metadata"]["generated_at_utc"],
+                    "python": report["metadata"]["python"],
+                    "platform": report["metadata"]["platform"],
+                    "model": report["metadata"]["model"],
+                    "temperature": report["metadata"]["temperature"],
+                    "max_iterations": report["metadata"]["max_iterations"],
                     "case_id": row["case_id"],
                     "pure_row": row["pure_row"],
                     "category": row["category"],
@@ -175,6 +189,16 @@ def write_outputs(report: dict) -> None:
         f"- Wilson 95% CI: {report['wilson_95_ci']['lower_percent']}%-{report['wilson_95_ci']['upper_percent']}%",
         f"- Mean class F1 against reference UML: {report['summary']['mean_class_f1']}",
         f"- Mean relationship F1 against reference UML: {report['summary']['mean_relationship_f1']}",
+        "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{report['metadata']['commit_sha']}`",
+        f"- Generated at UTC: `{report['metadata']['generated_at_utc']}`",
+        f"- Python: `{report['metadata']['python']}`",
+        f"- Platform: `{report['metadata']['platform']}`",
+        f"- Model: `{report['metadata']['model']}`",
+        f"- Temperature: `{report['metadata']['temperature']}`",
+        f"- Max iterations: `{report['metadata']['max_iterations']}`",
         "",
         "## Case Results",
         "",

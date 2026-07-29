@@ -109,15 +109,16 @@ def run_case(case: dict, max_iterations: int) -> dict:
 def write_partial(rows: list[dict], max_iterations: int) -> None:
     total = len(rows)
     successes = sum(1 for row in rows if row["basarili"])
+    partial_metadata = execution_metadata(
+        benchmark="shared S01-S50 invalid PlantUML benchmark",
+        scope="partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
+        max_iterations=max_iterations,
+        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+        completed_cases=total,
+    )
     partial = {
-        "metadata": execution_metadata(
-            benchmark="shared S01-S50 invalid PlantUML benchmark",
-            scope="partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
-            max_iterations=max_iterations,
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
-            completed_cases=total,
-        ),
+        "metadata": partial_metadata,
         "summary": {
             "completed_cases": total,
             "successful_repairs_so_far": successes,
@@ -128,6 +129,13 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
     PARTIAL_JSON.write_text(json.dumps(partial, ensure_ascii=False, indent=2), encoding="utf-8")
 
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
@@ -149,6 +157,17 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
         for row in rows:
             compile_result = row.get("final_compile") or {}
             row_for_csv = {field: row.get(field) for field in fieldnames}
+            row_for_csv.update(
+                {
+                    "commit_sha": partial_metadata["commit_sha"],
+                    "generated_at_utc": partial_metadata["generated_at_utc"],
+                    "python": partial_metadata["python"],
+                    "platform": partial_metadata["platform"],
+                    "model": partial_metadata["model"],
+                    "temperature": partial_metadata["temperature"],
+                    "max_iterations": partial_metadata["max_iterations"],
+                }
+            )
             row_for_csv["final_errors"] = format_messages(compile_result.get("normalize_hatalar", []))
             row_for_csv["final_warnings"] = "; ".join((compile_result.get("ocl") or {}).get("uyarilar", []))
             writer.writerow(row_for_csv)
@@ -218,7 +237,15 @@ def build_report(max_iterations: int) -> dict:
 
 
 def write_csv(report: dict) -> None:
+    metadata = report["metadata"]
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
@@ -239,6 +266,13 @@ def write_csv(report: dict) -> None:
             compile_result = row.get("final_compile") or {}
             writer.writerow(
                 {
+                    "commit_sha": metadata["commit_sha"],
+                    "generated_at_utc": metadata["generated_at_utc"],
+                    "python": metadata["python"],
+                    "platform": metadata["platform"],
+                    "model": metadata["model"],
+                    "temperature": metadata["temperature"],
+                    "max_iterations": metadata["max_iterations"],
                     "case_id": row["case_id"],
                     "category": row["category"],
                     "description": row["description"],
@@ -275,6 +309,16 @@ def write_markdown(report: dict) -> None:
         f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
         f"- Model: {report['metadata']['openai_model']}",
         f"- Max iterations: {report['metadata']['max_iterations']}",
+        "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{report['metadata']['commit_sha']}`",
+        f"- Generated at UTC: `{report['metadata']['generated_at_utc']}`",
+        f"- Python: `{report['metadata']['python']}`",
+        f"- Platform: `{report['metadata']['platform']}`",
+        f"- Model: `{report['metadata']['model']}`",
+        f"- Temperature: `{report['metadata']['temperature']}`",
+        f"- Max iterations: `{report['metadata']['max_iterations']}`",
         "",
         "Success is defined by the endpoint's final syntax/OCL validation. The",
         "`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic",

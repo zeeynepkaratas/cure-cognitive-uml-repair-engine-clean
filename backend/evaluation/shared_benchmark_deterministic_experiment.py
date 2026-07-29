@@ -127,7 +127,15 @@ def build_report() -> dict:
 
 
 def write_csv(report: dict) -> None:
+    metadata = report["metadata"]
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
@@ -145,6 +153,13 @@ def write_csv(report: dict) -> None:
         for case in report["cases"]:
             writer.writerow(
                 {
+                    "commit_sha": metadata["commit_sha"],
+                    "generated_at_utc": metadata["generated_at_utc"],
+                    "python": metadata["python"],
+                    "platform": metadata["platform"],
+                    "model": metadata["model"],
+                    "temperature": metadata["temperature"],
+                    "max_iterations": metadata["max_iterations"],
                     "case_id": case["case_id"],
                     "category": case["category"],
                     "description": case["description"],
@@ -161,6 +176,7 @@ def write_csv(report: dict) -> None:
 
 def write_markdown(report: dict) -> None:
     interval = report["wilson_95_ci"]
+    metadata = report["metadata"]
     lines = [
         "# Shared Benchmark Deterministic Repair Experiment",
         "",
@@ -176,6 +192,16 @@ def write_markdown(report: dict) -> None:
         f"- Failed repairs: {report['summary']['failed_repairs']}",
         f"- Success rate: {report['summary']['success_rate_percent']}%",
         f"- Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{metadata['commit_sha']}`",
+        f"- Generated at UTC: `{metadata['generated_at_utc']}`",
+        f"- Python: `{metadata['python']}`",
+        f"- Platform: `{metadata['platform']}`",
+        f"- Model: `{metadata['model']}`",
+        f"- Temperature: `{metadata['temperature']}`",
+        f"- Max iterations: `{metadata['max_iterations']}`",
         "",
         "## Case Results",
         "",

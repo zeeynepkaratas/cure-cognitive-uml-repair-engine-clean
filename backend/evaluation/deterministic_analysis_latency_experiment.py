@@ -78,6 +78,15 @@ def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     run_id = str(uuid.uuid4())
     generated_at = datetime.now(timezone.utc).isoformat()
+    run_metadata = execution_metadata(
+        benchmark="deterministic /api/analyze latency workload",
+        scope="deterministic_analyze_pipeline_no_llm",
+        max_iterations=None,
+        model="none",
+        temperature="none",
+        run_id=run_id,
+        generated_at=generated_at,
+    )
 
     rows = []
     for request_id in range(1, REQUEST_COUNT + 1):
@@ -100,6 +109,13 @@ def main() -> None:
 
         rows.append(
             {
+                "commit_sha": run_metadata["commit_sha"],
+                "generated_at_utc": run_metadata["generated_at_utc"],
+                "python": run_metadata["python"],
+                "platform": run_metadata["platform"],
+                "model": run_metadata["model"],
+                "temperature": run_metadata["temperature"],
+                "max_iterations": run_metadata["max_iterations"],
                 "run_id": run_id,
                 "request_id": request_id,
                 "measurement_scope": "deterministic_analyze_pipeline_no_llm",
@@ -119,11 +135,11 @@ def main() -> None:
     successful_rows = [row for row in rows if row["successful"]]
     durations_ms = [float(row["duration_ms"]) for row in successful_rows]
     summary = execution_metadata(
-        benchmark="deterministic /api/analyze latency workload",
-        scope="deterministic_analyze_pipeline_no_llm",
-        max_iterations=None,
-        model="none",
-        temperature="none",
+        benchmark=run_metadata["benchmark"],
+        scope=run_metadata["scope"],
+        max_iterations=run_metadata["max_iterations"],
+        model=run_metadata["model"],
+        temperature=run_metadata["temperature"],
         run_id=run_id,
         generated_at=generated_at,
         request_count=len(rows),
@@ -172,6 +188,12 @@ def main() -> None:
         "",
         f"- Run id: `{summary['run_id']}`",
         f"- Generated at: `{summary['generated_at']}`",
+        f"- Commit SHA: `{summary['commit_sha']}`",
+        f"- Python: `{summary['python']}`",
+        f"- Platform: `{summary['platform']}`",
+        f"- Model: `{summary['model']}`",
+        f"- Temperature: `{summary['temperature']}`",
+        f"- Max iterations: `{summary['max_iterations']}`",
         f"- Measurement scope: `{summary['measurement_scope']}`",
         f"- Request count: {summary['request_count']}",
         f"- Successful count: {summary['successful_count']}",

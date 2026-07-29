@@ -9,9 +9,11 @@ REPO_ROOT = os.path.dirname(BACKEND_ROOT)
 AI_CORE_SRC = os.path.join(REPO_ROOT, "ai_core", "src")
 sys.path.insert(0, os.path.join(BACKEND_ROOT, "src"))
 sys.path.insert(0, AI_CORE_SRC)
+sys.path.insert(0, REPO_ROOT)
 
 from ai.critic_decision import parse_critic_decision
 from ai.workflow_control import route_repair_decision
+from backend.evaluation.repair_benchmark_utils import compile_check
 from plantuml_runtime import plantuml_runtime_available, validate_with_plantuml
 from renderers import plantuml_renderer
 from utils.plantuml_parser import parse_relationships
@@ -57,6 +59,16 @@ def test_plantuml_runtime_reports_unavailable_without_configured_binary():
     assert result["successful"] is None
 
 
+def test_compile_check_separates_fallback_success_from_runtime_success():
+    with patch.dict(os.environ, {"PLANTUML_JAR": "", "PLANTUML_CMD": ""}, clear=False):
+        with patch("plantuml_runtime.shutil.which", return_value=None):
+            result = compile_check("@startuml\nclass UserManager {}\n@enduml")
+    assert result["project_defined_success"] is True
+    assert result["plantuml_runtime_available"] is False
+    assert result["plantuml_validated_success"] is None
+    assert result["success_definition"] == "project_defined_lightweight_validation"
+
+
 def test_renderer_marks_fallback_when_runtime_is_unavailable():
     with patch("renderers.plantuml_renderer.render_with_plantuml") as mocked:
         mocked.return_value = {"available": False, "successful": False, "error": "missing runtime"}
@@ -98,6 +110,7 @@ if __name__ == "__main__":
         test_critic_parser_accepts_structured_dict,
         test_critic_parser_accepts_legacy_valid_token_with_punctuation,
         test_plantuml_runtime_reports_unavailable_without_configured_binary,
+        test_compile_check_separates_fallback_success_from_runtime_success,
         test_renderer_marks_fallback_when_runtime_is_unavailable,
         test_renderer_uses_real_runtime_output_when_available,
         test_runtime_availability_is_boolean,

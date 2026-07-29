@@ -65,16 +65,20 @@ def compile_check(plantuml_code: str) -> dict:
     syntax = plantuml_syntax_kontrol(plantuml_code)
     ocl = validate_ocl(plantuml_code)
     plantuml_runtime = validate_with_plantuml(plantuml_code)
+    project_defined_success = syntax["gecerli"] and ocl["gecerli_mi"]
+    plantuml_validated_success = (
+        plantuml_runtime["successful"] if plantuml_runtime["available"] else None
+    )
     errors = syntax["hatalar"] + ocl["hatalar"]
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         errors.extend(plantuml_runtime["errors"])
     warnings = ocl["uyarilar"]
     return {
-        "successful": (
-            syntax["gecerli"]
-            and ocl["gecerli_mi"]
-            and (not plantuml_runtime["available"] or plantuml_runtime["successful"] is True)
-        ),
+        "successful": project_defined_success,
+        "success_definition": "project_defined_lightweight_validation",
+        "project_defined_success": project_defined_success,
+        "plantuml_validated_success": plantuml_validated_success,
+        "plantuml_runtime_available": plantuml_runtime["available"],
         "syntax_valid": syntax["gecerli"],
         "ocl_valid": ocl["gecerli_mi"],
         "plantuml_runtime": plantuml_runtime,

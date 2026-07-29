@@ -45,16 +45,19 @@ def test_wilson_interval_for_shared_llm_benchmark():
     assert interval["upper_percent"] == 97.9
 
 
-def test_shared_deterministic_repair_benchmark_reproduces_31_of_50_success_rate():
+def test_shared_deterministic_repair_benchmark_separates_fallback_from_runtime_success():
     report = build_report()
     metadata = report["metadata"]
     for field in ["commit_sha", "generated_at_utc", "python", "platform", "model", "temperature", "max_iterations"]:
         assert field in metadata
     assert report["summary"]["total_cases"] == 50
     assert report["summary"]["initially_invalid_cases"] == 50
-    assert report["summary"]["successful_repairs"] == 31
-    assert report["summary"]["failed_repairs"] == 19
-    assert report["summary"]["success_rate_percent"] == 62.0
+    assert report["summary"]["project_defined_successful_repairs"] == 31
+    assert report["summary"]["project_defined_failed_repairs"] == 19
+    assert report["summary"]["project_defined_success_rate_percent"] == 62.0
+    if report["summary"]["plantuml_runtime_available"] is False:
+        assert report["summary"]["plantuml_validated_successful_repairs"] is None
+        assert report["plantuml_validated_wilson_95_ci"] is None
 
 
 def test_legacy_llm_result_is_preserved_but_not_reported_as_current():
@@ -69,7 +72,7 @@ if __name__ == "__main__":
         test_ocl_validation_sample_matches_expected_flags,
         test_semantic_validation_sample_matches_expected_flags,
         test_wilson_interval_for_shared_llm_benchmark,
-        test_shared_deterministic_repair_benchmark_reproduces_31_of_50_success_rate,
+        test_shared_deterministic_repair_benchmark_separates_fallback_from_runtime_success,
         test_legacy_llm_result_is_preserved_but_not_reported_as_current,
     ]
     passed = 0

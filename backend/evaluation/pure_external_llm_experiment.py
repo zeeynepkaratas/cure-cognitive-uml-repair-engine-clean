@@ -73,7 +73,8 @@ def run_case(case: dict, max_iterations: int) -> dict:
     final_compile = response.get("final_compile") or {}
     final_plantuml = response.get("final_plantuml") or ""
     reference_metrics = compare_to_reference(case["reference_plantuml"], final_plantuml)
-    final_compile_success = bool(final_compile.get("basarili"))
+    project_defined_success = bool(final_compile.get("project_defined_success", final_compile.get("basarili")))
+    plantuml_validated_success = final_compile.get("plantuml_validated_success")
     return {
         "case_id": case["case_id"],
         "pure_row": case["pure_row"],
@@ -83,7 +84,9 @@ def run_case(case: dict, max_iterations: int) -> dict:
         "initial_plantuml": case["plantuml_kodu"],
         "reference_plantuml": case["reference_plantuml"],
         "final_plantuml": final_plantuml,
-        "basarili": final_compile_success,
+        "basarili": plantuml_validated_success,
+        "project_defined_basarili": project_defined_success,
+        "plantuml_validated_basarili": plantuml_validated_success,
         "api_basarili": response.get("basarili"),
         "sure_saniye": response.get("sure_saniye", elapsed),
         "wall_time_saniye": elapsed,
@@ -125,7 +128,7 @@ def build_report(max_iterations: int) -> dict:
         write_partial(rows, max_iterations=max_iterations)
         print(
             f"{index:02d}/{len(PURE_EXTERNAL_REPAIR_CASES)} "
-            f"{row['case_id']} basarili={row['basarili']} "
+            f"{row['case_id']} project_defined_basarili={row['project_defined_basarili']} "
             f"sure_saniye={row['sure_saniye']} "
             f"iterasyon_sayisi={row['iterasyon_sayisi']} "
             f"class_f1={row['reference_metrics']['class_f1']} "
@@ -133,15 +136,23 @@ def build_report(max_iterations: int) -> dict:
         )
 
     total = len(rows)
-    successes = sum(1 for row in rows if row["basarili"])
+    project_successes = sum(1 for row in rows if row["project_defined_basarili"])
+    plantuml_runtime_available = any(
+        (row.get("final_compile") or {}).get("plantuml_runtime_available") for row in rows
+    )
+    plantuml_successes = (
+        sum(1 for row in rows if row["plantuml_validated_basarili"])
+        if plantuml_runtime_available
+        else None
+    )
     agent_terminal_valid = sum(1 for row in rows if row.get("agent_is_valid") is True)
     both_final_and_agent_valid = sum(
-        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is True
+        1 for row in rows if row["project_defined_basarili"] and row.get("agent_is_valid") is True
     )
     final_valid_agent_invalid = sum(
-        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is not True
+        1 for row in rows if row["project_defined_basarili"] and row.get("agent_is_valid") is not True
     )
-    interval = wilson_interval(successes, total)
+    interval = wilson_interval(project_successes, total)
     return {
         "metadata": execution_metadata(
             benchmark="PURE-derived repair pilot",
@@ -156,18 +167,25 @@ def build_report(max_iterations: int) -> dict:
         ),
         "summary": {
             "total_cases": total,
-            "successful_repairs": successes,
-            "failed_repairs": total - successes,
-            "success_rate": round(successes / total, 4),
-            "success_rate_percent": round(successes / total * 100, 1),
+            "success_definition": "project-defined fallback validation is separate from real PlantUML-runtime validation",
+            "plantuml_runtime_available": plantuml_runtime_available,
+            "project_defined_successful_repairs": project_successes,
+            "project_defined_failed_repairs": total - project_successes,
+            "project_defined_success_rate": round(project_successes / total, 4),
+            "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
+            "plantuml_validated_successful_repairs": plantuml_successes,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
             "mean_class_f1": round(sum(row["reference_metrics"]["class_f1"] for row in rows) / total, 3),
             "mean_relationship_f1": round(sum(row["reference_metrics"]["relationship_f1"] for row in rows) / total, 3),
+            "relationship_metric_definition": "source-target endpoint-pair F1; relation type, multiplicity, and labels are not scored",
             "agent_terminal_valid": agent_terminal_valid,
             "both_final_compile_and_agent_terminal_valid": both_final_and_agent_valid,
             "final_compile_valid_but_agent_terminal_invalid": final_valid_agent_invalid,
             "success_definition": "final syntax/OCL validation after the autonomous repair endpoint returns",
         },
-        "wilson_95_ci": {
+        "project_defined_wilson_95_ci": {
             "successes": interval["successes"],
             "total": interval["total"],
             "rate": round(interval["rate"], 4),
@@ -194,6 +212,8 @@ def write_csv_rows(path: Path, rows: list[dict], metadata: dict) -> None:
         "pure_row",
         "category",
         "basarili",
+        "project_defined_basarili",
+        "plantuml_validated_basarili",
         "sure_saniye",
         "wall_time_saniye",
         "iterasyon_sayisi",
@@ -224,6 +244,8 @@ def write_csv_rows(path: Path, rows: list[dict], metadata: dict) -> None:
                     "pure_row": row["pure_row"],
                     "category": row["category"],
                     "basarili": row["basarili"],
+                    "project_defined_basarili": row["project_defined_basarili"],
+                    "plantuml_validated_basarili": row["plantuml_validated_basarili"],
                     "sure_saniye": row["sure_saniye"],
                     "wall_time_saniye": row["wall_time_saniye"],
                     "iterasyon_sayisi": row["iterasyon_sayisi"],
@@ -249,12 +271,14 @@ def write_markdown(report: dict) -> None:
         "## Summary",
         "",
         f"- Total cases: {report['summary']['total_cases']}",
-        f"- Successful repairs: {report['summary']['successful_repairs']}",
-        f"- Failed repairs: {report['summary']['failed_repairs']}",
-        f"- Success rate: {report['summary']['success_rate_percent']}%",
-        f"- Wilson 95% CI: {report['wilson_95_ci']['lower_percent']}%-{report['wilson_95_ci']['upper_percent']}%",
+        f"- Project-defined fallback repairs: {report['summary']['project_defined_successful_repairs']}/{report['summary']['total_cases']}",
+        f"- Project-defined fallback success rate: {report['summary']['project_defined_success_rate_percent']}%",
+        f"- Project-defined Wilson 95% CI: {report['project_defined_wilson_95_ci']['lower_percent']}%-{report['project_defined_wilson_95_ci']['upper_percent']}%",
+        f"- PlantUML runtime available: {report['summary']['plantuml_runtime_available']}",
+        f"- PlantUML-validated repairs: {report['summary']['plantuml_validated_successful_repairs']}",
         f"- Mean class F1 against reference UML: {report['summary']['mean_class_f1']}",
         f"- Mean relationship F1 against reference UML: {report['summary']['mean_relationship_f1']}",
+        "- Relationship metric: source-target endpoint-pair F1; relation type, multiplicity, and labels are not scored.",
         f"- Agent terminal-state valid: {report['summary']['agent_terminal_valid']}",
         f"- Final-valid and agent-terminal-valid: {report['summary']['both_final_compile_and_agent_terminal_valid']}",
         f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
@@ -279,14 +303,15 @@ def write_markdown(report: dict) -> None:
         "",
         "## Case Results",
         "",
-        "| Case | PURE row | Category | Final success | Class F1 | Relationship F1 | LLM calls |",
-        "|---|---:|---|---:|---:|---:|---:|",
+        "| Case | PURE row | Category | Project-defined success | PlantUML-validated success | Class F1 | Relationship F1 | LLM calls |",
+        "|---|---:|---|---:|---:|---:|---:|---:|",
     ]
     for row in report["cases"]:
         metrics = row["reference_metrics"]
         lines.append(
             f"| {row['case_id']} | {row['pure_row']} | {row['category']} | "
-            f"{row['basarili']} | {metrics['class_f1']} | {metrics['relationship_f1']} | "
+            f"{row['project_defined_basarili']} | {row['plantuml_validated_basarili']} | "
+            f"{metrics['class_f1']} | {metrics['relationship_f1']} | "
             f"{row['agent_llm_call_count']} |"
         )
     OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -308,9 +333,9 @@ def main() -> int:
     print(f"CSV: {OUTPUT_CSV}")
     print(f"MD: {OUTPUT_MD}")
     print(
-        f"SUMMARY: {report['summary']['successful_repairs']}/"
+        f"SUMMARY_PROJECT_DEFINED: {report['summary']['project_defined_successful_repairs']}/"
         f"{report['summary']['total_cases']} "
-        f"({report['summary']['success_rate_percent']}%)"
+        f"({report['summary']['project_defined_success_rate_percent']}%)"
     )
     print(f"MEAN_CLASS_F1: {report['summary']['mean_class_f1']}")
     print(f"MEAN_RELATIONSHIP_F1: {report['summary']['mean_relationship_f1']}")

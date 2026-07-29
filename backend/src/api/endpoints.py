@@ -179,15 +179,19 @@ def _compile_test(plantuml_kodu: str) -> dict:
     syntax = plantuml_syntax_kontrol(plantuml_kodu)
     ocl = validate_ocl(plantuml_kodu)
     plantuml_runtime = validate_with_plantuml(plantuml_kodu)
+    project_defined_success = syntax["gecerli"] and ocl["gecerli_mi"]
+    plantuml_validated_success = (
+        plantuml_runtime["successful"] if plantuml_runtime["available"] else None
+    )
     hatalar = syntax["hatalar"] + ocl["hatalar"]
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         hatalar.extend(plantuml_runtime["errors"])
     return {
-        "basarili": (
-            syntax["gecerli"]
-            and ocl["gecerli_mi"]
-            and (not plantuml_runtime["available"] or plantuml_runtime["successful"] is True)
-        ),
+        "basarili": project_defined_success,
+        "success_definition": "project_defined_lightweight_validation",
+        "project_defined_success": project_defined_success,
+        "plantuml_validated_success": plantuml_validated_success,
+        "plantuml_runtime_available": plantuml_runtime["available"],
         "syntax": syntax,
         "ocl": ocl,
         "plantuml_runtime": plantuml_runtime,

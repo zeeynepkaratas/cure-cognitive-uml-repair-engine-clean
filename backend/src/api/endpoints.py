@@ -12,6 +12,7 @@ from evaluators.semantic_eval import calculate_semantic_fidelity
 from ocl_engine.ocl_validator import validate_ocl
 from ocl_engine.error_handler import hata_normalize_et, plantuml_syntax_kontrol, exception_logla
 from renderers.plantuml_renderer import render_plantuml
+from plantuml_runtime import validate_with_plantuml
 from api.error_log_endpoint import router as error_log_router, hata_kaydet, HataLogGirdisi
 from api.performance import olcum_kaydet, performans_raporu, olcumleri_sifirla
 from ai.agent_workflow import UMLMultiAgentSystem
@@ -177,11 +178,19 @@ def _compile_test(plantuml_kodu: str) -> dict:
     """
     syntax = plantuml_syntax_kontrol(plantuml_kodu)
     ocl = validate_ocl(plantuml_kodu)
+    plantuml_runtime = validate_with_plantuml(plantuml_kodu)
     hatalar = syntax["hatalar"] + ocl["hatalar"]
+    if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
+        hatalar.extend(plantuml_runtime["errors"])
     return {
-        "basarili": syntax["gecerli"] and ocl["gecerli_mi"],
+        "basarili": (
+            syntax["gecerli"]
+            and ocl["gecerli_mi"]
+            and (not plantuml_runtime["available"] or plantuml_runtime["successful"] is True)
+        ),
         "syntax": syntax,
         "ocl": ocl,
+        "plantuml_runtime": plantuml_runtime,
         "normalize_hatalar": hata_normalize_et(hatalar, kaynak="COMPILE")
     }
 
@@ -366,6 +375,7 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
     compile_sonuc = _compile_test(aktif_kod)
     iterasyonlar = []
     agent_iteration_count = None
+    agent_repair_attempt_count = None
     agent_is_valid = None
     agent_llm_call_count = 0
 
@@ -388,7 +398,8 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
             # Ajan kendi içerisindeki 3 iterasyonluk döngüyü çalıştırıp en iyi sonucu döner
             aktif_kod = agent.run(original_text=srs_metni, initial_uml=aktif_kod)
             if agent.last_final_state:
-                agent_iteration_count = agent.last_final_state.get("iteration_count")
+                agent_repair_attempt_count = agent.last_final_state.get("repair_attempt_count")
+                agent_iteration_count = agent_repair_attempt_count
                 agent_is_valid = agent.last_final_state.get("is_valid")
             agent_llm_call_count = agent.llm_call_count
             
@@ -427,6 +438,7 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
         "sla_gecti_mi": sure < 15,
         "max_iterations": girdi.max_iterations,
         "agent_iteration_count": agent_iteration_count,
+        "agent_repair_attempt_count": agent_repair_attempt_count,
         "agent_is_valid": agent_is_valid,
         "agent_llm_call_count": agent_llm_call_count,
         "iterasyonlar": iterasyonlar,

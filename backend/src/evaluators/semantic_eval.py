@@ -1,6 +1,11 @@
 import re
 from typing import Optional
 
+try:
+    from utils.plantuml_parser import parse_classes, parse_relationships
+except ModuleNotFoundError:  # package import path: src.evaluators.semantic_eval
+    from src.utils.plantuml_parser import parse_classes, parse_relationships
+
 # Sınıf adı olmayan genel kelimeler
 STOP_WORDS = {
     'The','This','These','That','When','Where','Which','Each',
@@ -93,23 +98,8 @@ def extract_srs_entities(srs_metni: str) -> dict:
 
 def extract_uml_entities(plantuml_kodu: str) -> dict:
     """PlantUML kodundan varlıkları çıkarır."""
-    siniflar = set(re.findall(r'class\s+(\w+)', plantuml_kodu))
-    interfaceler = set(re.findall(r'interface\s+(\w+)', plantuml_kodu))
-    tum_siniflar = siniflar | interfaceler
-
-    iliski_patterns = [
-        r'(\w+)\s*-->\s*(\w+)',
-        r'(\w+)\s*\*--\s*(\w+)',
-        r'(\w+)\s*o--\s*(\w+)',
-        r'(\w+)\s*\|>\s*(\w+)',
-        r'(\w+)\s*--\|>\s*(\w+)',
-        r'(\w+)\s*\.\.\>\s*(\w+)',
-    ]
-    iliskiler = set()
-    for pat in iliski_patterns:
-        for src, tgt in re.findall(pat, plantuml_kodu):
-            if src != tgt:
-                iliskiler.add((src, tgt))
+    tum_siniflar = parse_classes(plantuml_kodu)
+    iliskiler = parse_relationships(plantuml_kodu)
 
     return {"siniflar": tum_siniflar, "iliskiler": iliskiler}
 

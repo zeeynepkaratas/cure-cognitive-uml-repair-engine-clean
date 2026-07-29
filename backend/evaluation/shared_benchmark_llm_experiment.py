@@ -53,9 +53,12 @@ def require_openai_key() -> None:
 
 
 def repair_attempt_count(response: dict) -> int:
+    explicit_count = response.get("agent_repair_attempt_count")
+    if explicit_count is not None:
+        return int(explicit_count)
     agent_count = response.get("agent_iteration_count")
     if agent_count is not None:
-        return max(int(agent_count) - 1, 0)
+        return int(agent_count)
     return max(len(response.get("iterasyonlar", [])) - 1, 0)
 
 
@@ -97,6 +100,7 @@ def run_case(case: dict, max_iterations: int) -> dict:
         "wall_time_saniye": elapsed,
         "iterasyon_sayisi": repair_attempt_count(response),
         "agent_iteration_count": response.get("agent_iteration_count"),
+        "agent_repair_attempt_count": response.get("agent_repair_attempt_count"),
         "agent_is_valid": response.get("agent_is_valid"),
         "agent_llm_call_count": response.get("agent_llm_call_count"),
         "final_plantuml": response.get("final_plantuml"),
@@ -146,6 +150,7 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
         "wall_time_saniye",
         "iterasyon_sayisi",
         "agent_iteration_count",
+        "agent_repair_attempt_count",
         "agent_is_valid",
         "agent_llm_call_count",
         "final_errors",
@@ -254,6 +259,7 @@ def write_csv(report: dict) -> None:
         "wall_time_saniye",
         "iterasyon_sayisi",
         "agent_iteration_count",
+        "agent_repair_attempt_count",
         "agent_is_valid",
         "agent_llm_call_count",
         "final_errors",
@@ -281,6 +287,7 @@ def write_csv(report: dict) -> None:
                     "wall_time_saniye": row["wall_time_saniye"],
                     "iterasyon_sayisi": row["iterasyon_sayisi"],
                     "agent_iteration_count": row["agent_iteration_count"],
+                    "agent_repair_attempt_count": row["agent_repair_attempt_count"],
                     "agent_is_valid": row["agent_is_valid"],
                     "agent_llm_call_count": row["agent_llm_call_count"],
                     "final_errors": format_messages(compile_result.get("normalize_hatalar", [])),

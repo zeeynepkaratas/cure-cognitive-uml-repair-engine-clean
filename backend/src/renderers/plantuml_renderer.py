@@ -11,6 +11,13 @@ import html
 import re
 from typing import Dict, List, Tuple
 
+try:
+    from utils.plantuml_parser import parse_relationships
+    from plantuml_runtime import render_with_plantuml
+except ModuleNotFoundError:  # package import path: src.renderers.plantuml_renderer
+    from src.utils.plantuml_parser import parse_relationships
+    from src.plantuml_runtime import render_with_plantuml
+
 
 TRANSPARENT_PNG_BASE64 = (
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
@@ -24,15 +31,7 @@ def _parse_classes(plantuml_code: str) -> List[str]:
 
 def _parse_relations(plantuml_code: str) -> List[Tuple[str, str]]:
     # En yaygin iliski oklarini yakalar; SVG'de kutular arasina cizgi cizmek icin kullanilir.
-    relations = []
-    patterns = [
-        r"([A-Za-z_][A-Za-z0-9_]*)\s*-->\s*([A-Za-z_][A-Za-z0-9_]*)",
-        r"([A-Za-z_][A-Za-z0-9_]*)\s*\*--\s*([A-Za-z_][A-Za-z0-9_]*)",
-        r"([A-Za-z_][A-Za-z0-9_]*)\s*--\|>\s*([A-Za-z_][A-Za-z0-9_]*)",
-    ]
-    for pattern in patterns:
-        relations.extend(re.findall(pattern, plantuml_code))
-    return relations
+    return sorted(parse_relationships(plantuml_code))
 
 
 def render_plantuml_svg(plantuml_code: str) -> str:
@@ -87,12 +86,24 @@ def render_plantuml_svg(plantuml_code: str) -> str:
 
 def render_plantuml(plantuml_code: str) -> dict:
     """Return SVG text and PNG data URI in the API response format."""
-    svg = render_plantuml_svg(plantuml_code)
+    runtime_render = render_with_plantuml(plantuml_code)
+    if runtime_render.get("successful"):
+        svg = runtime_render["svg"]
+        svg_base64 = runtime_render["svg_base64"]
+        render_source = "plantuml_runtime"
+    else:
+        svg = render_plantuml_svg(plantuml_code)
+        svg_base64 = base64.b64encode(svg.encode("utf-8")).decode("ascii")
+        render_source = "fallback_svg_preview"
     return {
         "svg": svg,
-        "svg_base64": base64.b64encode(svg.encode("utf-8")).decode("ascii"),
+        "svg_base64": svg_base64,
         # PNG alani frontend kontrati icin vardir; asil okunabilir gorsel SVG'dir.
         "png_base64": TRANSPARENT_PNG_BASE64,
         "png_data_uri": f"data:image/png;base64,{TRANSPARENT_PNG_BASE64}",
         "formatlar": ["svg", "png"],
+        "render_source": render_source,
+        "plantuml_runtime": {
+            key: value for key, value in runtime_render.items() if key not in {"svg", "svg_base64"}
+        },
     }

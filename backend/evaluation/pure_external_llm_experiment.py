@@ -49,9 +49,12 @@ def require_openai_key() -> None:
 
 
 def repair_attempt_count(response: dict) -> int:
+    explicit_count = response.get("agent_repair_attempt_count")
+    if explicit_count is not None:
+        return int(explicit_count)
     agent_count = response.get("agent_iteration_count")
     if agent_count is not None:
-        return max(int(agent_count) - 1, 0)
+        return int(agent_count)
     return max(len(response.get("iterasyonlar", [])) - 1, 0)
 
 
@@ -86,6 +89,7 @@ def run_case(case: dict, max_iterations: int) -> dict:
         "wall_time_saniye": elapsed,
         "iterasyon_sayisi": repair_attempt_count(response),
         "agent_iteration_count": response.get("agent_iteration_count"),
+        "agent_repair_attempt_count": response.get("agent_repair_attempt_count"),
         "agent_is_valid": response.get("agent_is_valid"),
         "agent_llm_call_count": response.get("agent_llm_call_count"),
         "final_compile": final_compile,
@@ -194,6 +198,7 @@ def write_csv_rows(path: Path, rows: list[dict], metadata: dict) -> None:
         "wall_time_saniye",
         "iterasyon_sayisi",
         "agent_llm_call_count",
+        "agent_repair_attempt_count",
         "class_f1",
         "relationship_f1",
         "missing_classes",
@@ -223,6 +228,7 @@ def write_csv_rows(path: Path, rows: list[dict], metadata: dict) -> None:
                     "wall_time_saniye": row["wall_time_saniye"],
                     "iterasyon_sayisi": row["iterasyon_sayisi"],
                     "agent_llm_call_count": row["agent_llm_call_count"],
+                    "agent_repair_attempt_count": row["agent_repair_attempt_count"],
                     "class_f1": metrics["class_f1"],
                     "relationship_f1": metrics["relationship_f1"],
                     "missing_classes": "; ".join(metrics["missing_classes"]),

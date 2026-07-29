@@ -18,6 +18,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from ocl_engine.error_handler import plantuml_syntax_kontrol  # noqa: E402
 from ocl_engine.ocl_validator import validate_ocl  # noqa: E402
+from plantuml_runtime import validate_with_plantuml  # noqa: E402
 
 
 MAX_ITERATIONS = 3
@@ -63,12 +64,20 @@ def execution_metadata(
 def compile_check(plantuml_code: str) -> dict:
     syntax = plantuml_syntax_kontrol(plantuml_code)
     ocl = validate_ocl(plantuml_code)
+    plantuml_runtime = validate_with_plantuml(plantuml_code)
     errors = syntax["hatalar"] + ocl["hatalar"]
+    if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
+        errors.extend(plantuml_runtime["errors"])
     warnings = ocl["uyarilar"]
     return {
-        "successful": syntax["gecerli"] and ocl["gecerli_mi"],
+        "successful": (
+            syntax["gecerli"]
+            and ocl["gecerli_mi"]
+            and (not plantuml_runtime["available"] or plantuml_runtime["successful"] is True)
+        ),
         "syntax_valid": syntax["gecerli"],
         "ocl_valid": ocl["gecerli_mi"],
+        "plantuml_runtime": plantuml_runtime,
         "score": ocl["skor"],
         "percent": ocl["yuzde"],
         "errors": errors,

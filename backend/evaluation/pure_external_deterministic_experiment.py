@@ -18,7 +18,13 @@ if str(EVALUATION_ROOT) not in sys.path:
 
 from pure_external_metrics import compare_to_reference
 from pure_external_repair_cases import PURE_EXTERNAL_REPAIR_CASES
-from repair_benchmark_utils import MAX_ITERATIONS, compile_check, deterministic_backend_repair, wilson_interval
+from repair_benchmark_utils import (
+    MAX_ITERATIONS,
+    compile_check,
+    deterministic_backend_repair,
+    execution_metadata,
+    wilson_interval,
+)
 
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
@@ -77,19 +83,18 @@ def build_report() -> dict:
     successes = sum(1 for row in rows if row["final_success"])
     interval = wilson_interval(successes, total)
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "PURE-derived repair pilot",
-            "scope": (
+        "metadata": execution_metadata(
+            benchmark="PURE-derived repair pilot",
+            scope=(
                 "Preliminary pilot using selected PURE requirement excerpts, "
                 "curated reference UML, and controlled injected PlantUML defects."
             ),
-            "case_count": total,
-            "max_iterations": MAX_ITERATIONS,
-        },
+            max_iterations=MAX_ITERATIONS,
+            model="none",
+            temperature="none",
+            run_id=str(uuid.uuid4()),
+            case_count=total,
+        ),
         "summary": {
             "total_cases": total,
             "successful_repairs": successes,

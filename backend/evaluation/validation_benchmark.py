@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -21,6 +22,12 @@ if str(BACKEND_ROOT) not in sys.path:
 
 from src.evaluators.semantic_eval import calculate_semantic_fidelity
 from src.ocl_engine.ocl_validator import validate_ocl
+
+EVALUATION_ROOT = Path(__file__).resolve().parent
+if str(EVALUATION_ROOT) not in sys.path:
+    sys.path.insert(0, str(EVALUATION_ROOT))
+
+from repair_benchmark_utils import execution_metadata
 
 
 OCL_CASES = [
@@ -295,40 +302,8 @@ def write_markdown_report(report: dict, output_path: Path) -> None:
         f"- OCL cases: {report['summary']['ocl_passed']}/{report['summary']['ocl_total']} passed.",
         f"- Semantic cases: {report['summary']['semantic_passed']}/{report['summary']['semantic_total']} passed.",
         "- Autonomous repair success rate is not reproduced by this validation script.",
-        "- The main repair evidence is the shared S01-S50 benchmark in `backend/evaluation/results/`.",
-        "- A preliminary PURE-derived pilot is reported separately as a supplementary check.",
-        "",
-        "## Shared Repair Benchmark Note",
-        "",
-        "The current paper revision uses a shared benchmark of 50 invalid PlantUML scenarios.",
-        "Both deterministic repair and the real LLM-based autonomous repair endpoint are evaluated",
-        "on the same S01-S50 cases with `max_iterations=3`.",
-        "",
-        "Current repair results:",
-        "- Deterministic repair: 31/50 successful repairs (62.0%; Wilson 95% CI: 48.2%-74.1%).",
-        "- LLM autonomous repair: 47/50 successful repairs (94.0%; Wilson 95% CI: 83.8%-97.9%).",
-        "- LLM agent terminal-state diagnostic: 8/50 `agent_is_valid=True`; 5/50 both final-valid and agent-terminal-valid.",
-        "- The agent terminal-state diagnostic may be affected by fixed OCL-rule retrieval mismatch or over-strict Critic behavior.",
-        "",
-        "Primary output files:",
-        "- `backend/evaluation/results/shared_benchmark_deterministic_experiment.json`",
-        "- `backend/evaluation/results/shared_benchmark_llm_experiment.json`",
-        "",
-        "## PURE-derived Pilot Note",
-        "",
-        "The repository also includes a preliminary 10-case pilot using selected",
-        "PURE requirement excerpts, curated reference UML models, and controlled injected",
-        "PlantUML defects. This pilot supplements, but does not replace, the shared",
-        "S01-S50 repair benchmark.",
-        "",
-        "Current pilot results:",
-        "- Deterministic repair: 7/10 structurally valid repairs (70.0%; Wilson 95% CI: 39.7%-89.2%).",
-        "- LLM autonomous repair: 10/10 structurally valid repairs (100.0%; Wilson 95% CI: 72.2%-100.0%).",
-        "- LLM graph-level semantic preservation: mean class F1=0.773; mean relationship F1=0.845.",
-        "",
-        "Pilot output files:",
-        "- `backend/evaluation/results/pure_external_deterministic_experiment.json`",
-        "- `backend/evaluation/results/pure_external_llm_experiment.json`",
+        "- Repair benchmark outputs must be generated separately by their experiment scripts.",
+        "- Legacy pre-fix result files are preserved under `backend/evaluation/results/legacy_pre_validation_fix/`.",
         "",
         "## OCL-like Structural Validation Cases",
         "",
@@ -366,53 +341,23 @@ def main() -> None:
     ocl_rows = run_ocl_cases()
     semantic_rows = run_semantic_cases()
     report = {
-        "metadata": {
-            "scope": "backend/src/ocl_engine and backend/src/evaluators",
-            "llm_calls": False,
-            "autonomous_repair_reproduced": False,
-            "repair_experiment_log": "backend/evaluation/results/shared_benchmark_llm_experiment.json",
-            "repair_experiment_scope": "shared S01-S50 benchmark; deterministic and LLM repair use the same cases",
-            "pure_external_pilot_scope": "preliminary 10-case PURE-derived pilot; supplementary check, not a replacement for S01-S50",
-        },
+        "metadata": execution_metadata(
+            benchmark="backend validation sample",
+            scope="backend/src/ocl_engine and backend/src/evaluators",
+            max_iterations=None,
+            model="none",
+            temperature="none",
+            llm_calls=False,
+            autonomous_repair_reproduced=False,
+            openai_api_key_present=bool(os.getenv("OPENAI_API_KEY")),
+            repair_experiment_scope="not reproduced by this validation benchmark",
+            legacy_results_directory="backend/evaluation/results/legacy_pre_validation_fix",
+        ),
         "summary": {
             "ocl_total": len(ocl_rows),
             "ocl_passed": sum(1 for row in ocl_rows if row["passed"]),
             "semantic_total": len(semantic_rows),
             "semantic_passed": sum(1 for row in semantic_rows if row["passed"]),
-        },
-        "shared_repair_benchmark": {
-            "case_count": 50,
-            "max_iterations": 3,
-            "deterministic": wilson_interval(31, 50),
-            "llm_autonomous": wilson_interval(47, 50),
-            "llm_agent_terminal_state": {
-                "agent_terminal_valid": 8,
-                "both_final_compile_and_agent_terminal_valid": 5,
-                "final_compile_valid_but_agent_terminal_invalid": 42,
-                "note": "secondary LangGraph diagnostic; final repair success is defined by final syntax/OCL validation",
-            },
-            "deterministic_log": "backend/evaluation/results/shared_benchmark_deterministic_experiment.json",
-            "llm_log": "backend/evaluation/results/shared_benchmark_llm_experiment.json",
-        },
-        "pure_external_pilot": {
-            "case_count": 10,
-            "max_iterations": 3,
-            "deterministic": {
-                **wilson_interval(7, 10),
-                "mean_class_f1": 1.0,
-                "mean_relationship_f1": 1.0,
-            },
-            "llm_autonomous": {
-                **wilson_interval(10, 10),
-                "mean_class_f1": 0.773,
-                "mean_relationship_f1": 0.845,
-                "agent_terminal_valid": 0,
-                "both_final_compile_and_agent_terminal_valid": 0,
-                "final_compile_valid_but_agent_terminal_invalid": 10,
-            },
-            "deterministic_log": "backend/evaluation/results/pure_external_deterministic_experiment.json",
-            "llm_log": "backend/evaluation/results/pure_external_llm_experiment.json",
-            "interpretation": "structural validity does not imply perfect semantic preservation",
         },
         "ocl_cases": ocl_rows,
         "semantic_cases": semantic_rows,

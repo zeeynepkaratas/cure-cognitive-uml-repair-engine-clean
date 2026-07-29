@@ -20,7 +20,7 @@ if str(EVALUATION_ROOT) not in sys.path:
 
 from pure_external_metrics import compare_to_reference
 from pure_external_repair_cases import PURE_EXTERNAL_REPAIR_CASES
-from repair_benchmark_utils import wilson_interval
+from repair_benchmark_utils import execution_metadata, wilson_interval
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -97,14 +97,14 @@ def run_case(case: dict, max_iterations: int) -> dict:
 def write_partial(rows: list[dict], max_iterations: int) -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     partial = {
-        "metadata": {
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "benchmark": "PURE-derived repair pilot",
-            "scope": "partial interrupted/ongoing LLM pilot output; do not report as final paper result",
-            "max_iterations": max_iterations,
-            "completed_cases": len(rows),
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-        },
+        "metadata": execution_metadata(
+            benchmark="PURE-derived repair pilot",
+            scope="partial interrupted/ongoing LLM pilot output; do not report as final paper result",
+            max_iterations=max_iterations,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+            completed_cases=len(rows),
+        ),
         "cases": rows,
     }
     PARTIAL_JSON.write_text(json.dumps(partial, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -138,18 +138,17 @@ def build_report(max_iterations: int) -> dict:
     )
     interval = wilson_interval(successes, total)
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "PURE-derived repair pilot",
-            "scope": "real LLM-based /api/autonomous-repair endpoint on selected PURE-derived pilot cases",
-            "max_iterations": max_iterations,
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            "total_wall_time_saniye": round(time.perf_counter() - started, 3),
-            "protocol_note": "Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
-        },
+        "metadata": execution_metadata(
+            benchmark="PURE-derived repair pilot",
+            scope="real LLM-based /api/autonomous-repair endpoint on selected PURE-derived pilot cases",
+            max_iterations=max_iterations,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+            openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            run_id=str(uuid.uuid4()),
+            total_wall_time_saniye=round(time.perf_counter() - started, 3),
+            protocol_note="Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
+        ),
         "summary": {
             "total_cases": total,
             "successful_repairs": successes,

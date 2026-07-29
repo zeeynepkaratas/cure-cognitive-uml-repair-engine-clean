@@ -24,10 +24,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BACKEND_SRC = ROOT / "backend" / "src"
+EVALUATION_ROOT = ROOT / "backend" / "evaluation"
 RESULTS = ROOT / "backend" / "evaluation" / "results"
 
+sys.path.insert(0, str(EVALUATION_ROOT))
 sys.path.insert(0, str(BACKEND_SRC))
 
+from repair_benchmark_utils import execution_metadata  # noqa: E402
 from evaluators.semantic_eval import calculate_semantic_fidelity  # noqa: E402
 from ocl_engine.ocl_validator import validate_ocl  # noqa: E402
 from parsers.srs_parser import srs_to_plantuml  # noqa: E402
@@ -115,28 +118,37 @@ def main() -> None:
 
     successful_rows = [row for row in rows if row["successful"]]
     durations_ms = [float(row["duration_ms"]) for row in successful_rows]
-    summary = {
-        "run_id": run_id,
-        "generated_at": generated_at,
-        "measurement_scope": "deterministic_analyze_pipeline_no_llm",
-        "request_count": len(rows),
-        "successful_count": len(successful_rows),
-        "average_ms": round(statistics.mean(durations_ms), 3),
-        "min_ms": round(min(durations_ms), 3),
-        "max_ms": round(max(durations_ms), 3),
-        "p50_ms": round(percentile(durations_ms, 50), 3),
-        "p95_ms": round(percentile(durations_ms, 95), 3),
-        "p99_ms": round(percentile(durations_ms, 99), 3),
-        "sla_limit_seconds": SLA_LIMIT_SECONDS,
-        "sla_pass_rate": round(
+    summary = execution_metadata(
+        benchmark="deterministic /api/analyze latency workload",
+        scope="deterministic_analyze_pipeline_no_llm",
+        max_iterations=None,
+        model="none",
+        temperature="none",
+        run_id=run_id,
+        generated_at=generated_at,
+        request_count=len(rows),
+        successful_count=len(successful_rows),
+        average_ms=round(statistics.mean(durations_ms), 3),
+        min_ms=round(min(durations_ms), 3),
+        max_ms=round(max(durations_ms), 3),
+        p50_ms=round(percentile(durations_ms, 50), 3),
+        p95_ms=round(percentile(durations_ms, 95), 3),
+        p99_ms=round(percentile(durations_ms, 99), 3),
+        sla_limit_seconds=SLA_LIMIT_SECONDS,
+        sla_pass_rate=round(
             sum(1 for row in successful_rows if row["sla_passed"]) / len(rows), 4
         ),
-        "llm_calls": 0,
-        "notes": [
+        llm_calls=0,
+        notes=[
             "This experiment measures the deterministic workload used by /api/analyze.",
             "It does not measure /api/autonomous-repair or any ChatOpenAI call.",
         ],
-    }
+    )
+    summary.update({
+        "run_id": run_id,
+        "generated_at": generated_at,
+        "measurement_scope": "deterministic_analyze_pipeline_no_llm",
+    })
 
     csv_path = RESULTS / "deterministic_analysis_latency_experiment.csv"
     json_path = RESULTS / "deterministic_analysis_latency_experiment.json"

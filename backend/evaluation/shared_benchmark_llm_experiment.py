@@ -23,7 +23,7 @@ EVALUATION_ROOT = Path(__file__).resolve().parent
 if str(EVALUATION_ROOT) not in sys.path:
     sys.path.insert(0, str(EVALUATION_ROOT))
 
-from repair_benchmark_utils import wilson_interval
+from repair_benchmark_utils import execution_metadata, wilson_interval
 from shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
 
 
@@ -110,14 +110,14 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
     total = len(rows)
     successes = sum(1 for row in rows if row["basarili"])
     partial = {
-        "metadata": {
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
-            "max_iterations": max_iterations,
-            "completed_cases": total,
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-        },
+        "metadata": execution_metadata(
+            benchmark="shared S01-S50 invalid PlantUML benchmark",
+            scope="partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
+            max_iterations=max_iterations,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+            completed_cases=total,
+        ),
         "summary": {
             "completed_cases": total,
             "successful_repairs_so_far": successes,
@@ -180,19 +180,18 @@ def build_report(max_iterations: int) -> dict:
     )
     interval = wilson_interval(successes, total)
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "repository_path": str(ROOT),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "real LLM-based /api/autonomous-repair endpoint",
-            "max_iterations": max_iterations,
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            "total_wall_time_saniye": round(time.perf_counter() - started, 3),
-            "protocol_note": "Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
-        },
+        "metadata": execution_metadata(
+            benchmark="shared S01-S50 invalid PlantUML benchmark",
+            scope="real LLM-based /api/autonomous-repair endpoint",
+            max_iterations=max_iterations,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+            openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            run_id=str(uuid.uuid4()),
+            repository_path=str(ROOT),
+            total_wall_time_saniye=round(time.perf_counter() - started, 3),
+            protocol_note="Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
+        ),
         "summary": {
             "total_cases": total,
             "successful_repairs": successes,

@@ -5,6 +5,7 @@ from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from rag.ocl_retriever import OCLRetrieverEngine
+from ai.plantuml_normalizer import normalize_plantuml_text
 
 # Loglama entegrasyonu
 logging.basicConfig(filename='agent_workflow.log', level=logging.INFO, 
@@ -101,7 +102,7 @@ class UMLMultiAgentSystem:
             self.healer_prompt.format(current_uml=state["current_uml"], errors=json.dumps(state["errors"]))
         )
         
-        state["current_uml"] = response.content.strip()
+        state["current_uml"] = normalize_plantuml_text(response.content)
         state["errors"] = [] 
         # State'e deneme sayısı yazma
         state["iteration_count"] += 1 

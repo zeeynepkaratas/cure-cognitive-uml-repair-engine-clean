@@ -47,6 +47,9 @@ def test_wilson_interval_for_shared_llm_benchmark():
 
 def test_shared_deterministic_repair_benchmark_reproduces_31_of_50_success_rate():
     report = build_report()
+    metadata = report["metadata"]
+    for field in ["commit_sha", "generated_at_utc", "python", "platform", "model", "temperature", "max_iterations"]:
+        assert field in metadata
     assert report["summary"]["total_cases"] == 50
     assert report["summary"]["initially_invalid_cases"] == 50
     assert report["summary"]["successful_repairs"] == 31
@@ -54,12 +57,11 @@ def test_shared_deterministic_repair_benchmark_reproduces_31_of_50_success_rate(
     assert report["summary"]["success_rate_percent"] == 62.0
 
 
-def test_saved_shared_llm_benchmark_reports_47_of_50_success_rate():
-    report = json.loads((RESULTS / "shared_benchmark_llm_experiment.json").read_text(encoding="utf-8"))
-    assert report["summary"]["total_cases"] == 50
-    assert report["summary"]["successful_repairs"] == 47
-    assert report["summary"]["failed_repairs"] == 3
-    assert report["summary"]["success_rate_percent"] == 94.0
+def test_legacy_llm_result_is_preserved_but_not_reported_as_current():
+    legacy_path = RESULTS / "legacy_pre_validation_fix" / "shared_benchmark_llm_experiment.json"
+    current_path = RESULTS / "shared_benchmark_llm_experiment.json"
+    assert legacy_path.exists()
+    assert not current_path.exists()
 
 
 if __name__ == "__main__":
@@ -68,7 +70,7 @@ if __name__ == "__main__":
         test_semantic_validation_sample_matches_expected_flags,
         test_wilson_interval_for_shared_llm_benchmark,
         test_shared_deterministic_repair_benchmark_reproduces_31_of_50_success_rate,
-        test_saved_shared_llm_benchmark_reports_47_of_50_success_rate,
+        test_legacy_llm_result_is_preserved_but_not_reported_as_current,
     ]
     passed = 0
     for test in tests:

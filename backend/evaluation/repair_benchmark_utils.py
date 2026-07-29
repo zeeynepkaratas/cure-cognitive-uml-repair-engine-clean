@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import math
+import os
+import platform
+import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -17,6 +21,43 @@ from ocl_engine.ocl_validator import validate_ocl  # noqa: E402
 
 
 MAX_ITERATIONS = 3
+
+
+def current_commit_sha() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=BACKEND_ROOT.parent,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+def execution_metadata(
+    *,
+    benchmark: str,
+    scope: str,
+    max_iterations: int | None,
+    model: str | None = None,
+    temperature: float | int | None = None,
+    **extra,
+) -> dict:
+    metadata = {
+        "commit_sha": current_commit_sha(),
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "python": sys.version,
+        "platform": platform.platform(),
+        "benchmark": benchmark,
+        "scope": scope,
+        "model": model,
+        "temperature": temperature,
+        "max_iterations": max_iterations,
+        "openai_api_key_present": bool(os.getenv("OPENAI_API_KEY")),
+    }
+    metadata.update(extra)
+    return metadata
 
 
 def compile_check(plantuml_code: str) -> dict:

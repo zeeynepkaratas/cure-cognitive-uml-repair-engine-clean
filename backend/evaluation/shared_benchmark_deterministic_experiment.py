@@ -24,6 +24,7 @@ from repair_benchmark_utils import (
     MAX_ITERATIONS,
     compile_check,
     deterministic_backend_repair,
+    execution_metadata,
     wilson_interval,
 )
 from shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
@@ -93,17 +94,16 @@ def build_report() -> dict:
     total = len(cases)
     interval = wilson_interval(successes, total)
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "repository_path": str(REPO_ROOT),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "deterministic backend repair; no LLM or external API calls",
-            "max_iterations": MAX_ITERATIONS,
-            "total_cases": total,
-        },
+        "metadata": execution_metadata(
+            benchmark="shared S01-S50 invalid PlantUML benchmark",
+            scope="deterministic backend repair; no LLM or external API calls",
+            max_iterations=MAX_ITERATIONS,
+            model="none",
+            temperature="none",
+            run_id=str(uuid.uuid4()),
+            repository_path=str(REPO_ROOT),
+            total_cases=total,
+        ),
         "summary": {
             "total_cases": total,
             "initially_invalid_cases": sum(1 for case in cases if not case["initial_success"]),

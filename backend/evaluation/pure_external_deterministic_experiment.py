@@ -76,6 +76,7 @@ def run_case(case: dict) -> dict:
         "final_plantuml": current,
         "final_errors": final_compile["errors"],
         "final_warnings": final_compile["warnings"],
+        "final_compile": final_compile,
         "reference_metrics": reference_metrics,
         "iterations": iterations,
     }

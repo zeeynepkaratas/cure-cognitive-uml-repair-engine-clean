@@ -13,8 +13,8 @@ It covers only the backend-owned OCL-like structural validator and deterministic
 
 ## Execution Metadata
 
-- Commit SHA: `739890bb0221fe92873e5504052f80077d72ca56`
-- Generated at UTC: `2026-07-29T09:39:56.171586+00:00`
+- Commit SHA: `d18c96d2ce50bc01c1d044ca18714c68c4b8954e`
+- Generated at UTC: `2026-07-29T10:03:34.860286+00:00`
 - Python: `3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]`
 - Platform: `Windows-11-10.0.26200-SP0`
 - Model: `none`

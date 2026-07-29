@@ -5,9 +5,9 @@ It should not be interpreted as LLM repair latency.
 
 ## Summary
 
-- Run id: `af5e2522-bfa9-483e-9203-d1cf95140ca1`
-- Generated at: `2026-07-29T09:39:56.171586+00:00`
-- Commit SHA: `739890bb0221fe92873e5504052f80077d72ca56`
+- Run id: `297a44b9-dc0b-4a20-adb2-17c770083b1c`
+- Generated at: `2026-07-29T10:03:49.428760+00:00`
+- Commit SHA: `d18c96d2ce50bc01c1d044ca18714c68c4b8954e`
 - Python: `3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]`
 - Platform: `Windows-11-10.0.26200-SP0`
 - Model: `none`
@@ -16,12 +16,12 @@ It should not be interpreted as LLM repair latency.
 - Measurement scope: `deterministic_analyze_pipeline_no_llm`
 - Request count: 50
 - Successful count: 50
-- Average latency: 4.027 ms
-- Min latency: 2.521 ms
-- Max latency: 29.226 ms
-- P50 latency: 3.533 ms
-- P95 latency: 4.165 ms
-- P99 latency: 29.226 ms
+- Average latency: 1.181 ms
+- Min latency: 0.552 ms
+- Max latency: 16.197 ms
+- P50 latency: 0.764 ms
+- P95 latency: 1.569 ms
+- P99 latency: 16.197 ms
 - SLA pass rate: 100.0%
 - LLM calls: 0
 

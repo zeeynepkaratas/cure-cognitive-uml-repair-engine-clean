@@ -23,7 +23,7 @@ EVALUATION_ROOT = Path(__file__).resolve().parent
 if str(EVALUATION_ROOT) not in sys.path:
     sys.path.insert(0, str(EVALUATION_ROOT))
 
-from repair_benchmark_utils import wilson_interval
+from repair_benchmark_utils import execution_metadata, wilson_interval
 from shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
 
 
@@ -53,9 +53,12 @@ def require_openai_key() -> None:
 
 
 def repair_attempt_count(response: dict) -> int:
+    explicit_count = response.get("agent_repair_attempt_count")
+    if explicit_count is not None:
+        return int(explicit_count)
     agent_count = response.get("agent_iteration_count")
     if agent_count is not None:
-        return max(int(agent_count) - 1, 0)
+        return int(agent_count)
     return max(len(response.get("iterasyonlar", [])) - 1, 0)
 
 
@@ -84,23 +87,29 @@ def run_case(case: dict, max_iterations: int) -> dict:
     )
     elapsed = round(time.perf_counter() - started, 3)
     final_compile = response.get("final_compile") or {}
-    final_compile_success = bool(final_compile.get("basarili"))
+    project_defined_success = bool(final_compile.get("project_defined_success", final_compile.get("basarili")))
+    plantuml_validated_success = final_compile.get("plantuml_validated_success")
     return {
         "case_id": case["case_id"],
         "category": case["category"],
         "description": case["description"],
         "srs_metni": case["srs_metni"],
         "initial_plantuml": case["plantuml_kodu"],
-        "basarili": final_compile_success,
+        "basarili": plantuml_validated_success,
+        "project_defined_basarili": project_defined_success,
+        "plantuml_validated_basarili": plantuml_validated_success,
         "api_basarili": response["basarili"],
         "sure_saniye": response.get("sure_saniye", elapsed),
         "wall_time_saniye": elapsed,
         "iterasyon_sayisi": repair_attempt_count(response),
         "agent_iteration_count": response.get("agent_iteration_count"),
+        "agent_repair_attempt_count": response.get("agent_repair_attempt_count"),
         "agent_is_valid": response.get("agent_is_valid"),
         "agent_llm_call_count": response.get("agent_llm_call_count"),
         "final_plantuml": response.get("final_plantuml"),
-        "final_compile_success": final_compile_success,
+        "final_compile_success": plantuml_validated_success,
+        "project_defined_final_compile_success": project_defined_success,
+        "plantuml_validated_final_compile_success": plantuml_validated_success,
         "final_compile": final_compile,
         "raw_response": response,
     }
@@ -108,16 +117,17 @@ def run_case(case: dict, max_iterations: int) -> dict:
 
 def write_partial(rows: list[dict], max_iterations: int) -> None:
     total = len(rows)
-    successes = sum(1 for row in rows if row["basarili"])
+    successes = sum(1 for row in rows if row["project_defined_basarili"])
+    partial_metadata = execution_metadata(
+        benchmark="shared S01-S50 invalid PlantUML benchmark",
+        scope="partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
+        max_iterations=max_iterations,
+        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+        completed_cases=total,
+    )
     partial = {
-        "metadata": {
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "partial interrupted/ongoing LLM benchmark output; do not report as final paper result",
-            "max_iterations": max_iterations,
-            "completed_cases": total,
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-        },
+        "metadata": partial_metadata,
         "summary": {
             "completed_cases": total,
             "successful_repairs_so_far": successes,
@@ -128,6 +138,13 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
     PARTIAL_JSON.write_text(json.dumps(partial, ensure_ascii=False, indent=2), encoding="utf-8")
 
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
@@ -138,6 +155,7 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
         "wall_time_saniye",
         "iterasyon_sayisi",
         "agent_iteration_count",
+        "agent_repair_attempt_count",
         "agent_is_valid",
         "agent_llm_call_count",
         "final_errors",
@@ -149,6 +167,17 @@ def write_partial(rows: list[dict], max_iterations: int) -> None:
         for row in rows:
             compile_result = row.get("final_compile") or {}
             row_for_csv = {field: row.get(field) for field in fieldnames}
+            row_for_csv.update(
+                {
+                    "commit_sha": partial_metadata["commit_sha"],
+                    "generated_at_utc": partial_metadata["generated_at_utc"],
+                    "python": partial_metadata["python"],
+                    "platform": partial_metadata["platform"],
+                    "model": partial_metadata["model"],
+                    "temperature": partial_metadata["temperature"],
+                    "max_iterations": partial_metadata["max_iterations"],
+                }
+            )
             row_for_csv["final_errors"] = format_messages(compile_result.get("normalize_hatalar", []))
             row_for_csv["final_warnings"] = "; ".join((compile_result.get("ocl") or {}).get("uyarilar", []))
             writer.writerow(row_for_csv)
@@ -163,48 +192,60 @@ def build_report(max_iterations: int) -> dict:
         write_partial(rows, max_iterations=max_iterations)
         print(
             f"{index:02d}/{len(SHARED_REPAIR_BENCHMARK_CASES)} "
-            f"{row['case_id']} basarili={row['basarili']} "
-            f"final_compile={row['final_compile_success']} "
+            f"{row['case_id']} project_defined_basarili={row['project_defined_basarili']} "
+            f"plantuml_validated_basarili={row['plantuml_validated_basarili']} "
             f"sure_saniye={row['sure_saniye']} "
             f"iterasyon_sayisi={row['iterasyon_sayisi']}"
         )
 
     total = len(rows)
-    successes = sum(1 for row in rows if row["basarili"])
+    project_successes = sum(1 for row in rows if row["project_defined_basarili"])
+    plantuml_runtime_available = any(
+        (row.get("final_compile") or {}).get("plantuml_runtime_available") for row in rows
+    )
+    plantuml_successes = (
+        sum(1 for row in rows if row["plantuml_validated_basarili"])
+        if plantuml_runtime_available
+        else None
+    )
     agent_terminal_valid = sum(1 for row in rows if row.get("agent_is_valid") is True)
     both_final_and_agent_valid = sum(
-        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is True
+        1 for row in rows if row["project_defined_basarili"] and row.get("agent_is_valid") is True
     )
     final_valid_agent_invalid = sum(
-        1 for row in rows if row["basarili"] and row.get("agent_is_valid") is not True
+        1 for row in rows if row["project_defined_basarili"] and row.get("agent_is_valid") is not True
     )
-    interval = wilson_interval(successes, total)
+    interval = wilson_interval(project_successes, total)
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "repository_path": str(ROOT),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "real LLM-based /api/autonomous-repair endpoint",
-            "max_iterations": max_iterations,
-            "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            "total_wall_time_saniye": round(time.perf_counter() - started, 3),
-            "protocol_note": "Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
-        },
+        "metadata": execution_metadata(
+            benchmark="shared S01-S50 invalid PlantUML benchmark",
+            scope="real LLM-based /api/autonomous-repair endpoint",
+            max_iterations=max_iterations,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0")),
+            openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            run_id=str(uuid.uuid4()),
+            repository_path=str(ROOT),
+            total_wall_time_saniye=round(time.perf_counter() - started, 3),
+            protocol_note="Run once and report the obtained result; do not repeat runs to select a preferred outcome.",
+        ),
         "summary": {
             "total_cases": total,
-            "successful_repairs": successes,
-            "failed_repairs": total - successes,
-            "success_rate": round(successes / total, 4),
-            "success_rate_percent": round(successes / total * 100, 1),
+            "success_definition": "project-defined fallback validation is separate from real PlantUML-runtime validation",
+            "plantuml_runtime_available": plantuml_runtime_available,
+            "project_defined_successful_repairs": project_successes,
+            "project_defined_failed_repairs": total - project_successes,
+            "project_defined_success_rate": round(project_successes / total, 4),
+            "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
+            "plantuml_validated_successful_repairs": plantuml_successes,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
             "agent_terminal_valid": agent_terminal_valid,
             "both_final_compile_and_agent_terminal_valid": both_final_and_agent_valid,
             "final_compile_valid_but_agent_terminal_invalid": final_valid_agent_invalid,
-            "success_definition": "final syntax/OCL validation after the autonomous repair endpoint returns",
         },
-        "wilson_95_ci": {
+        "project_defined_wilson_95_ci": {
             "successes": interval["successes"],
             "total": interval["total"],
             "rate": round(interval["rate"], 4),
@@ -219,15 +260,28 @@ def build_report(max_iterations: int) -> dict:
 
 
 def write_csv(report: dict) -> None:
+    metadata = report["metadata"]
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
         "basarili",
+        "project_defined_basarili",
+        "plantuml_validated_basarili",
+        "project_defined_final_compile_success",
+        "plantuml_validated_final_compile_success",
         "sure_saniye",
         "wall_time_saniye",
         "iterasyon_sayisi",
         "agent_iteration_count",
+        "agent_repair_attempt_count",
         "agent_is_valid",
         "agent_llm_call_count",
         "final_errors",
@@ -240,14 +294,26 @@ def write_csv(report: dict) -> None:
             compile_result = row.get("final_compile") or {}
             writer.writerow(
                 {
+                    "commit_sha": metadata["commit_sha"],
+                    "generated_at_utc": metadata["generated_at_utc"],
+                    "python": metadata["python"],
+                    "platform": metadata["platform"],
+                    "model": metadata["model"],
+                    "temperature": metadata["temperature"],
+                    "max_iterations": metadata["max_iterations"],
                     "case_id": row["case_id"],
                     "category": row["category"],
                     "description": row["description"],
                     "basarili": row["basarili"],
+                    "project_defined_basarili": row["project_defined_basarili"],
+                    "plantuml_validated_basarili": row["plantuml_validated_basarili"],
+                    "project_defined_final_compile_success": row["project_defined_final_compile_success"],
+                    "plantuml_validated_final_compile_success": row["plantuml_validated_final_compile_success"],
                     "sure_saniye": row["sure_saniye"],
                     "wall_time_saniye": row["wall_time_saniye"],
                     "iterasyon_sayisi": row["iterasyon_sayisi"],
                     "agent_iteration_count": row["agent_iteration_count"],
+                    "agent_repair_attempt_count": row["agent_repair_attempt_count"],
                     "agent_is_valid": row["agent_is_valid"],
                     "agent_llm_call_count": row["agent_llm_call_count"],
                     "final_errors": format_messages(compile_result.get("normalize_hatalar", [])),
@@ -257,7 +323,7 @@ def write_csv(report: dict) -> None:
 
 
 def write_markdown(report: dict) -> None:
-    interval = report["wilson_95_ci"]
+    interval = report["project_defined_wilson_95_ci"]
     lines = [
         "# Shared Benchmark LLM Repair Experiment",
         "",
@@ -267,15 +333,28 @@ def write_markdown(report: dict) -> None:
         "## Summary",
         "",
         f"- Total cases: {report['summary']['total_cases']}",
-        f"- Successful repairs: {report['summary']['successful_repairs']}",
-        f"- Failed repairs: {report['summary']['failed_repairs']}",
-        f"- Success rate: {report['summary']['success_rate_percent']}%",
-        f"- Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        f"- Project-defined fallback repairs: {report['summary']['project_defined_successful_repairs']}/{report['summary']['total_cases']}",
+        f"- Project-defined fallback success rate: {report['summary']['project_defined_success_rate_percent']}%",
+        f"- Project-defined Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        f"- PlantUML runtime available: {report['summary']['plantuml_runtime_available']}",
+        f"- PlantUML-validated repairs: {report['summary']['plantuml_validated_successful_repairs']}",
         f"- Agent terminal-state valid: {report['summary']['agent_terminal_valid']}",
         f"- Final-valid and agent-terminal-valid: {report['summary']['both_final_compile_and_agent_terminal_valid']}",
         f"- Final-valid but agent-terminal-invalid: {report['summary']['final_compile_valid_but_agent_terminal_invalid']}",
         f"- Model: {report['metadata']['openai_model']}",
         f"- Max iterations: {report['metadata']['max_iterations']}",
+        "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{report['metadata']['commit_sha']}`",
+        f"- Generated at UTC: `{report['metadata']['generated_at_utc']}`",
+        f"- Python: `{report['metadata']['python']}`",
+        f"- Platform: `{report['metadata']['platform']}`",
+        f"- Model: `{report['metadata']['model']}`",
+        f"- Temperature: `{report['metadata']['temperature']}`",
+        f"- Max iterations: `{report['metadata']['max_iterations']}`",
+        "",
+        "Project-defined fallback success must not be reported as a real PlantUML-runtime-validated success rate.",
         "",
         "Success is defined by the endpoint's final syntax/OCL validation. The",
         "`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic",
@@ -287,12 +366,13 @@ def write_markdown(report: dict) -> None:
         "",
         "## Case Results",
         "",
-        "| Case | Category | Success | Time (s) | Repair attempts | LLM calls |",
-        "|---|---|---:|---:|---:|---:|",
+        "| Case | Category | Project-defined success | PlantUML-validated success | Time (s) | Repair attempts | LLM calls |",
+        "|---|---|---:|---:|---:|---:|---:|",
     ]
     for row in report["cases"]:
         lines.append(
-            f"| {row['case_id']} | {row['category']} | {row['basarili']} | "
+            f"| {row['case_id']} | {row['category']} | "
+            f"{row['project_defined_basarili']} | {row['plantuml_validated_basarili']} | "
             f"{row['sure_saniye']} | {row['iterasyon_sayisi']} | "
             f"{row['agent_llm_call_count']} |"
         )
@@ -319,9 +399,9 @@ def main() -> int:
     print(f"CSV: {OUTPUT_CSV}")
     print(f"MD: {OUTPUT_MD}")
     print(
-        f"SUMMARY: {report['summary']['successful_repairs']}/"
+        f"SUMMARY_PROJECT_DEFINED: {report['summary']['project_defined_successful_repairs']}/"
         f"{report['summary']['total_cases']} "
-        f"({report['summary']['success_rate_percent']}%)"
+        f"({report['summary']['project_defined_success_rate_percent']}%)"
     )
     return 0
 

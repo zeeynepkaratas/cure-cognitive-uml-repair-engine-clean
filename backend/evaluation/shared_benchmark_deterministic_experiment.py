@@ -24,6 +24,7 @@ from repair_benchmark_utils import (
     MAX_ITERATIONS,
     compile_check,
     deterministic_backend_repair,
+    execution_metadata,
     wilson_interval,
 )
 from shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
@@ -70,6 +71,9 @@ def run_case(case: dict) -> dict:
             break
 
     final_compile = compile_check(current)
+    initial_project_success = initial_compile["project_defined_success"]
+    final_project_success = final_compile["project_defined_success"]
+    final_plantuml_success = final_compile["plantuml_validated_success"]
     return {
         "case_id": case["case_id"],
         "category": case["category"],
@@ -77,8 +81,11 @@ def run_case(case: dict) -> dict:
         "srs_metni": case["srs_metni"],
         "initial_plantuml": case["plantuml_kodu"],
         "final_plantuml": current,
-        "initial_success": initial_compile["successful"],
-        "final_success": final_compile["successful"],
+        "initial_success": initial_project_success,
+        "final_success": final_plantuml_success,
+        "project_defined_initial_success": initial_project_success,
+        "project_defined_final_success": final_project_success,
+        "plantuml_validated_final_success": final_plantuml_success,
         "iteration_count": len(iterations),
         "elapsed_seconds": round(time.perf_counter() - started, 6),
         "final_compile": final_compile,
@@ -89,50 +96,86 @@ def run_case(case: dict) -> dict:
 
 def build_report() -> dict:
     cases = [run_case(case) for case in SHARED_REPAIR_BENCHMARK_CASES]
-    successes = sum(1 for case in cases if case["final_success"])
     total = len(cases)
-    interval = wilson_interval(successes, total)
+    project_successes = sum(1 for case in cases if case["project_defined_final_success"])
+    plantuml_runtime_available = any(
+        case["final_compile"]["plantuml_runtime_available"] for case in cases
+    )
+    plantuml_successes = (
+        sum(1 for case in cases if case["plantuml_validated_final_success"])
+        if plantuml_runtime_available
+        else None
+    )
+    project_interval = wilson_interval(project_successes, total)
+    plantuml_interval = wilson_interval(plantuml_successes, total) if plantuml_successes is not None else None
     return {
-        "metadata": {
-            "run_id": str(uuid.uuid4()),
-            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "repository_path": str(REPO_ROOT),
-            "python": sys.version,
-            "platform": platform.platform(),
-            "benchmark": "shared S01-S50 invalid PlantUML benchmark",
-            "scope": "deterministic backend repair; no LLM or external API calls",
-            "max_iterations": MAX_ITERATIONS,
-            "total_cases": total,
-        },
+        "metadata": execution_metadata(
+            benchmark="shared S01-S50 invalid PlantUML benchmark",
+            scope="deterministic backend repair; no LLM calls; reports project-defined fallback success separately from real PlantUML-runtime success",
+            max_iterations=MAX_ITERATIONS,
+            model="none",
+            temperature="none",
+            run_id=str(uuid.uuid4()),
+            repository_path=str(REPO_ROOT),
+            total_cases=total,
+        ),
         "summary": {
             "total_cases": total,
             "initially_invalid_cases": sum(1 for case in cases if not case["initial_success"]),
-            "successful_repairs": successes,
-            "failed_repairs": total - successes,
-            "success_rate": round(successes / total, 4),
-            "success_rate_percent": round(successes / total * 100, 1),
+            "success_definition": "project-defined fallback validation is separate from real PlantUML-runtime validation",
+            "plantuml_runtime_available": plantuml_runtime_available,
+            "project_defined_successful_repairs": project_successes,
+            "project_defined_failed_repairs": total - project_successes,
+            "project_defined_success_rate": round(project_successes / total, 4),
+            "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
+            "plantuml_validated_successful_repairs": plantuml_successes,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
         },
-        "wilson_95_ci": {
-            "successes": interval["successes"],
-            "total": interval["total"],
-            "rate": round(interval["rate"], 4),
-            "lower": round(interval["lower"], 4),
-            "upper": round(interval["upper"], 4),
-            "lower_percent": round(interval["lower"] * 100, 1),
-            "upper_percent": round(interval["upper"] * 100, 1),
-            "z": interval["z"],
+        "project_defined_wilson_95_ci": {
+            "successes": project_interval["successes"],
+            "total": project_interval["total"],
+            "rate": round(project_interval["rate"], 4),
+            "lower": round(project_interval["lower"], 4),
+            "upper": round(project_interval["upper"], 4),
+            "lower_percent": round(project_interval["lower"] * 100, 1),
+            "upper_percent": round(project_interval["upper"] * 100, 1),
+            "z": project_interval["z"],
+        },
+        "plantuml_validated_wilson_95_ci": None
+        if plantuml_interval is None
+        else {
+            "successes": plantuml_interval["successes"],
+            "total": plantuml_interval["total"],
+            "rate": round(plantuml_interval["rate"], 4),
+            "lower": round(plantuml_interval["lower"], 4),
+            "upper": round(plantuml_interval["upper"], 4),
+            "lower_percent": round(plantuml_interval["lower"] * 100, 1),
+            "upper_percent": round(plantuml_interval["upper"] * 100, 1),
+            "z": plantuml_interval["z"],
         },
         "cases": cases,
     }
 
 
 def write_csv(report: dict) -> None:
+    metadata = report["metadata"]
     fieldnames = [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
         "case_id",
         "category",
         "description",
-        "final_success",
-        "initial_success",
+        "project_defined_final_success",
+        "plantuml_validated_final_success",
+        "project_defined_initial_success",
+        "plantuml_runtime_available",
         "iteration_count",
         "elapsed_seconds",
         "final_errors",
@@ -145,11 +188,20 @@ def write_csv(report: dict) -> None:
         for case in report["cases"]:
             writer.writerow(
                 {
+                    "commit_sha": metadata["commit_sha"],
+                    "generated_at_utc": metadata["generated_at_utc"],
+                    "python": metadata["python"],
+                    "platform": metadata["platform"],
+                    "model": metadata["model"],
+                    "temperature": metadata["temperature"],
+                    "max_iterations": metadata["max_iterations"],
                     "case_id": case["case_id"],
                     "category": case["category"],
                     "description": case["description"],
-                    "final_success": case["final_success"],
-                    "initial_success": case["initial_success"],
+                    "project_defined_final_success": case["project_defined_final_success"],
+                    "plantuml_validated_final_success": case["plantuml_validated_final_success"],
+                    "project_defined_initial_success": case["project_defined_initial_success"],
+                    "plantuml_runtime_available": case["final_compile"]["plantuml_runtime_available"],
                     "iteration_count": case["iteration_count"],
                     "elapsed_seconds": case["elapsed_seconds"],
                     "final_errors": "; ".join(case["final_compile"]["errors"]),
@@ -160,7 +212,9 @@ def write_csv(report: dict) -> None:
 
 
 def write_markdown(report: dict) -> None:
-    interval = report["wilson_95_ci"]
+    interval = report["project_defined_wilson_95_ci"]
+    metadata = report["metadata"]
+    plantuml_ci = report["plantuml_validated_wilson_95_ci"]
     lines = [
         "# Shared Benchmark Deterministic Repair Experiment",
         "",
@@ -172,21 +226,37 @@ def write_markdown(report: dict) -> None:
         "",
         f"- Total cases: {report['summary']['total_cases']}",
         f"- Initially invalid cases: {report['summary']['initially_invalid_cases']}",
-        f"- Successful repairs: {report['summary']['successful_repairs']}",
-        f"- Failed repairs: {report['summary']['failed_repairs']}",
-        f"- Success rate: {report['summary']['success_rate_percent']}%",
-        f"- Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        f"- Project-defined fallback repairs: {report['summary']['project_defined_successful_repairs']}/{report['summary']['total_cases']}",
+        f"- Project-defined fallback success rate: {report['summary']['project_defined_success_rate_percent']}%",
+        f"- Project-defined Wilson 95% CI: {interval['lower_percent']}% - {interval['upper_percent']}%",
+        f"- PlantUML runtime available: {report['summary']['plantuml_runtime_available']}",
+        f"- PlantUML-validated repairs: {report['summary']['plantuml_validated_successful_repairs']}",
+        f"- PlantUML-validated Wilson 95% CI: {plantuml_ci if plantuml_ci is not None else 'not run'}",
+        "",
+        "The project-defined fallback result is based on the repository's lightweight syntax/OCL-like checks.",
+        "It must not be reported as a real PlantUML-runtime-validated success rate.",
+        "",
+        "## Execution Metadata",
+        "",
+        f"- Commit SHA: `{metadata['commit_sha']}`",
+        f"- Generated at UTC: `{metadata['generated_at_utc']}`",
+        f"- Python: `{metadata['python']}`",
+        f"- Platform: `{metadata['platform']}`",
+        f"- Model: `{metadata['model']}`",
+        f"- Temperature: `{metadata['temperature']}`",
+        f"- Max iterations: `{metadata['max_iterations']}`",
         "",
         "## Case Results",
         "",
-        "| Case | Category | Initially invalid | Success | Iterations | Final errors |",
-        "|---|---|---:|---:|---:|---|",
+        "| Case | Category | Initially invalid | Project-defined success | PlantUML-validated success | Runtime available | Iterations | Final errors |",
+        "|---|---|---:|---:|---:|---:|---:|---|",
     ]
     for case in report["cases"]:
         errors = "; ".join(case["final_compile"]["errors"]) or "-"
         lines.append(
             f"| {case['case_id']} | {case['category']} | {not case['initial_success']} | "
-            f"{case['final_success']} | {case['iteration_count']} | {errors} |"
+            f"{case['project_defined_final_success']} | {case['plantuml_validated_final_success']} | "
+            f"{case['final_compile']['plantuml_runtime_available']} | {case['iteration_count']} | {errors} |"
         )
     OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -201,10 +271,12 @@ def main() -> int:
     print(f"CSV: {OUTPUT_CSV}")
     print(f"MD: {OUTPUT_MD}")
     print(
-        f"SUMMARY: {report['summary']['successful_repairs']}/"
+        f"SUMMARY_PROJECT_DEFINED: {report['summary']['project_defined_successful_repairs']}/"
         f"{report['summary']['total_cases']} "
-        f"({report['summary']['success_rate_percent']}%)"
+        f"({report['summary']['project_defined_success_rate_percent']}%)"
     )
+    if report["summary"]["plantuml_validated_successful_repairs"] is None:
+        print("SUMMARY_PLANTUML_VALIDATED: not run (PlantUML runtime unavailable)")
     return 0
 
 

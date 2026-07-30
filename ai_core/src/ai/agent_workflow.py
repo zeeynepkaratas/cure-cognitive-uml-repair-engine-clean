@@ -5,6 +5,9 @@ from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from rag.ocl_retriever import OCLRetrieverEngine
+from ai.plantuml_normalizer import normalize_plantuml_text
+from ai.critic_decision import CRITIC_DECISION_SCHEMA, parse_critic_decision
+from ai.workflow_control import route_repair_decision
 
 # Loglama entegrasyonu
 logging.basicConfig(filename='agent_workflow.log', level=logging.INFO, 
@@ -18,7 +21,7 @@ class WorkflowState(TypedDict):
     errors: List[str]
     error_categories: List[str]
     is_valid: bool
-    iteration_count: int  
+    repair_attempt_count: int
 
 class UMLMultiAgentSystem:
     def __init__(self, model_name="gpt-4o-mini", temperature=0, max_iterations: int = 3):
@@ -29,6 +32,7 @@ class UMLMultiAgentSystem:
         self.last_final_state = None
         self.llm_call_count = 0
         self.llm = ChatOpenAI(model=model_name, temperature=temperature)
+        self.critic_llm = self.llm.with_structured_output(CRITIC_DECISION_SCHEMA)
 
         #RAG modülü başlatılıyor
         self.retriever = OCLRetrieverEngine()
@@ -43,8 +47,8 @@ class UMLMultiAgentSystem:
         OCL Kuralları:
         {ocl_rules}
 
-        Hata yoksa sadece "GECERLI" yaz. Hata varsa bunları JSON formatında liste olarak dön.
-        Örnek JSON: {{"hatalar": ["Eksik sınıf: User", "OCL İhlali: age özelliği yok"], "kategori": ["Eksiklik", "OCL"]}}
+        Hata yoksa is_valid=true ve boş errors/categories döndür.
+        Hata varsa is_valid=false, errors ve categories alanlarını doldur.
 
         Gereksinim: {original_text}
         PlantUML: {current_uml}
@@ -66,7 +70,7 @@ class UMLMultiAgentSystem:
         self.workflow = self._build_graph()
 
     def critic_node(self, state: WorkflowState) -> WorkflowState:
-        logger.info(f"Critic Node çalışıyor. İterasyon: {state['iteration_count']}")
+        logger.info(f"Critic Node çalışıyor. Onarım denemesi: {state['repair_attempt_count']}")
         
         #  RAG modülü ile OCL kurallarını çekiyoruz
         relevant_rules = self.retriever.retrieve_relevant_rules(state["current_uml"])
@@ -74,7 +78,7 @@ class UMLMultiAgentSystem:
         
         # LLM'i çağırırken prompta 'ocl_rules' değişkenini de gönderiyoruz
         self.llm_call_count += 1
-        response = self.llm.invoke(
+        response = self.critic_llm.invoke(
             self.critic_prompt.format(
                 original_text=state["original_text"], 
                 current_uml=state["current_uml"],
@@ -82,14 +86,11 @@ class UMLMultiAgentSystem:
             )
         )
         
-        # YANITIN İŞLENMESİ 
-        feedback = response.content.strip()
-        if feedback == "GECERLI":
-            state["is_valid"] = True
-            state["errors"] = []
-        else:
-            state["is_valid"] = False
-            state["errors"] = [feedback] 
+        decision = parse_critic_decision(response)
+        state["is_valid"] = decision["is_valid"]
+        state["errors"] = decision["errors"]
+        state["error_categories"] = decision["categories"]
+        if not state["is_valid"]:
             logger.warning("Critic hata buldu.")
             
         return state
@@ -101,24 +102,24 @@ class UMLMultiAgentSystem:
             self.healer_prompt.format(current_uml=state["current_uml"], errors=json.dumps(state["errors"]))
         )
         
-        state["current_uml"] = response.content.strip()
+        state["current_uml"] = normalize_plantuml_text(response.content)
         state["errors"] = [] 
-        # State'e deneme sayısı yazma
-        state["iteration_count"] += 1 
-        logger.info(f"Healer yeni UML üretti. Yeni iterasyon sayacı: {state['iteration_count']}")
+        state["repair_attempt_count"] += 1
+        logger.info(f"Healer yeni UML üretti. Onarım denemesi: {state['repair_attempt_count']}")
         return state
 
     # Döngü kırma senaryoları ve 3 iterasyon limiti
     def routing_logic(self, state: WorkflowState) -> str:
-        if state["is_valid"]:
+        decision = route_repair_decision(
+            state["is_valid"],
+            state["repair_attempt_count"],
+            self.max_iterations,
+        )
+        if decision == "end" and state["is_valid"]:
             logger.info("Sistem başarılı. Süreç sonlandırılıyor.")
-            return "end"
-            
-        if state["iteration_count"] > self.max_iterations:
+        elif decision == "end":
             logger.warning(f"Maksimum {self.max_iterations} iterasyon limitine ulaşıldı! Döngü kırılıyor.")
-            return "end"
-            
-        return "continue"
+        return decision
 
     def _build_graph(self):
         workflow = StateGraph(WorkflowState)
@@ -142,7 +143,7 @@ class UMLMultiAgentSystem:
             errors=[],
             error_categories=[],
             is_valid=False,
-            iteration_count=1  # Sayaç 1'den başlar
+            repair_attempt_count=0
         )
         final_state = self.workflow.invoke(initial_state)
         self.last_final_state = final_state

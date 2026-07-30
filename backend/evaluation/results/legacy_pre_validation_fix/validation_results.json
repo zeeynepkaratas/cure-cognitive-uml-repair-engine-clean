@@ -1,0 +1,583 @@
+{
+  "metadata": {
+    "scope": "backend/src/ocl_engine and backend/src/evaluators",
+    "llm_calls": false,
+    "autonomous_repair_reproduced": false,
+    "repair_experiment_log": "backend/evaluation/results/shared_benchmark_llm_experiment.json",
+    "repair_experiment_scope": "shared S01-S50 benchmark; deterministic and LLM repair use the same cases",
+    "pure_external_pilot_scope": "preliminary 10-case PURE-derived pilot; supplementary check, not a replacement for S01-S50"
+  },
+  "summary": {
+    "ocl_total": 13,
+    "ocl_passed": 13,
+    "semantic_total": 5,
+    "semantic_passed": 5
+  },
+  "shared_repair_benchmark": {
+    "case_count": 50,
+    "max_iterations": 3,
+    "deterministic": {
+      "successes": 31,
+      "total": 50,
+      "rate": 0.62,
+      "lower": 0.4815,
+      "upper": 0.7414,
+      "lower_percent": 48.2,
+      "upper_percent": 74.1
+    },
+    "llm_autonomous": {
+      "successes": 47,
+      "total": 50,
+      "rate": 0.94,
+      "lower": 0.8378,
+      "upper": 0.9794,
+      "lower_percent": 83.8,
+      "upper_percent": 97.9
+    },
+    "llm_agent_terminal_state": {
+      "agent_terminal_valid": 8,
+      "both_final_compile_and_agent_terminal_valid": 5,
+      "final_compile_valid_but_agent_terminal_invalid": 42,
+      "note": "secondary LangGraph diagnostic; final repair success is defined by final syntax/OCL validation"
+    },
+    "deterministic_log": "backend/evaluation/results/shared_benchmark_deterministic_experiment.json",
+    "llm_log": "backend/evaluation/results/shared_benchmark_llm_experiment.json"
+  },
+  "pure_external_pilot": {
+    "case_count": 10,
+    "max_iterations": 3,
+    "deterministic": {
+      "successes": 7,
+      "total": 10,
+      "rate": 0.7,
+      "lower": 0.3968,
+      "upper": 0.8922,
+      "lower_percent": 39.7,
+      "upper_percent": 89.2,
+      "mean_class_f1": 1.0,
+      "mean_relationship_f1": 1.0
+    },
+    "llm_autonomous": {
+      "successes": 10,
+      "total": 10,
+      "rate": 1.0,
+      "lower": 0.7225,
+      "upper": 1.0,
+      "lower_percent": 72.2,
+      "upper_percent": 100.0,
+      "mean_class_f1": 0.773,
+      "mean_relationship_f1": 0.845,
+      "agent_terminal_valid": 0,
+      "both_final_compile_and_agent_terminal_valid": 0,
+      "final_compile_valid_but_agent_terminal_invalid": 10
+    },
+    "deterministic_log": "backend/evaluation/results/pure_external_deterministic_experiment.json",
+    "llm_log": "backend/evaluation/results/pure_external_llm_experiment.json",
+    "interpretation": "structural validity does not imply perfect semantic preservation"
+  },
+  "ocl_cases": [
+    {
+      "id": "ocl_01_missing_start",
+      "description": "Missing @startuml tag",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.8,
+      "percent": "%80.0",
+      "errors": [
+        "@startuml etiketi eksik"
+      ],
+      "warnings": [],
+      "details": {
+        "OCL-01": "IHLAL",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_02_missing_end",
+      "description": "Missing @enduml tag",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.8,
+      "percent": "%80.0",
+      "errors": [
+        "@enduml etiketi eksik"
+      ],
+      "warnings": [],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "IHLAL",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_03_empty_diagram",
+      "description": "No class declaration",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.8,
+      "percent": "%80.0",
+      "errors": [
+        "Hic sinif tanimlanmamis"
+      ],
+      "warnings": [],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "IHLAL",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_04_missing_both_tags",
+      "description": "Class without PlantUML boundary tags",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.6,
+      "percent": "%60.0",
+      "errors": [
+        "@startuml etiketi eksik",
+        "@enduml etiketi eksik"
+      ],
+      "warnings": [],
+      "details": {
+        "OCL-01": "IHLAL",
+        "OCL-02": "IHLAL",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_05_pascal_case",
+      "description": "Non-PascalCase class name",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 0.95,
+      "percent": "%95.0",
+      "errors": [],
+      "warnings": [
+        "Sinif isimlendirme kurali ihlali (PascalCase olmali): ['userManager']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "UYARI: ['userManager']",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_06_duplicate_class",
+      "description": "Duplicate class declaration",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.75,
+      "percent": "%75.0",
+      "errors": [
+        "Tekrar eden sinif ismi: ['UserManager']"
+      ],
+      "warnings": [
+        "Izole sinif: hicbir iliskisi yok: ['UserManager', 'UserManager']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "UYARI: ['UserManager', 'UserManager']",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "IHLAL: ['UserManager', 'UserManager']"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_07_isolated_classes",
+      "description": "Multiple classes without relation",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 0.95,
+      "percent": "%95.0",
+      "errors": [],
+      "warnings": [
+        "Izole sinif: hicbir iliskisi yok: ['UserManager', 'DiagramService']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "UYARI: ['UserManager', 'DiagramService']",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_08_cycle",
+      "description": "Cyclic dependency",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 0.95,
+      "percent": "%95.0",
+      "errors": [],
+      "warnings": [
+        "Dongusel bagimlilik tespit edildi: ['Aaaa -> Bbbb -> Aaaa']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "UYARI: ['Aaaa -> Bbbb -> Aaaa']",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_09_god_class",
+      "description": "Class with more than ten methods",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 0.95,
+      "percent": "%95.0",
+      "errors": [],
+      "warnings": [
+        "God Class: sinif cok fazla metot iceriyor (>10): HugeService (11 metot)"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "UYARI: ['HugeService (11 metot)']",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_10_complexity",
+      "description": "More than twenty classes",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 0.9,
+      "percent": "%90.0",
+      "errors": [],
+      "warnings": [
+        "Izole sinif: hicbir iliskisi yok: ['Class0', 'Class1', 'Class2', 'Class3', 'Class4', 'Class5', 'Class6', 'Class7', 'Class8', 'Class9', 'Class10', 'Class11', 'Class12', 'Class13', 'Class14', 'Class15', 'Class16', 'Class17', 'Class18', 'Class19', 'Class20']",
+        "Cok fazla sinif: diyagram karmasikligi yuksek (>20): 21 sinif"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "UYARI: ['Class0', 'Class1', 'Class2', 'Class3', 'Class4', 'Class5', 'Class6', 'Class7', 'Class8', 'Class9', 'Class10', 'Class11', 'Class12', 'Class13', 'Class14', 'Class15', 'Class16', 'Class17', 'Class18', 'Class19', 'Class20']",
+        "OCL-07": "GECTI",
+        "OCL-08": "UYARI: 21 sinif",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_11_mixed_missing_end",
+      "description": "Missing end tag plus naming and isolation warnings",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.7,
+      "percent": "%70.0",
+      "errors": [
+        "@enduml etiketi eksik"
+      ],
+      "warnings": [
+        "Sinif isimlendirme kurali ihlali (PascalCase olmali): ['badName']",
+        "Izole sinif: hicbir iliskisi yok: ['badName', 'OtherClass']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "IHLAL",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "UYARI: ['badName']",
+        "OCL-06": "UYARI: ['badName', 'OtherClass']",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_12_duplicate_cycle",
+      "description": "Duplicate class and cyclic dependency",
+      "expected_valid": false,
+      "actual_valid": false,
+      "score": 0.75,
+      "percent": "%75.0",
+      "errors": [
+        "Tekrar eden sinif ismi: ['AlphaClass']"
+      ],
+      "warnings": [
+        "Dongusel bagimlilik tespit edildi: ['AlphaClass -> BetaClass -> AlphaClass']"
+      ],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "UYARI: ['AlphaClass -> BetaClass -> AlphaClass']",
+        "OCL-08": "GECTI",
+        "OCL-09": "IHLAL: ['AlphaClass', 'AlphaClass']"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "ocl_13_valid_baseline",
+      "description": "Valid two-class relation baseline",
+      "expected_valid": true,
+      "actual_valid": true,
+      "score": 1.0,
+      "percent": "%100.0",
+      "errors": [],
+      "warnings": [],
+      "details": {
+        "OCL-01": "GECTI",
+        "OCL-02": "GECTI",
+        "OCL-03": "GECTI",
+        "OCL-04": "GECTI",
+        "OCL-05": "GECTI",
+        "OCL-06": "GECTI",
+        "OCL-07": "GECTI",
+        "OCL-08": "GECTI",
+        "OCL-09": "GECTI"
+      },
+      "passed": true,
+      "manual_review": "",
+      "review_note": ""
+    }
+  ],
+  "semantic_cases": [
+    {
+      "id": "sem_01_exact_classes_relation",
+      "description": "SRS and UML contain the same classes and relation",
+      "expected_pass": true,
+      "actual_pass": true,
+      "score": 1.0,
+      "percent": "%100.0",
+      "class_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "relation_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "hallucinations": [],
+      "missing_classes": [],
+      "criteria": {
+        "C1_sinif_dogrulugu": 1.0,
+        "C2_iliski_dogrulugu": 1.0,
+        "C3_butunluk": 1.0,
+        "C4_tutarlilik": 1.0
+      },
+      "passed": true,
+      "limitation_note": "",
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "sem_02_hallucinated_class",
+      "description": "UML contains a class absent from the SRS",
+      "expected_pass": true,
+      "actual_pass": true,
+      "score": 0.808,
+      "percent": "%80.8",
+      "class_metrics": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.667
+      },
+      "relation_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "hallucinations": [
+        "FakeBillingService"
+      ],
+      "missing_classes": [],
+      "criteria": {
+        "C1_sinif_dogrulugu": 0.667,
+        "C2_iliski_dogrulugu": 1.0,
+        "C3_butunluk": 1.0,
+        "C4_tutarlilik": 0.5
+      },
+      "passed": true,
+      "limitation_note": "Passes the current 0.75 threshold despite one hallucinated class.",
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "sem_03_missing_class",
+      "description": "SRS mentions two classes but UML contains one",
+      "expected_pass": true,
+      "actual_pass": true,
+      "score": 0.758,
+      "percent": "%75.8",
+      "class_metrics": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.667
+      },
+      "relation_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "hallucinations": [],
+      "missing_classes": [
+        "SessionManager"
+      ],
+      "criteria": {
+        "C1_sinif_dogrulugu": 0.667,
+        "C2_iliski_dogrulugu": 1.0,
+        "C3_butunluk": 0.5,
+        "C4_tutarlilik": 1.0
+      },
+      "passed": true,
+      "limitation_note": "Passes the current 0.75 threshold despite one missing class.",
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "sem_04_no_srs_entities",
+      "description": "No recognized class suffix in SRS",
+      "expected_pass": false,
+      "actual_pass": false,
+      "score": 0.5,
+      "percent": "%50.0",
+      "class_metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "relation_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "hallucinations": [
+        "GeneratedDiagram"
+      ],
+      "missing_classes": [],
+      "criteria": {
+        "C1_sinif_dogrulugu": 0.0,
+        "C2_iliski_dogrulugu": 1.0,
+        "C3_butunluk": 1.0,
+        "C4_tutarlilik": 0.0
+      },
+      "passed": true,
+      "limitation_note": "Fails because no SRS-side class entity is extracted and UML has a hallucinated class.",
+      "manual_review": "",
+      "review_note": ""
+    },
+    {
+      "id": "sem_05_complex_match",
+      "description": "Three extracted classes with two relations",
+      "expected_pass": true,
+      "actual_pass": true,
+      "score": 1.0,
+      "percent": "%100.0",
+      "class_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "relation_metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "hallucinations": [],
+      "missing_classes": [],
+      "criteria": {
+        "C1_sinif_dogrulugu": 1.0,
+        "C2_iliski_dogrulugu": 1.0,
+        "C3_butunluk": 1.0,
+        "C4_tutarlilik": 1.0
+      },
+      "passed": true,
+      "limitation_note": "",
+      "manual_review": "",
+      "review_note": ""
+    }
+  ]
+}

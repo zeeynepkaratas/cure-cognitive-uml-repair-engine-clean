@@ -8,40 +8,18 @@ It covers only the backend-owned OCL-like structural validator and deterministic
 - OCL cases: 13/13 passed.
 - Semantic cases: 5/5 passed.
 - Autonomous repair success rate is not reproduced by this validation script.
-- The main repair evidence is the shared S01-S50 benchmark in `backend/evaluation/results/`.
-- A preliminary PURE-derived pilot is reported separately as a supplementary check.
+- Repair benchmark outputs must be generated separately by their experiment scripts.
+- Legacy pre-fix result files are preserved under `backend/evaluation/results/legacy_pre_validation_fix/`.
 
-## Shared Repair Benchmark Note
+## Execution Metadata
 
-The current paper revision uses a shared benchmark of 50 invalid PlantUML scenarios.
-Both deterministic repair and the real LLM-based autonomous repair endpoint are evaluated
-on the same S01-S50 cases with `max_iterations=3`.
-
-Current repair results:
-- Deterministic repair: 31/50 successful repairs (62.0%; Wilson 95% CI: 48.2%-74.1%).
-- LLM autonomous repair: 47/50 successful repairs (94.0%; Wilson 95% CI: 83.8%-97.9%).
-- LLM agent terminal-state diagnostic: 8/50 `agent_is_valid=True`; 5/50 both final-valid and agent-terminal-valid.
-- The agent terminal-state diagnostic may be affected by fixed OCL-rule retrieval mismatch or over-strict Critic behavior.
-
-Primary output files:
-- `backend/evaluation/results/shared_benchmark_deterministic_experiment.json`
-- `backend/evaluation/results/shared_benchmark_llm_experiment.json`
-
-## PURE-derived Pilot Note
-
-The repository also includes a preliminary 10-case pilot using selected
-PURE requirement excerpts, curated reference UML models, and controlled injected
-PlantUML defects. This pilot supplements, but does not replace, the shared
-S01-S50 repair benchmark.
-
-Current pilot results:
-- Deterministic repair: 7/10 structurally valid repairs (70.0%; Wilson 95% CI: 39.7%-89.2%).
-- LLM autonomous repair: 10/10 structurally valid repairs (100.0%; Wilson 95% CI: 72.2%-100.0%).
-- LLM graph-level semantic preservation: mean class F1=0.773; mean relationship F1=0.845.
-
-Pilot output files:
-- `backend/evaluation/results/pure_external_deterministic_experiment.json`
-- `backend/evaluation/results/pure_external_llm_experiment.json`
+- Commit SHA: `77d5aa5df248d8c58408e5543804670bc1a53211`
+- Generated at UTC: `2026-07-29T10:33:17.430587+00:00`
+- Python: `3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]`
+- Platform: `Windows-11-10.0.26200-SP0`
+- Model: `none`
+- Temperature: `none`
+- Max iterations: `None`
 
 ## OCL-like Structural Validation Cases
 

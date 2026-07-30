@@ -1,6 +1,11 @@
 import re
 from typing import Optional
 
+try:
+    from utils.plantuml_parser import parse_relationships
+except ModuleNotFoundError:  # package import path: src.ocl_engine.ocl_validator
+    from src.utils.plantuml_parser import parse_relationships
+
 class OCLKural:
     """OCL kuralı veri sınıfı."""
     def __init__(self, kod, aciklama, siddet="HATA"):
@@ -27,20 +32,7 @@ def parse_siniflar(plantuml_kodu: str) -> list:
 
 def parse_iliskiler(plantuml_kodu: str) -> list:
     """PlantUML'den ilişkileri çıkarır."""
-    patterns = [
-        r'(\w+)\s*-->\s*(\w+)',
-        r'(\w+)\s*\*--\s*(\w+)',
-        r'(\w+)\s*o--\s*(\w+)',
-        r'(\w+)\s*--\s*(\w+)',
-        r'(\w+)\s*\.\.\>\s*(\w+)',
-        r'(\w+)\s*\|>--\s*(\w+)',
-    ]
-    iliskiler = []
-    for pat in patterns:
-        for src, tgt in re.findall(pat, plantuml_kodu):
-            if src != tgt:
-                iliskiler.append((src, tgt))
-    return iliskiler
+    return list(parse_relationships(plantuml_kodu))
 
 def detect_cycle(siniflar: list, iliskiler: list) -> list:
     """DFS ile döngüsel bağımlılık tespit eder."""

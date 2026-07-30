@@ -370,97 +370,109 @@ npm run build
 
 ## Repair Benchmark Results
 
-The current paper revision reports repair performance on a shared benchmark of
-50 invalid PlantUML scenarios (`S01`-`S50`). Deterministic repair and the real
-LLM-based autonomous repair endpoint are evaluated on the same cases, with
-`max_iterations=3`.
+The final paper results distinguish project-defined lightweight validation from
+real PlantUML-runtime validation. These criteria answer different questions and
+must not be interpreted as interchangeable measures.
 
-| Repair mode | Cases | Successful repairs | Success rate | Wilson 95% CI |
+### Shared S01-S50 Benchmark
+
+The shared benchmark contains 50 invalid PlantUML scenarios. The deterministic
+repair layer and the real LLM-based `/api/autonomous-repair` endpoint were
+evaluated on the same S01-S50 inputs. The LLM run used `gpt-4o-mini`,
+temperature `0`, and `max_iterations=3`.
+
+| Repair mode | Project-defined success | Project-defined Wilson 95% CI | PlantUML-runtime success | PlantUML Wilson 95% CI |
 |---|---:|---:|---:|---:|
-| Deterministic backend repair | 50 | 31 | 62.0% | 48.2%-74.1% |
-| LLM autonomous repair (`gpt-4o-mini`) | 50 | 47 | 94.0% | 83.8%-97.9% |
+| Deterministic backend repair | 31/50 (62.0%) | 48.2%-74.1% | 41/50 (82.0%) | 69.2%-90.2% |
+| LLM autonomous repair (`gpt-4o-mini`) | 49/50 (98.0%) | 89.5%-99.6% | 40/50 (80.0%) | 67.0%-88.8% |
 
-In compact notation, these correspond to 31/50 deterministic repairs and 47/50
-LLM autonomous repairs on the same S01-S50 benchmark.
+Project-defined validation is the repository's lightweight syntax/OCL-inspired
+criterion. PlantUML-runtime validation reports whether the final diagram was
+accepted by the real PlantUML runtime. A diagram may therefore pass one
+criterion and fail the other.
 
-As a preliminary supplementary check, the repository also includes a small
-PURE-derived repair pilot with 10 selected requirement excerpts, curated
-reference UML models, and controlled injected PlantUML defects. This pilot does
-not replace the S01-S50 benchmark; it is intended to check whether structural
-repair behavior transfers to requirement-derived cases and whether graph-level
-semantic preservation remains stable.
+The internal LangGraph `agent_is_valid` field is retained only as a secondary
+Critic terminal-state diagnostic. In the shared LLM run:
 
-| Pilot repair mode | Cases | Structurally valid repairs | Success rate | Mean class F1 | Mean relationship F1 |
+- `4/50` terminal states were Critic-valid.
+- `3/50` were both project-defined-valid and Critic-valid.
+- `46/50` were project-defined-valid but Critic-invalid.
+
+These values do not constitute an independent semantic-correctness assessment.
+The disagreement may reflect strict Critic instructions, fixed retrieved
+OCL-inspired rules, or mismatch between Critic judgment and endpoint-level
+validation.
+
+### PURE-Derived P01-P10 Pilot
+
+The supplementary PURE-derived pilot contains 10 selected requirement excerpts,
+curated reference UML models, and controlled injected PlantUML defects. It is a
+preliminary pilot and does not replace the shared S01-S50 benchmark.
+
+| Repair mode | Project-defined success | Project-defined Wilson 95% CI | PlantUML-runtime success | PlantUML Wilson 95% CI | Mean class F1 | Mean relationship F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| Deterministic backend repair | 7/10 (70.0%) | 39.7%-89.2% | 10/10 (100.0%) | 72.2%-100.0% | 1.000 | 1.000 |
+| LLM autonomous repair (`gpt-4o-mini`) | 9/10 (90.0%) | 59.6%-98.2% | 9/10 (90.0%) | 59.6%-98.2% | 0.864 | 0.914 |
+
+`P04` was the only PURE LLM case that failed both project-defined and
+PlantUML-runtime validation. For the PURE LLM run, `2/10` terminal states were
+Critic-valid, `1/10` was both project-defined-valid and Critic-valid, and `8/10`
+were project-defined-valid but Critic-invalid.
+
+The class metric scores class-name retention. The relationship metric is
+source-target endpoint-pair F1; relationship type, multiplicity, role names, and
+labels are not scored. Attributes, operations, visibility, and constraint text
+are also outside the current F1 metrics. For example, P01 retained class and
+relationship F1 values of `1.000`, although the repaired output added an
+unsupported `age` attribute and constraint.
+
+### Observed LLM Timing
+
+These values are observed endpoint timings from the retained final runs and are
+not a separately controlled latency benchmark.
+
+| Run | Mean | Median | Minimum | Maximum | At or below 15 s |
 |---|---:|---:|---:|---:|---:|
-| Deterministic backend repair | 10 | 7 | 70.0% | 1.000 | 1.000 |
-| LLM autonomous repair (`gpt-4o-mini`) | 10 | 10 | 100.0% | 0.773 | 0.845 |
+| Shared LLM S01-S50 | 16.547 s | 16.811 s | 4.633 s | 24.452 s | 9/50 |
+| PURE LLM P01-P10 | 17.200 s | 16.682 s | 15.527 s | 20.286 s | 0/10 |
 
-The PURE-derived pilot should be interpreted cautiously: the LLM repaired all
-10 cases to final structural validity, but graph-level comparison against the
-curated reference UML models shows that structural validity does not guarantee
-perfect semantic preservation.
+The separate deterministic `/api/analyze` microbenchmark averaged `0.981 ms`
+over 50 sequential local runs, with a median of `0.704 ms`, P95 of `1.141 ms`,
+and P99 of `12.763 ms`. This measurement contains no HTTP transport and no LLM
+call.
 
-The LLM repair success rate is defined by final syntax/OCL validation after the
-`/api/autonomous-repair` endpoint returns. The internal LangGraph
-`agent_is_valid` field is reported only as a secondary terminal-state diagnostic:
-on the S01-S50 run, 8/50 cases ended with `agent_is_valid=True`, 5/50 were both
-final-valid and agent-terminal-valid, and 42/47 final-valid cases still had
-`agent_is_valid=False`. This distinction is expected because the endpoint
-performs an independent final compile/OCL check after the Critic-Healer loop.
-Because the Critic receives a strict prompt together with the same fixed curated
-OCL-rule retrieval context, `agent_is_valid` may also reflect retrieval-rule
-mismatch or over-strict Critic behavior. It is therefore retained as an internal
-diagnostic signal, not as an independent semantic-correctness measurement.
+### Reproducibility
 
-For the PURE-derived pilot, deterministic repair reached perfect graph-level F1
-only on the seven structurally repaired cases because it mainly restores
-boundaries without adding new semantic content; this should not be read as
-evidence that the deterministic layer is semantically stronger overall. The LLM
-pilot used the same prototype retrieval context as the main agent workflow,
-including the fixed curated OCL rules in `ai_core/src/rag/ocl_retriever.py`.
-Those fixed rules can encourage extra classes or relations such as `Order`,
-`OrderItem`, `Product`, or `User`, so the lower F1 values should be interpreted
-as a semantic-preservation limitation and possible retrieval confound rather
-than as a pure LLM capability measure.
-
-Primary benchmark files:
+Final repository snapshot:
 
 ```text
-backend/evaluation/shared_repair_benchmark_cases.py
-backend/evaluation/repair_benchmark_utils.py
-backend/evaluation/shared_benchmark_deterministic_experiment.py
-backend/evaluation/shared_benchmark_llm_experiment.py
-backend/evaluation/pure_external_repair_cases.py
-backend/evaluation/pure_external_metrics.py
-backend/evaluation/pure_external_deterministic_experiment.py
-backend/evaluation/pure_external_llm_experiment.py
+Release tag: paper-submission-v2
+Merged snapshot: 9c872dab9f2da3535521d802fdbf500c7bc8a1dd
+Experiment run HEAD: f2689cc2407c0d6f17eaee272f93cd233063cfc7
+Final experiment-results commit: e506110e3893af73378e74aa7dcfc922bbf9eaf3
+```
+
+Final result artifacts:
+
+```text
+docs/final-experiment-report.md
 backend/evaluation/results/shared_benchmark_deterministic_experiment.*
 backend/evaluation/results/shared_benchmark_llm_experiment.*
 backend/evaluation/results/pure_external_deterministic_experiment.*
 backend/evaluation/results/pure_external_llm_experiment.*
 ```
 
-Reproduce the deterministic benchmark:
+Experiment commands:
 
-```bash
-python backend/evaluation/shared_benchmark_deterministic_experiment.py
+```powershell
+python backend\evaluation\shared_benchmark_deterministic_experiment.py
+python backend\evaluation\pure_external_deterministic_experiment.py
+python backend\evaluation\shared_benchmark_llm_experiment.py --max-iterations 3
+python backend\evaluation\pure_external_llm_experiment.py --max-iterations 3
 ```
 
-Reproduce the LLM benchmark:
-
-```bash
-$env:OPENAI_API_KEY="sk-..."
-python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
-```
-
-Reproduce the PURE-derived pilot:
-
-```bash
-python backend/evaluation/pure_external_deterministic_experiment.py
-$env:OPENAI_API_KEY="sk-..."
-python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
-```
-
+The retained LLM experiments were each executed once. They should not be rerun
+merely to select a preferred outcome.
 
 ## Veri Hazırlık Araçları
 

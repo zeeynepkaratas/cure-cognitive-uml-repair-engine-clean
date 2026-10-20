@@ -74,7 +74,10 @@ Sonuç Ekranı
 Gerekirse Otonom Onarım
    |
    v
-Critic -> Healer -> Compile Test -> Final UML
+Critic -> Healer -> Final UML
+                         |
+                         v
+                 External compile check
 ```
 
 Ana backend giriş noktası:
@@ -376,7 +379,8 @@ must not be interpreted as interchangeable measures.
 
 ### Shared S01-S50 Benchmark
 
-The shared benchmark contains 50 invalid PlantUML scenarios. The deterministic
+The shared benchmark contains 50 project-invalid PlantUML scenarios;
+12 already compile before repair (see the local baseline audit below). The deterministic
 repair layer and the real LLM-based `/api/autonomous-repair` endpoint were
 evaluated on the same S01-S50 inputs. The LLM run used `gpt-4o-mini`,
 temperature `0`, and `max_iterations=3`.
@@ -569,3 +573,29 @@ Projede dokümantasyon ve checkpoint disiplini önemlidir.
 ## Proje Durumu
 
 Bu repo, CURE projesinin güncel prototip uygulamasını içerir. Backend test paketi, temel parser/doğrulama/semantik analiz ve performans akışlarının çalıştığını doğrulamak için hazırlanmıştır. Sistem akademik geliştirme, sprint teslimleri ve demo amaçlı kullanılabilecek şekilde düzenlenmiştir.
+
+
+## Submission consistency audit and licenses
+
+The corrected feature notes are [shared benchmark](docs/features/shared-repair-benchmark.md)
+and [PURE pilot](docs/features/pure-external-pilot.md). The **2026-10-20 local audit**
+adds a no-repair baseline: shared 0/50 project-valid and 12/50 compiler-valid;
+PURE 0/10 and 2/10. It uses PlantUML 1.2026.6 and the same `-tsvg -checkonly`
+validation path. JAR SHA-256:
+`89948F14C93756C7A3FB7B69078FF37E8489FD79DD430C582B931E2F65358690`.
+No LLM API was called during this audit. The retained final experimental outputs
+are unchanged. [Per-case evidence and methods](docs/submission-audit-2026-10-20/README.md)
+include paired exact McNemar tests and the distinction between 47 three-attempt
+cases and 46 budget-exhausted Critic-invalid cases. All four shared Critic-valid
+outputs (S05/S09/S23/S43) fail compilation.
+
+The immutable `paper-submission-v2` tag predates these documentation corrections.
+The snapshot hashes above identify the original experiment, not a newly
+published corrected release. A new reviewed release is needed to publish this
+documentation; the old tag must not be silently moved.
+
+Original CURE software is licensed under [MIT](LICENSE); see [NOTICE](NOTICE).
+PURE-derived text is separately attributed under the upstream record's CC BY 4.0
+declaration. See [dataset license and provenance](data_pipeline/datasets/README.md).
+Exact original document identities for the ten selected P-cases remain
+**BULUNAMADI**, because the retained CSV has no source-document column.

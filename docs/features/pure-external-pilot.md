@@ -1,74 +1,41 @@
-# PURE-Derived Repair Pilot
+# PURE-derived P01–P10 repair pilot
 
-## Scope
+Ten selected requirement excerpts have manually curated UML references and
+controlled injected structural defects. This pilot does not establish broad
+real-world generalization. Its results are retained in
+`backend/evaluation/results/pure_external_{deterministic,llm}_experiment.json`.
 
-This preliminary pilot supplements, but does not replace, the shared S01-S50
-repair benchmark. It uses 10 selected PURE requirement excerpts, curated
-reference UML models, and controlled injected PlantUML defects.
+| Mode | Project valid | PlantUML valid | Critic valid | Mean class F1 | Mean endpoint-pair F1 |
+|---|---:|---:|---:|---:|---:|
+| No repair (local audit, 2026-10-20) | 0/10 | 2/10 | N/A | N/A | N/A |
+| Deterministic | 7/10 | 10/10 | N/A | 1.000 | 1.000 |
+| LLM (`gpt-4o-mini`, temperature 0, budget 3) | 9/10 | 9/10 | 2/10 | 0.864 | 0.914 |
 
-The pilot is intended to check two separate properties:
+P04 fails both LLM validation criteria. Deterministic F1=1 applies to **all ten**
+cases, including the three project-invalid outputs: set metrics discard repeated
+class declarations. A perfect name/pair score therefore does not prove valid UML.
+P03 and P08 already compile before any repair.
 
-- whether each repair output reaches final structural validity;
-- how closely the final UML graph matches the curated reference UML model.
+| LLM metric | n | Mean | Sample SD | Min | Max |
+|---|---:|---:|---:|---:|---:|
+| Class F1, P04 included | 10 | 0.8644 | 0.0793 | 0.8000 | 1.0000 |
+| Pair F1, P04 included | 10 | 0.9137 | 0.0786 | 0.8000 | 1.0000 |
+| Class F1, P04 excluded | 9 | 0.8716 | 0.0806 | 0.8000 | 1.0000 |
+| Pair F1, P04 excluded | 9 | 0.9041 | 0.0769 | 0.8000 | 1.0000 |
 
-## Results
+These statistics use retained per-case values (rounded to three decimals),
+with SD denominator n−1. Deterministic mean/min/max are 1 and SD is 0 with
+P04 included or excluded. References contain 4–5 unique classes and 3–5 pairs.
 
-| Repair mode | Cases | Structurally valid repairs | Success rate | Wilson 95% CI | Mean class F1 | Mean relationship F1 |
-|---|---:|---:|---:|---:|---:|---:|
-| Deterministic backend repair | 10 | 7 | 70.0% | 39.7%-89.2% | 1.000 | 1.000 |
-| LLM autonomous repair (`gpt-4o-mini`) | 10 | 10 | 100.0% | 72.2%-100.0% | 0.773 | 0.845 |
+Extra classes are Order and OrderItem in P03/P05/P06/P07/P08, OrderItem in
+P09, and User in P10. None of these cases loses a reference class or pair.
+P07 class F1=2×4/(4+6)=0.800; its pair F1 remains 1.000. Added attributes and
+constraints, relationship types, multiplicities, roles and labels are outside
+these metrics. The fixed retrieved rules are a possible confound; their causal
+contribution has not been isolated experimentally.
 
-## Interpretation
-
-The deterministic repair layer repaired boundary-related defects but failed on
-duplicate-class defects. The LLM-based repair endpoint reached final structural
-validity on all 10 pilot cases. However, graph-level comparison against the
-curated reference UML models showed imperfect semantic preservation, mainly due
-to extra classes or relationships introduced during repair.
-
-The deterministic F1=1.000 values apply only to the structurally repaired
-deterministic cases. They should not be interpreted as evidence that the
-deterministic layer is semantically stronger overall; the deterministic repair
-mostly restores simple boundaries and therefore avoids adding new graph content,
-but it also leaves three pilot cases unrepaired.
-
-The LLM pilot used the same prototype retrieval context as the main
-Critic-Healer workflow, including the fixed curated OCL rules in
-`ai_core/src/rag/ocl_retriever.py`. These rules can encourage extra classes or
-relations such as `Order`, `OrderItem`, `Product`, or `User`, so lower
-graph-level F1 values should be interpreted as a semantic-preservation
-limitation and possible retrieval confound.
-
-Success is defined by the endpoint's final syntax/OCL validation. The
-`agent_is_valid` field is a secondary LangGraph terminal-state diagnostic; in
-this pilot, 0/10 cases ended with `agent_is_valid=True` even though 10/10
-reached final structural validity.
-Because the Critic uses a strict prompt and the same fixed curated OCL-rule
-retrieval context, this field may reflect retrieval-rule mismatch or over-strict
-Critic behavior rather than an independent semantic verdict.
-
-This result should be reported as a preliminary PURE-derived pilot, not as a
-broad real-world generalization claim.
-
-## Files
-
-```text
-backend/evaluation/pure_external_repair_cases.py
-backend/evaluation/pure_external_metrics.py
-backend/evaluation/pure_external_deterministic_experiment.py
-backend/evaluation/pure_external_llm_experiment.py
-backend/evaluation/results/pure_external_deterministic_experiment.csv
-backend/evaluation/results/pure_external_deterministic_experiment.json
-backend/evaluation/results/pure_external_deterministic_experiment.md
-backend/evaluation/results/pure_external_llm_experiment.csv
-backend/evaluation/results/pure_external_llm_experiment.json
-backend/evaluation/results/pure_external_llm_experiment.md
-```
-
-## Reproduction
-
-```bash
-python backend/evaluation/pure_external_deterministic_experiment.py
-$env:OPENAI_API_KEY="sk-..."
-python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
-```
+Mean endpoint time is 17.200 s (`sure_saniye`). Two Critic terminal flags are
+true; one is also project-valid. No new LLM run was made for this audit.
+For PURE licensing, attribution and unresolved original document identities,
+see `../../data_pipeline/datasets/README.md` and its provenance CSV.
+Per-case evidence is in `../submission-audit-2026-10-20/`.

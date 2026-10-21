@@ -234,6 +234,7 @@ def evaluate(case, condition, rep, args, budget):
         "critic_valid": state.get("critic_valid"),
         "agent_status": state.get("agent_status", "not_applicable"),
         "agent_error": state.get("agent_error"),
+        "run_status": "budget_stopped" if state.get("budget_stopped") else "completed",
         "terminated_by": state.get("terminated_by", "not_applicable"),
         "repair_attempt_count": state.get("repair_attempt_count", 0),
         "trace": state.get("trace", []),
@@ -372,6 +373,11 @@ def main(argv=None):
                         manifest["status"] = "budget_stopped"
                         raise
                     dump(path, row)
+                    if row["run_status"] == "budget_stopped":
+                        manifest["status"] = "budget_stopped"
+                        raise BudgetExceeded(
+                            "Case interrupted; partial trace saved and excluded from completed-case denominator"
+                        )
                     print(
                         f"{condition} {case['case_id']} rep={rep} compiler={row['compiler_valid']} status={row['agent_status']}",
                         flush=True,

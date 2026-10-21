@@ -26,3 +26,21 @@ def test_budget_is_reserved_before_dispatch_and_survives_resume(tmp_path):
     assert resumed.state["usd_reserved"] > 0
     with pytest.raises(BudgetExceeded):
         Budget(tmp_path / "small.json", 10, 0.0000001).reserve("healer", "text", RepairConfig())
+
+
+def test_interrupted_budget_preserves_partial_trace(tmp_path):
+    from dataclasses import replace
+    from ai_core.src.ai.repair_agent import UMLRepairAgent
+    from tests.test_repair_agent import ScriptedClient, BAD, validation
+
+    budget = Budget(tmp_path / "budget.json", 1, 1)
+    agent = UMLRepairAgent(
+        replace(RepairConfig(), mode="healer_only_compiler_feedback"),
+        ScriptedClient([BAD]),
+        validation,
+        before_call=budget.reserve,
+    )
+    state = agent.run("", BAD, True, True)
+    assert state["budget_stopped"] is True
+    assert state["terminated_by"] == "budget_exhausted"
+    assert len(state["trace"]) == state["llm_call_count"] == 1

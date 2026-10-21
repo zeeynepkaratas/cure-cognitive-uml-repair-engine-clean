@@ -263,13 +263,15 @@ class UMLRepairAgent:
                 state.update(agent_status="parse_error", agent_error=str(exc), terminated_by="error")
             except Exception as exc:
                 if getattr(exc, "budget_exceeded", False):
-                    raise
-                status = "timeout" if "timeout" in type(exc).__name__.lower() else "api_error"
-                state.update(
-                    agent_status=status,
-                    agent_error=type(exc).__name__ + ": " + str(exc),
-                    terminated_by="error",
-                )
+                    state.update(budget_stopped=True, agent_error=str(exc), terminated_by="budget_exhausted")
+                    status = "ok"
+                else:
+                    status = "timeout" if "timeout" in type(exc).__name__.lower() else "api_error"
+                    state.update(
+                        agent_status=status,
+                        agent_error=type(exc).__name__ + ": " + str(exc),
+                        terminated_by="error",
+                    )
         else:
             state["terminated_by"] = "accepted"
         regression = initial["compiler_valid"] is True and validation["compiler_valid"] is False

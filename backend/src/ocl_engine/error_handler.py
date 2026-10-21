@@ -98,11 +98,14 @@ def exception_logla(exc: Exception, baglam: str = "") -> dict:
     return hata_kaydi
 
 
-def plantuml_syntax_kontrol(plantuml_kodu: str) -> dict:
+def plantuml_syntax_kontrol(plantuml_kodu: str, legacy: bool = False) -> dict:
     """
     PlantUML syntax on kontrolu.
     OCL validator'dan once temel etiket, sinif ve suslu parantez hatalarini yakalar.
     """
+    if legacy:
+        from .error_handler_legacy import plantuml_syntax_kontrol as legacy_validate
+        return legacy_validate(plantuml_kodu)
     hatalar = []
 
     if "@startuml" not in plantuml_kodu:
@@ -110,7 +113,9 @@ def plantuml_syntax_kontrol(plantuml_kodu: str) -> dict:
     if "@enduml" not in plantuml_kodu:
         hatalar.append("@enduml etiketi eksik")
 
-    siniflar = re.findall(r'class\s+(\w+)', plantuml_kodu)
+    from backend.src.utils.plantuml_parser import parse_classes, strip_comments
+    siniflar = parse_classes(plantuml_kodu)
+    plantuml_kodu = strip_comments(plantuml_kodu, mask_strings=True)
     if not siniflar:
         hatalar.append("Hic sinif tanimlanmamis")
 

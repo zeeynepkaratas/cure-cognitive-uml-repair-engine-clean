@@ -12,10 +12,10 @@ import re
 from typing import Dict, List, Tuple
 
 try:
-    from utils.plantuml_parser import parse_relationships
+    from utils.plantuml_parser import parse_relationships, parse_classes
     from plantuml_runtime import render_with_plantuml
 except ModuleNotFoundError:  # package import path: src.renderers.plantuml_renderer
-    from src.utils.plantuml_parser import parse_relationships
+    from src.utils.plantuml_parser import parse_relationships, parse_classes
     from src.plantuml_runtime import render_with_plantuml
 
 
@@ -26,7 +26,7 @@ TRANSPARENT_PNG_BASE64 = (
 
 def _parse_classes(plantuml_code: str) -> List[str]:
     # PlantUML icindeki class tanimlarini render yerlesimi icin cikarir.
-    return re.findall(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)", plantuml_code)
+    return sorted(parse_classes(plantuml_code))
 
 
 def _parse_relations(plantuml_code: str) -> List[Tuple[str, str]]:

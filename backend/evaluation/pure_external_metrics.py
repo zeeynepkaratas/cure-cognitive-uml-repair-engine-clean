@@ -14,9 +14,9 @@ if str(SRC_ROOT) not in sys.path:
 from evaluators.semantic_eval import extract_uml_entities, hesapla_f1  # noqa: E402
 
 
-def compare_to_reference(reference_plantuml: str, repaired_plantuml: str) -> dict:
-    reference = extract_uml_entities(reference_plantuml)
-    repaired = extract_uml_entities(repaired_plantuml)
+def compare_to_reference(reference_plantuml: str, repaired_plantuml: str, legacy: bool = True) -> dict:
+    reference = extract_uml_entities(reference_plantuml, legacy=legacy)
+    repaired = extract_uml_entities(repaired_plantuml, legacy=legacy)
     class_metrics = hesapla_f1(repaired["siniflar"], reference["siniflar"])
     relationship_metrics = hesapla_f1(repaired["iliskiler"], reference["iliskiler"])
 

@@ -2,9 +2,9 @@ import re
 from typing import Optional
 
 try:
-    from utils.plantuml_parser import parse_relationships
+    from utils.plantuml_parser import parse_relationships, parse_model
 except ModuleNotFoundError:  # package import path: src.ocl_engine.ocl_validator
-    from src.utils.plantuml_parser import parse_relationships
+    from src.utils.plantuml_parser import parse_relationships, parse_model
 
 class OCLKural:
     """OCL kuralı veri sınıfı."""
@@ -28,7 +28,7 @@ OCL_KURALLARI = {
 
 def parse_siniflar(plantuml_kodu: str) -> list:
     """PlantUML'den sınıf isimlerini çıkarır."""
-    return re.findall(r'class\s+(\w+)', plantuml_kodu)
+    return [d.name for d in parse_model(plantuml_kodu).declarations]
 
 def parse_iliskiler(plantuml_kodu: str) -> list:
     """PlantUML'den ilişkileri çıkarır."""
@@ -65,7 +65,7 @@ def detect_cycle(siniflar: list, iliskiler: list) -> list:
     
     return donguler
 
-def validate_ocl(plantuml_kodu: str) -> dict:
+def validate_ocl(plantuml_kodu: str, legacy: bool = False) -> dict:
     """
     PlantUML diyagramını OCL kurallarına göre kapsamlı doğrular.
     
@@ -83,6 +83,9 @@ def validate_ocl(plantuml_kodu: str) -> dict:
             iliski_sayisi : int
             detaylar      : dict  - Her kural için sonuç
     """
+    if legacy:
+        from .ocl_validator_legacy import validate_ocl as legacy_validate
+        return legacy_validate(plantuml_kodu)
     hatalar = []
     uyarilar = []
     detaylar = {}

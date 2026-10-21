@@ -96,10 +96,10 @@ def extract_srs_entities(srs_metni: str) -> dict:
     return {"siniflar": siniflar, "iliskiler": iliskiler}
 
 
-def extract_uml_entities(plantuml_kodu: str) -> dict:
+def extract_uml_entities(plantuml_kodu: str, legacy: bool = False) -> dict:
     """PlantUML kodundan varlıkları çıkarır."""
-    tum_siniflar = parse_classes(plantuml_kodu)
-    iliskiler = parse_relationships(plantuml_kodu)
+    tum_siniflar = parse_classes(plantuml_kodu, legacy=legacy)
+    iliskiler = parse_relationships(plantuml_kodu, legacy=legacy)
 
     return {"siniflar": tum_siniflar, "iliskiler": iliskiler}
 

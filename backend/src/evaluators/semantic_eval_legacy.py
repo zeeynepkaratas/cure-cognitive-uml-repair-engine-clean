@@ -1,9 +1,6 @@
 import re
 
-try:
-    from utils.plantuml_parser import parse_classes, parse_relationships
-except ModuleNotFoundError:  # package import path: src.evaluators.semantic_eval
-    from src.utils.plantuml_parser import parse_classes, parse_relationships
+from backend.src.utils.plantuml_parser import parse_classes, parse_relationships
 
 # Sınıf adı olmayan genel kelimeler
 STOP_WORDS = {

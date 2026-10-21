@@ -1,9 +1,6 @@
 import re
 
-try:
-    from utils.plantuml_parser import parse_relationships, parse_model
-except ModuleNotFoundError:  # package import path: src.ocl_engine.ocl_validator
-    from src.utils.plantuml_parser import parse_relationships, parse_model
+from backend.src.utils.plantuml_parser import parse_relationships, parse_model
 
 
 class OCLKural:

@@ -1,608 +1,86 @@
-# CURE - Cognitive UML Repair Engine
+# CURE Cognitive UML Repair Engine
 
-CURE, yazılım gereksinim metinlerinden UML sınıf diyagramı üreten, diyagramı OCL benzeri kurallarla doğrulayan, semantik sadakatini ölçen ve gerektiğinde çoklu ajan tabanlı onarım akışıyla düzeltmeye çalışan bir araştırma ve prototip sistemidir.
+CURE repairs PlantUML class diagrams. Revision v4 separates real compilation,
+project-defined checks, Critic decisions, and reference-model agreement.
+A project-only pass is not proof of successful compilation or semantic correctness.
 
-Proje üç ana parçadan oluşur:
+## Install and run
 
-- `backend`: FastAPI tabanlı API servisi.
-- `frontend`: React + Vite tabanlı web arayüzü.
-- `ai_core`: LangGraph/LangChain tabanlı Critic-Healer ajan akışı ve RAG destekli OCL kural getirme modülü.
+Use Python 3.12 and Node.js 22 or newer. The lock file records the measured
+environment; loose requirement files are kept for development.
 
-## İçindekiler
-
-- [Özellikler](#özellikler)
-- [Mimari](#mimari)
-- [Klasör Yapısı](#klasör-yapısı)
-- [Kurulum](#kurulum)
-- [Çalıştırma](#çalıştırma)
-- [API Uçları](#api-uçları)
-- [Frontend Kullanımı](#frontend-kullanımı)
-- [Testler](#testler)
-- [Repair Benchmark Results](#repair-benchmark-results)
-- [Veri Hazırlık Araçları](#veri-hazırlık-araçları)
-- [Ortam Değişkenleri](#ortam-değişkenleri)
-- [Geliştirme Kuralları](#geliştirme-kuralları)
-
-## Özellikler
-
-- SRS metninden PlantUML sınıf diyagramı üretimi.
-- Sınıf ve ilişki çıkarımı için kural tabanlı parser.
-- PlantUML syntax ön kontrolü.
-- OCL benzeri doğrulama kuralları:
-  - `@startuml` ve `@enduml` kontrolü.
-  - En az bir sınıf zorunluluğu.
-  - PascalCase sınıf adı kontrolü.
-  - God Class uyarısı.
-  - İzole sınıf tespiti.
-  - Döngüsel bağımlılık tespiti.
-  - Tekrarlanan sınıf adı tespiti.
-  - Diyagram karmaşıklığı uyarısı.
-- IEEE/ISO 29148'den esinlenen, proje içi ağırlıklandırmalı semantik sadakat skoru.
-- SVG tabanlı offline UML önizleme üretimi.
-- PNG data URI çıktısı ile frontend sözleşmesi uyumluluğu.
-- Çoklu ajan tabanlı otonom onarım akışı:
-  - Critic ajanı hataları bulur.
-  - Healer ajanı PlantUML kodunu düzeltir.
-  - En fazla 3 iterasyonla döngü sınırlandırılır.
-- In-memory hata log sistemi.
-- P50/P95/P99 ve SLA odaklı performans raporu.
-- React arayüzünde analiz, sonuç görüntüleme ve onarım sayfaları.
-
-## Mimari
-
-Temel veri akışı şöyledir:
-
-```text
-SRS Metni
-   |
-   v
-SRS Parser
-   |
-   v
-PlantUML Üretimi
-   |
-   +--> SVG Render
-   |
-   +--> OCL Doğrulama
-   |
-   +--> Semantik Sadakat Analizi
-   |
-   v
-Sonuç Ekranı
-   |
-   v
-Gerekirse Otonom Onarım
-   |
-   v
-Critic -> Healer -> Final UML
-                         |
-                         v
-                 External compile check
-```
-
-Ana backend giriş noktası:
-
-```text
-backend/src/api/endpoints.py
-```
-
-Frontend API istemcisi:
-
-```text
-frontend/src/services/api.js
-```
-
-AI ajan akışı:
-
-```text
-ai_core/src/ai/agent_workflow.py
-```
-
-## Klasör Yapısı
-
-```text
-.
-├── ai_core/
-│   ├── README.md
-│   ├── requirements.txt
-│   └── src/
-│       ├── ai/
-│       │   └── agent_workflow.py
-│       ├── llm/
-│       │   ├── semantic_evaluator.py
-│       │   └── uml_generator.py
-│       └── rag/
-│           └── ocl_retriever.py
-├── backend/
-│   ├── requirements.txt
-│   ├── src/
-│   │   ├── api/
-│   │   │   ├── endpoints.py
-│   │   │   ├── error_log_endpoint.py
-│   │   │   └── performance.py
-│   │   ├── evaluators/
-│   │   │   └── semantic_eval.py
-│   │   ├── ocl_engine/
-│   │   │   ├── error_handler.py
-│   │   │   └── ocl_validator.py
-│   │   ├── parsers/
-│   │   │   └── srs_parser.py
-│   │   └── renderers/
-│   │       └── plantuml_renderer.py
-│   └── tests/
-│       ├── test_backend.py
-│       ├── test_full.py
-│       └── test_api_contracts.py
-├── frontend/
-│   ├── package.json
-│   ├── vite.config.js
-│   └── src/
-│       ├── App.jsx
-│       ├── components/
-│       ├── context/
-│       ├── pages/
-│       └── services/
-├── docs/
-│   ├── checkpoint-week1.md
-│   ├── checkpoint-week2.md
-│   ├── checkpoint-week3.md
-│   ├── checkpoint-week4.md
-│   ├── checkpoint-kullanim-rehberi.md
-│   └── features/
-├── data_pipeline/
-│   ├── datasets/
-│   │   └── pure_dataset.csv
-│   ├── preprocessing/
-│   │   └── xml_to_csv.py
-│   └── vector_db/
-├── docs/
-│   └── ground_truth_manual_review.md
-├── experiments/
-│   └── run_autonomous_repair.py
-└── results/
-```
-
-## Kurulum
-
-### Gereksinimler
-
-- Python 3.10 veya üzeri.
-- Node.js 20 veya üzeri.
-- npm.
-- Otonom AI onarım akışı için OpenAI API anahtarı.
-
-Backend ve AI modülleri ayrı `requirements.txt` dosyalarına sahiptir. Temel backend akışı AI paketleri olmadan da çalışabilir; ancak `/api/autonomous-repair` endpointinin gerçek ajan akışını kullanabilmesi için `ai_core` bağımlılıkları ve API anahtarı gerekir.
-
-### Depoyu Klonlama
-
-```bash
-git clone https://anonymous.4open.science/r/CURE-ANONYMIZED
-cd cure-cognitive-uml-repair-engine-clean
-```
-
-### Backend Kurulumu
-
-Windows PowerShell:
-
-```powershell
-cd backend
+```sh
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-pip install -r ..\ai_core\requirements.txt
+# Activate the environment for your shell.
+pip install -r backend/requirements.txt -r ai_core/requirements.txt -r requirements-dev.txt
+bash tools/setup_plantuml.sh
+export PLANTUML_JAR="$PWD/tools/plantuml.jar"
+uvicorn backend.src.api.endpoints:app --host 127.0.0.1 --port 8000
 ```
 
-macOS/Linux:
+In frontend/, run npm ci and npm run dev. Configure browser origins using
+CURE_CORS_ORIGINS. Keep model credentials in the local OPENAI_API_KEY environment
+variable; never commit them. Docker includes a JRE, Graphviz and the pinned JAR.
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install -r ../ai_core/requirements.txt
-```
+## Validate
 
-### Frontend Kurulumu
-
-```bash
-cd frontend
-npm install
-```
-
-## Çalıştırma
-
-### Backend
-
-Backend servisini repo kökünden çalıştırmak önerilir:
-
-```bash
-uvicorn backend.src.api.endpoints:app --reload --host 0.0.0.0 --port 8000
-```
-
-Alternatif olarak `backend` klasöründeyken:
-
-```bash
-uvicorn src.api.endpoints:app --reload --host 0.0.0.0 --port 8000
-```
-
-Servis ayaktayken:
-
-- API kökü: `http://localhost:8000`
-- Swagger UI: `http://localhost:8000/docs`
-- Sağlık kontrolü: `http://localhost:8000/health`
-- Demo diyagram: `http://localhost:8000/api/demo-diagram`
-
-### Frontend
-
-```bash
-cd frontend
-npm run dev
-```
-
-Vite varsayılan olarak uygulamayı şu adreste açar:
-
-```text
-http://localhost:5173
-```
-
-Frontend varsayılan API adresi:
-
-```text
-http://localhost:8000
-```
-
-Gerekirse `frontend/.env.local` içinde değiştirilebilir:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-## API Uçları
-
-### Genel
-
-| Yöntem | Yol | Açıklama |
-|---|---|---|
-| `GET` | `/` | Servis bilgisi ve endpoint listesi. |
-| `GET` | `/health` | Backend sağlık kontrolü. |
-| `GET` | `/api/demo-diagram` | Tarayıcıda doğrudan SVG UML demo sayfası. |
-
-### SRS ve UML İşlemleri
-
-| Yöntem | Yol | Açıklama |
-|---|---|---|
-| `POST` | `/generate-uml` | CP1 uyumluluk endpointi. `/api/parse` akışını kullanır. |
-| `POST` | `/api/parse` | SRS metninden PlantUML üretir, render ve OCL doğrulama sonucu döner. |
-| `POST` | `/api/render` | PlantUML kodunu SVG/PNG response formatına çevirir. |
-| `POST` | `/api/validate` | PlantUML kodunu OCL kurallarına göre doğrular. |
-| `POST` | `/api/evaluate` | SRS metni ile PlantUML kodunun semantik sadakatini ölçer. |
-| `POST` | `/api/analyze` | Tam pipeline: SRS -> UML -> OCL -> semantik analiz. |
-| `POST` | `/api/iterate` | Tek onarım iterasyonu için compile ve opsiyonel semantik test çalıştırır. |
-| `POST` | `/api/autonomous-repair` | Çoklu ajan destekli otonom UML onarım akışını çalıştırır. |
-
-### Hata Logları
-
-| Yöntem | Yol | Açıklama |
-|---|---|---|
-| `POST` | `/api/error-log` | Hata kaydı oluşturur. |
-| `GET` | `/api/error-log` | Hata kayıtlarını listeler. `kategori` ve `son_n` parametrelerini destekler. |
-| `DELETE` | `/api/error-log` | In-memory hata kayıtlarını temizler. |
-
-### Performans
-
-| Yöntem | Yol | Açıklama |
-|---|---|---|
-| `POST` | `/api/performance/measure` | Manuel performans ölçümü kaydeder. |
-| `GET` | `/api/performance` | P50/P95/P99, başarı oranı ve SLA raporu döner. |
-| `DELETE` | `/api/performance` | Performans ölçümlerini temizler. |
-
-### Örnek İstekler
-
-SRS analiz:
-
-```bash
-curl -X POST http://localhost:8000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d "{\"metin\":\"The UserManager handles user authentication. The DiagramService generates PlantUML diagrams. The UserManager uses the DiagramService.\",\"dil\":\"en\"}"
-```
-
-PlantUML doğrulama:
-
-```bash
-curl -X POST http://localhost:8000/api/validate \
-  -H "Content-Type: application/json" \
-  -d "{\"plantuml_kodu\":\"@startuml\nclass UserManager {}\n@enduml\"}"
-```
-
-Otonom onarım:
-
-```bash
-curl -X POST http://localhost:8000/api/autonomous-repair \
-  -H "Content-Type: application/json" \
-  -d "{\"plantuml_kodu\":\"class UserManager {}\",\"max_iterations\":3}"
-```
-
-## Frontend Kullanımı
-
-Arayüz üç ana sayfadan oluşur:
-
-- `HomePage`: SRS dosyası yükleme ve analiz başlatma.
-- `ResultsPage`: Üretilen UML, OCL sonucu, semantik skor, sınıflar ve ilişkiler.
-- `RepairPage`: Otonom onarım süreci, iterasyon zaman çizelgesi ve final UML çıktısı.
-
-Desteklenen dosya türleri:
-
-| Alan | Türler | Zorunlu mu |
-|---|---|---|
-| SRS Belgesi | `.txt`, `.pdf` | Evet |
-| Mevcut UML | `.xmi`, `.uml`, `.puml`, `.plantuml` | Hayır |
-
-## Testler
-
-Backend tarafındaki kapsamlı test paketi:
-
-```bash
-python backend/tests/test_full.py
-```
-
-Bu test paketi şunları kapsar:
-
-- JSON hata parser testleri.
-- Syntax kontrol testleri.
-- OCL doğrulama testleri.
-- İterasyon simülasyonu.
-- SRS -> UML -> OCL -> semantik E2E akışı.
-- Performans ve SLA kontrolleri.
-- Regresyon kontrolleri.
-
-API kontrat testleri:
-
-```bash
-python backend/tests/test_api_contracts.py
-```
-
-Bu dosya `fastapi` ortamda kurulu değilse kendini güvenli şekilde `SKIP` eder.
-
-Frontend kontrolleri:
-
-```bash
+```sh
+python -m pytest
+python -m ruff check .
 cd frontend
 npm run lint
 npm run build
 ```
 
-## Repair Benchmark Results
+Scripted fake responses test control flow without network; they never produce
+experimental results. Compiler-dependent tests skip when Java/JAR is absent.
 
-The final paper results distinguish project-defined lightweight validation from
-real PlantUML-runtime validation. These criteria answer different questions and
-must not be interpreted as interchangeable measures.
+## Reproduce
 
-### Shared S01-S50 Benchmark
+Read docs/evaluation-protocol-v4.md before any run. All conditions use identical
+inputs. Semantic development and test scenarios are disjoint; legacy S/P sets
+are test-only. New measurements go exclusively into results_v4/<run_id>/.
 
-The shared benchmark contains 50 project-invalid PlantUML scenarios;
-12 already compile before repair (see the local baseline audit below). The deterministic
-repair layer and the real LLM-based `/api/autonomous-repair` endpoint were
-evaluated on the same S01-S50 inputs. The LLM run used `gpt-4o-mini`,
-temperature `0`, and `max_iterations=3`.
-
-| Repair mode | Project-defined success | Project-defined Wilson 95% CI | PlantUML-runtime success | PlantUML Wilson 95% CI |
-|---|---:|---:|---:|---:|
-| Deterministic backend repair | 31/50 (62.0%) | 48.2%-74.1% | 41/50 (82.0%) | 69.2%-90.2% |
-| LLM autonomous repair (`gpt-4o-mini`) | 49/50 (98.0%) | 89.5%-99.6% | 40/50 (80.0%) | 67.0%-88.8% |
-
-Project-defined validation is the repository's lightweight syntax/OCL-inspired
-criterion. PlantUML-runtime validation reports whether the final diagram was
-accepted by the real PlantUML runtime. A diagram may therefore pass one
-criterion and fail the other.
-
-The internal LangGraph `agent_is_valid` field is retained only as a secondary
-Critic terminal-state diagnostic. In the shared LLM run:
-
-- `4/50` terminal states were Critic-valid.
-- `3/50` were both project-defined-valid and Critic-valid.
-- `46/50` were project-defined-valid but Critic-invalid.
-
-These values do not constitute an independent semantic-correctness assessment.
-The disagreement may reflect strict Critic instructions, fixed retrieved
-OCL-inspired rules, or mismatch between Critic judgment and endpoint-level
-validation.
-
-### PURE-Derived P01-P10 Pilot
-
-The supplementary PURE-derived pilot contains 10 selected requirement excerpts,
-curated reference UML models, and controlled injected PlantUML defects. It is a
-preliminary pilot and does not replace the shared S01-S50 benchmark.
-
-| Repair mode | Project-defined success | Project-defined Wilson 95% CI | PlantUML-runtime success | PlantUML Wilson 95% CI | Mean class F1 | Mean relationship F1 |
-|---|---:|---:|---:|---:|---:|---:|
-| Deterministic backend repair | 7/10 (70.0%) | 39.7%-89.2% | 10/10 (100.0%) | 72.2%-100.0% | 1.000 | 1.000 |
-| LLM autonomous repair (`gpt-4o-mini`) | 9/10 (90.0%) | 59.6%-98.2% | 9/10 (90.0%) | 59.6%-98.2% | 0.864 | 0.914 |
-
-`P04` was the only PURE LLM case that failed both project-defined and
-PlantUML-runtime validation. For the PURE LLM run, `2/10` terminal states were
-Critic-valid, `1/10` was both project-defined-valid and Critic-valid, and `8/10`
-were project-defined-valid but Critic-invalid.
-
-The class metric scores class-name retention. The relationship metric is
-source-target endpoint-pair F1; relationship type, multiplicity, role names, and
-labels are not scored. Attributes, operations, visibility, and constraint text
-are also outside the current F1 metrics. For example, P01 retained class and
-relationship F1 values of `1.000`, although the repaired output added an
-unsupported `age` attribute and constraint.
-
-### Observed LLM Timing
-
-These values are observed endpoint timings from the retained final runs and are
-not a separately controlled latency benchmark.
-
-| Run | Mean | Median | Minimum | Maximum | At or below 15 s |
-|---|---:|---:|---:|---:|---:|
-| Shared LLM S01-S50 | 16.547 s | 16.811 s | 4.633 s | 24.452 s | 9/50 |
-| PURE LLM P01-P10 | 17.200 s | 16.682 s | 15.527 s | 20.286 s | 0/10 |
-
-The separate deterministic `/api/analyze` microbenchmark averaged `0.981 ms`
-over 50 sequential local runs, with a median of `0.704 ms`, P95 of `1.141 ms`,
-and P99 of `12.763 ms`. This measurement contains no HTTP transport and no LLM
-call.
-
-### Reproducibility
-
-Final repository snapshot:
-
-```text
-Documentation release tag: paper-submission-v3
-Original experiment release tag: paper-submission-v2
-Original merged snapshot: 9c872dab9f2da3535521d802fdbf500c7bc8a1dd
-Experiment run HEAD: f2689cc2407c0d6f17eaee272f93cd233063cfc7
-Final experiment-results commit: e506110e3893af73378e74aa7dcfc922bbf9eaf3
+```sh
+python backend/evaluation/run_matrix.py --dry-run --reps 5
+python backend/evaluation/run_matrix.py --conditions C0 C1 C2
+python backend/evaluation/analyze_v4.py --run-dir backend/evaluation/results_v4/RUN_ID
+python tools/check_numbers.py --run-dir backend/evaluation/results_v4/RUN_ID
 ```
 
-Final result artifacts:
+Paid runs require explicit call/cost limits. Every run records protocol and Git
+commits, package versions, JAR hash, exact returned model metadata, prompt hashes,
+tokens, timings and iteration traces. Generated paper_inputs/numbers.json and
+tables derive from raw cases. See docs/revision-report.md for actual execution
+status: a script's presence does not establish that its experiment was run.
 
-```text
-docs/final-experiment-report.md
-backend/evaluation/results/shared_benchmark_deterministic_experiment.*
-backend/evaluation/results/shared_benchmark_llm_experiment.*
-backend/evaluation/results/pure_external_deterministic_experiment.*
-backend/evaluation/results/pure_external_llm_experiment.*
-```
+## Historical evidence and limitations
 
-Experiment commands:
+Retained shared results: deterministic project 31/50, compilation 41/50;
+LLM 49/50 and 40/50. PURE deterministic 7/10 and 10/10; LLM 9/10 and 9/10.
+The later no-repair audit compiled 12/50 shared and 2/10 PURE inputs. These are
+historical v2/v3 observations, not v4 results. Original files are hash-manifested;
+only verified identity redaction is permitted. Superseded environment notices
+and legacy results are explained in docs/evidence-status.md.
 
-```powershell
-python backend\evaluation\shared_benchmark_deterministic_experiment.py
-python backend\evaluation\pure_external_deterministic_experiment.py
-python backend\evaluation\shared_benchmark_llm_experiment.py --max-iterations 3
-python backend\evaluation\pure_external_llm_experiment.py --max-iterations 3
-```
+Compilation does not establish requirement fidelity. Reference metrics cover
+selected model elements, not full UML/OCL semantics. New gold models are
+author-created operational references and require independent expert review.
+No LLM superiority or causal component contribution is claimed without the
+frozen repeated test matrix. Missing conditions are never filled with mock data.
 
-The retained LLM experiments were each executed once. They should not be rerun
-merely to select a preferred outcome.
+Existing tags are preserved; this revision creates no new submission tag.
+The public hosting account and Git history remain identifying. For blind review,
+upload the identity-scanned export described in ARTIFACT_README.md to an
+independent anonymous service. A placeholder URL does not mean a mirror exists.
 
-## Veri Hazırlık Araçları
+## License and PURE
 
-Veri hazırlık dosyaları `data_pipeline/` altında toplanmıştır:
-
-- `data_pipeline/preprocessing/xml_to_csv.py`: XML tabanlı veri kaynaklarını CSV formatına dönüştürmek için kullanılır.
-- `data_pipeline/preprocessing/xml_to_csv.py`: PURE XML/requirement kaynaklarını temizlenmiş CSV formatına dönüştürmek için kullanılan veri hazırlık scripti.
-
-Ana veri dosyası:
-
-```text
-data_pipeline/datasets/pure_dataset.csv
-```
-
-Güncel ortak onarım benchmarklarını tekrar üretmek için:
-
-```bash
-python backend/evaluation/shared_benchmark_deterministic_experiment.py
-python backend/evaluation/shared_benchmark_llm_experiment.py --max-iterations 3
-python backend/evaluation/pure_external_deterministic_experiment.py
-python backend/evaluation/pure_external_llm_experiment.py --max-iterations 3
-```
-
-## Ortam Değişkenleri
-
-### Frontend
-
-`frontend/.env.local`:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-### AI Core
-
-Otonom ajan akışı `langchain-openai` kullandığı için OpenAI API anahtarı gerekir.
-
-PowerShell:
-
-```powershell
-$env:OPENAI_API_KEY="sk-..."
-```
-
-macOS/Linux:
-
-```bash
-export OPENAI_API_KEY="sk-..."
-```
-
-Kalıcı kullanım için `.env` dosyası tercih edilebilir. Gizli anahtarlar repoya commit edilmemelidir.
-
-## Geliştirme Kuralları
-
-Projede dokümantasyon ve checkpoint disiplini önemlidir.
-
-- Yeni özellikler için `docs/features/` altında dokümantasyon eklenmelidir.
-- Teknik değişiklikler test edilmeden tamamlanmış sayılmamalıdır.
-- Backend endpoint değişiklikleri frontend API istemcisiyle birlikte kontrol edilmelidir.
-- Yeni bağımlılıklar ilgili `requirements.txt` veya `package.json` dosyasına eklenmelidir.
-- Ana branch üzerinde doğrudan çalışma yerine feature branch ve pull request akışı kullanılmalıdır.
-- Checkpoint dosyaları güncellenirken `docs/checkpoint-kullanim-rehberi.md` takip edilmelidir.
-
-## Örnek Tam Geliştirme Akışı
-
-1. Backend'i başlat:
-
-   ```bash
-   uvicorn backend.src.api.endpoints:app --reload --port 8000
-   ```
-
-2. Frontend'i başlat:
-
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-3. Tarayıcıdan arayüzü aç:
-
-   ```text
-   http://localhost:5173
-   ```
-
-4. SRS metni içeren `.txt` dosyası yükle.
-
-5. Analizi başlat.
-
-6. Sonuç ekranında UML diyagramını, OCL skorunu ve semantik skoru kontrol et.
-
-7. Hata varsa onarım ekranına geç.
-
-8. Final PlantUML veya SVG çıktısını indir.
-
-## Proje Durumu
-
-Bu repo, CURE projesinin güncel prototip uygulamasını içerir. Backend test paketi, temel parser/doğrulama/semantik analiz ve performans akışlarının çalıştığını doğrulamak için hazırlanmıştır. Sistem akademik geliştirme, sprint teslimleri ve demo amaçlı kullanılabilecek şekilde düzenlenmiştir.
-
-
-## Submission consistency audit and licenses
-
-The corrected feature notes are [shared benchmark](docs/features/shared-repair-benchmark.md)
-and [PURE pilot](docs/features/pure-external-pilot.md). The **2026-10-20 local audit**
-adds a no-repair baseline: shared 0/50 project-valid and 12/50 compiler-valid;
-PURE 0/10 and 2/10. It uses PlantUML 1.2026.6 and the same `-tsvg -checkonly`
-validation path. JAR SHA-256:
-`89948F14C93756C7A3FB7B69078FF37E8489FD79DD430C582B931E2F65358690`.
-No LLM API was called during this audit. The retained final experimental outputs
-are unchanged. [Per-case evidence and methods](docs/submission-audit-2026-10-20/README.md)
-include paired exact McNemar tests and the distinction between 47 three-attempt
-cases and 46 budget-exhausted Critic-invalid cases. All four shared Critic-valid
-outputs (S05/S09/S23/S43) fail compilation.
-
-The immutable `paper-submission-v2` tag predates these documentation corrections.
-The snapshot hashes above identify the original experiment. The corrected
-documentation and audit evidence are released separately as
-[paper-submission-v3](https://anonymous.4open.science/r/CURE-ANONYMIZED).
-The v2 tag and retained experimental outputs are unchanged.
-
-Original CURE software is licensed under [MIT](LICENSE); see [NOTICE](NOTICE).
-The PURE citation targets v1.0, DOI https://doi.org/10.5281/zenodo.1414117;
-the current v2.0 record is https://doi.org/10.5281/zenodo.7118517. Both DOI
-registrations declare Creative Commons Attribution 4.0 International (CC BY 4.0).
-However, the v2.0 curators disclaim knowledge of licence agreements or
-intellectual property rights in the collected requirements. This metadata
-declaration is not clearance of individual source documents. The version of
-the original archive consumed by CURE remains **NOT RECORDED**. See [dataset license and provenance](data_pipeline/datasets/README.md).
-Exact original document identities for the ten selected P-cases remain
-**NOT RECORDED**, because the retained CSV has no source-document column.
+Original CURE code is MIT licensed; see LICENSE and NOTICE. PURE citation target:
+v1.0, DOI 10.5281/zenodo.1414117; current v2.0: 10.5281/zenodo.7118517.
+Both DOI registrations declare CC BY 4.0, while v2 curators disclaim knowledge
+of licence agreements or intellectual property rights in source requirements.
+Keep upstream attribution and disclose changes; this metadata is not clearance
+of every original document. See data_pipeline/datasets/README.md. The consumed
+legacy archive version and exact P-case source documents are NOT RECORDED
+unless independently recovered.

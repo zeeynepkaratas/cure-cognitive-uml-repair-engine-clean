@@ -603,6 +603,6 @@ registrations declare Creative Commons Attribution 4.0 International (CC BY 4.0)
 However, the v2.0 curators disclaim knowledge of licence agreements or
 intellectual property rights in the collected requirements. This metadata
 declaration is not clearance of individual source documents. The version of
-the original archive consumed by CURE remains **BULUNAMADI**. See [dataset license and provenance](data_pipeline/datasets/README.md).
+the original archive consumed by CURE remains **NOT RECORDED**. See [dataset license and provenance](data_pipeline/datasets/README.md).
 Exact original document identities for the ten selected P-cases remain
-**BULUNAMADI**, because the retained CSV has no source-document column.
+**NOT RECORDED**, because the retained CSV has no source-document column.

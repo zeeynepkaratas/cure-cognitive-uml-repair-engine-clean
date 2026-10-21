@@ -13,7 +13,7 @@ The v2.0 description says the curators do not know of licence agreements or
 intellectual property rights in the collected requirements, and offers removal
 on infringement reports. This caveat remains relevant even though the
 registration declares CC BY 4.0. Citing v1.0 does not establish which archive
-version CURE actually consumed: **BULUNAMADI**.
+version CURE actually consumed: **NOT RECORDED**.
 
 Sources:
 
@@ -42,7 +42,7 @@ upstream PURE reference models.
 The original PURE publication describes 79 documents and 34,268 sentences.
 Those full-corpus counts do **not** establish how many original documents were
 actually read to produce this repository's CSV. The raw source archive and a
-document-to-row manifest were not retained: **BULUNAMADI**. Consequently the
+document-to-row manifest were not retained: **NOT RECORDED**. Consequently the
 exact count and original filenames of documents used for P01–P10 cannot be
 verified from the retained CSV. Its opening text identifies CCTNS material,
 but this alone does not prove the original document identity for each P-case.
@@ -52,4 +52,4 @@ row text, and normalized exact text matches (where present). It explicitly
 leaves original document names unresolved rather than guessing a row convention.
 See `../../docs/submission-audit-2026-10-20/pure_license_record.json` for the
 upstream license metadata retrieved on 2026-10-20. Download verification of
-the original archive used by CURE: **BULUNAMADI**.
+the original archive used by CURE: **NOT RECORDED**.

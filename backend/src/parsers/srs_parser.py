@@ -20,32 +20,7 @@ RELATIONSHIP_PATTERNS = [
 ]
 
 # Kesinlikle sınıf olmayan kelimeler
-STOP_WORDS = {
-    # Zamirler ve belirteçler
-    'the','a','an','is','are','was','were','be','been','being',
-    'have','has','had','do','does','did','will','would','could',
-    'should','may','might','shall','can','need','must','ought',
-    'this','that','these','those','it','its','they','them','their',
-    'when','where','which','who','how','what','all','each','every',
-    # Bağlaçlar ve edatlar
-    'and','or','but','not','with','from','into','onto','upon',
-    'after','before','during','while','through','about','over',
-    # Genel yazılım terimleri (sınıf adı olamaz)
-    'system','user','data','information','process','function',
-    'feature','requirement','functionality','operation','action',
-    'input','output','result','value','type','list','item','set',
-    # Kısaltmalar (sınıf değil)
-    'api','rest','json','xml','html','css','sql','url',
-    'http','https','pdf','csv','srs','ocl','llm','ai','ui','ux',
-    'sms','mms','ftp','tcp','ip','id','ui','db',
-    # Modal fiiller ve kip belirteçleri
-    'shall','must','should','will','can','may','need',
-    # Yaygın İngilizce isimler (sınıf değil)
-    'email','password','token','role','record','session',
-    'request','response','message','error','status','code',
-    'name','date','time','number','version','level','mode',
-    'active','current','new','old','base','core','main',
-}
+from backend.src.utils.entity_rules import STOP_WORDS
 
 # Teknik sınıf son ekleri — bunları içeren kelimeler büyük ihtimalle sınıftır
 CLASS_SUFFIXES = (

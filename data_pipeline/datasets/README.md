@@ -1,7 +1,21 @@
 # PURE source and attribution
 
-The upstream PURE v1.0 record declares **Creative Commons Attribution 4.0
-International (CC BY 4.0)**:
+The citation target is PURE **v1.0**, DOI **10.5281/zenodo.1414117**.
+Its DOI registration declares **Creative Commons Attribution 4.0 International
+(CC BY 4.0)**. The current record is **v2.0**, DOI **10.5281/zenodo.7118517**,
+with the same registered licence. Fresh DataCite rights metadata for both
+DOIs was checked on 2026-10-21; direct Zenodo API requests returned HTTP 403.
+The Zenodo HTML pages show the versions but their extracted licence field
+contains no value. The licence declaration is therefore corroborated using
+the official DOI registry, not inferred from a blank HTML field.
+
+The v2.0 description says the curators do not know of licence agreements or
+intellectual property rights in the collected requirements, and offers removal
+on infringement reports. This caveat remains relevant even though the
+registration declares CC BY 4.0. Citing v1.0 does not establish which archive
+version CURE actually consumed: **BULUNAMADI**.
+
+Sources:
 
 - Record: https://zenodo.org/records/1414117
 - License: https://creativecommons.org/licenses/by/4.0/

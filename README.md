@@ -450,8 +450,9 @@ call.
 Final repository snapshot:
 
 ```text
-Release tag: paper-submission-v2
-Merged snapshot: 9c872dab9f2da3535521d802fdbf500c7bc8a1dd
+Documentation release tag: paper-submission-v3
+Original experiment release tag: paper-submission-v2
+Original merged snapshot: 9c872dab9f2da3535521d802fdbf500c7bc8a1dd
 Experiment run HEAD: f2689cc2407c0d6f17eaee272f93cd233063cfc7
 Final experiment-results commit: e506110e3893af73378e74aa7dcfc922bbf9eaf3
 ```
@@ -590,12 +591,18 @@ cases and 46 budget-exhausted Critic-invalid cases. All four shared Critic-valid
 outputs (S05/S09/S23/S43) fail compilation.
 
 The immutable `paper-submission-v2` tag predates these documentation corrections.
-The snapshot hashes above identify the original experiment, not a newly
-published corrected release. A new reviewed release is needed to publish this
-documentation; the old tag must not be silently moved.
+The snapshot hashes above identify the original experiment. The corrected
+documentation and audit evidence are released separately as
+[paper-submission-v3](https://github.com/zeeynepkaratas/cure-cognitive-uml-repair-engine-clean/releases/tag/paper-submission-v3).
+The v2 tag and retained experimental outputs are unchanged.
 
 Original CURE software is licensed under [MIT](LICENSE); see [NOTICE](NOTICE).
-PURE-derived text is separately attributed under the upstream record's CC BY 4.0
-declaration. See [dataset license and provenance](data_pipeline/datasets/README.md).
+The PURE citation targets v1.0, DOI https://doi.org/10.5281/zenodo.1414117;
+the current v2.0 record is https://doi.org/10.5281/zenodo.7118517. Both DOI
+registrations declare Creative Commons Attribution 4.0 International (CC BY 4.0).
+However, the v2.0 curators disclaim knowledge of licence agreements or
+intellectual property rights in the collected requirements. This metadata
+declaration is not clearance of individual source documents. The version of
+the original archive consumed by CURE remains **BULUNAMADI**. See [dataset license and provenance](data_pipeline/datasets/README.md).
 Exact original document identities for the ten selected P-cases remain
 **BULUNAMADI**, because the retained CSV has no source-document column.

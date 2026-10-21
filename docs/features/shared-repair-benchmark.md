@@ -33,7 +33,7 @@ deterministic duration uses `elapsed_seconds`. No compiler output enters the
 Critic–Healer loop; compilation checks run outside it.
 
 The fixed `paper-submission-v2` tag contains older documentation. Do not infer
-these corrected figures from that tag's README. This documentation update does
-not move the tag or constitute a new release. Per-case evidence, the local
+these corrected figures from that tag's README. The corrected documentation is
+published as `paper-submission-v3`; the v2 tag remains unchanged. Per-case evidence, the local
 baseline runtime output, and audit scripts are in
 `../submission-audit-2026-10-20/`. No new LLM run was made for this audit.

@@ -36,6 +36,7 @@ contribution has not been isolated experimentally.
 
 Mean endpoint time is 17.200 s (`sure_saniye`). Two Critic terminal flags are
 true; one is also project-valid. No new LLM run was made for this audit.
+Documentation release: `paper-submission-v3`; retained experiment outputs are unchanged.
 For PURE licensing, attribution and unresolved original document identities,
 see `../../data_pipeline/datasets/README.md` and its provenance CSV.
 Per-case evidence is in `../submission-audit-2026-10-20/`.

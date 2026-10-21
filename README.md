@@ -176,7 +176,7 @@ Backend ve AI modülleri ayrı `requirements.txt` dosyalarına sahiptir. Temel b
 ### Depoyu Klonlama
 
 ```bash
-git clone https://github.com/zeeynepkaratas/cure-cognitive-uml-repair-engine-clean.git
+git clone https://anonymous.4open.science/r/CURE-ANONYMIZED
 cd cure-cognitive-uml-repair-engine-clean
 ```
 
@@ -593,7 +593,7 @@ outputs (S05/S09/S23/S43) fail compilation.
 The immutable `paper-submission-v2` tag predates these documentation corrections.
 The snapshot hashes above identify the original experiment. The corrected
 documentation and audit evidence are released separately as
-[paper-submission-v3](https://github.com/zeeynepkaratas/cure-cognitive-uml-repair-engine-clean/releases/tag/paper-submission-v3).
+[paper-submission-v3](https://anonymous.4open.science/r/CURE-ANONYMIZED).
 The v2 tag and retained experimental outputs are unchanged.
 
 Original CURE software is licensed under [MIT](LICENSE); see [NOTICE](NOTICE).

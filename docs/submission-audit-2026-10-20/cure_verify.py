@@ -2,13 +2,19 @@ import sys
 sys.dont_write_bytecode=True
 import json,csv,re,hashlib,subprocess
 from pathlib import Path
-R=Path(r'C:/Users/zeyne/Documents/Codex/2026-10-20/https-github-com-zeeynepkaratas-cure-cognitive/work/repo')
-O=Path('C:/tmp')
+import argparse
+_parser = argparse.ArgumentParser()
+_parser.add_argument('--results-dir', type=Path, default=Path(__file__).resolve().parents[2] / 'backend/evaluation/results')
+_parser.add_argument('--output-dir', type=Path, default=Path.cwd() / 'audit-output')
+_args = _parser.parse_args()
+_args.output_dir.mkdir(parents=True, exist_ok=True)
+R=Path(__file__).resolve().parents[2]
+O=_args.output_dir
 report={}
 for prefix in ['shared_benchmark','pure_external']:
     for method in ['llm','deterministic']:
         stem=prefix+'_'+method+'_experiment'
-        p=R/'backend/evaluation/results'
+        p=_args.results_dir
         j=json.loads((p/(stem+'.json')).read_text(encoding='utf-8'))
         c=list(csv.DictReader((p/(stem+'.csv')).open(encoding='utf-8',newline='')))
         cm={x['case_id']:x for x in c}

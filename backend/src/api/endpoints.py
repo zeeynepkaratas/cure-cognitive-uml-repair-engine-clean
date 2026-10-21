@@ -16,6 +16,9 @@ from plantuml_runtime import validate_with_plantuml
 from api.error_log_endpoint import router as error_log_router, hata_kaydet, HataLogGirdisi
 from api.performance import olcum_kaydet, performans_raporu, olcumleri_sifirla
 from ai.agent_workflow import UMLMultiAgentSystem
+from ai.repair_agent import UMLRepairAgent, RepairConfig
+from backend.src.repair.validation import check_diagram
+from backend.src.utils.plantuml_parser import parse_classes
 
 # FastAPI uygulamasinin ana giris noktasi.
 # Swagger ekraninda gorunen tum backend endpointleri bu app uzerinden yayinlanir.
@@ -68,7 +71,9 @@ class AutonomousRepairRequest(BaseModel):
     # Max iterasyon 3 ile sinirli; bu sonsuz dongu riskini engeller.
     plantuml_kodu: str = Field(..., description="Onarilacak PlantUML kodu")
     srs_metni: Optional[str] = Field(None, description="Final semantik skor icin SRS metni")
-    max_iterations: int = Field(default=3, ge=1, le=5, description="Guvenli maksimum iterasyon")
+    max_iterations: int = Field(default=3, ge=1, le=5, description="Maximum repair attempts")
+    force_repair: bool = False
+    legacy: bool = False
 
 
 class PerformansOlcumGirdisi(BaseModel):
@@ -166,7 +171,7 @@ def _basit_healer(plantuml_kodu: str) -> str:
         kod = "@startuml\n" + kod
     if "@enduml" not in kod:
         kod = kod + "\n@enduml"
-    if "class " not in kod:
+    if not parse_classes(kod):
         kod = kod.replace("@enduml", "class GeneratedDiagram {}\n@enduml")
     return kod
 
@@ -187,6 +192,10 @@ def _compile_test(plantuml_kodu: str) -> dict:
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         hatalar.extend(plantuml_runtime["errors"])
     return {
+        "project_valid": project_defined_success,
+        "compiler_valid": plantuml_validated_success,
+        "critic_valid": None,
+        "deprecated_aliases": ["basarili", "project_defined_success", "plantuml_validated_success"],
         "basarili": project_defined_success,
         "success_definition": "project_defined_lightweight_validation",
         "project_defined_success": project_defined_success,
@@ -367,8 +376,7 @@ def iterasyon_testi(girdi: IterasyonGirdisi):
         raise HTTPException(status_code=500, detail=f"Iterasyon test hatasi: {str(e)}")
 
 
-@app.post("/api/autonomous-repair")
-def autonomous_repair(girdi: AutonomousRepairRequest):
+def _autonomous_repair_legacy(girdi: AutonomousRepairRequest):
     """
     Gerçek AI (Healer/Critic) ajanını kullanan otonom onarım akışı.
     """
@@ -450,6 +458,46 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
         "final_render": render_plantuml(aktif_kod) if basarili else None,
         "final_compile": final_compile,
         "semantik": semantik,
+    }
+
+
+@app.post("/api/autonomous-repair")
+def autonomous_repair(girdi: AutonomousRepairRequest):
+    """Repair with independent statuses and explicit regression reversion."""
+    if girdi.legacy:
+        return _autonomous_repair_legacy(girdi)
+    started = time.perf_counter()
+    agent = UMLRepairAgent(RepairConfig(max_iterations=girdi.max_iterations))
+    state = agent.run(girdi.srs_metni or "", girdi.plantuml_kodu,
+                      return_state=True, force_repair=girdi.force_repair)
+    output = state["safe_plantuml"]
+    final_compile = _compile_test(output)
+    elapsed = time.perf_counter() - started
+    success = (state["agent_status"] == "ok" and final_compile["project_valid"]
+               and final_compile["compiler_valid"] is True)
+    olcum_kaydet("/api/autonomous-repair", elapsed, success)
+    return {
+        "project_valid": final_compile["project_valid"],
+        "compiler_valid": final_compile["compiler_valid"],
+        "critic_valid": state["critic_valid"],
+        "agent_status": state["agent_status"], "agent_error": state["agent_error"],
+        "terminated_by": state["terminated_by"], "regression": state["regression"],
+        "reverted": state["regression"], "raw_final_plantuml": state["current_uml"],
+        "raw_project_valid": state["project_valid"], "raw_compiler_valid": state["compiler_valid"],
+        "final_plantuml": output, "final_compile": final_compile,
+        "final_render": render_plantuml(output) if final_compile["compiler_valid"] is True else None,
+        "trace": state["trace"], "first_compiler_valid_iteration": state["first_compiler_valid_iteration"],
+        "first_project_valid_iteration": state["first_project_valid_iteration"],
+        "elapsed_seconds": elapsed, "llm_call_count": state["llm_call_count"],
+        "tokens_in": state["tokens_in"], "tokens_out": state["tokens_out"],
+        "deprecated_aliases": ["basarili", "sure_saniye", "agent_is_valid", "agent_iteration_count"],
+        "basarili": success, "sure_saniye": round(elapsed, 3), "sla_gecti_mi": elapsed < 15,
+        "agent_is_valid": state["critic_valid"], "agent_iteration_count": state["repair_attempt_count"],
+        "agent_repair_attempt_count": state["repair_attempt_count"],
+        "agent_llm_call_count": state["llm_call_count"], "max_iterations": girdi.max_iterations,
+        "iterasyonlar": [{"iteration_no": 0, "status": "INPUT", "compile_result": _compile_test(girdi.plantuml_kodu)},
+                          {"iteration_no": state["repair_attempt_count"], "status": state["terminated_by"], "compile_result": final_compile}],
+        "semantik": calculate_semantic_fidelity(girdi.srs_metni, output) if girdi.srs_metni else None,
     }
 
 

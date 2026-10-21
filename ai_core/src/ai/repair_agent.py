@@ -11,7 +11,7 @@ from typing import Literal
 
 from backend.src.repair.validation import check_diagram
 from .plantuml_normalizer import normalize_plantuml_text
-from ..rag.local_rules import LocalRuleRetriever
+from ai_core.src.rag.local_rules import LocalRuleRetriever
 
 logger = logging.getLogger(__name__)
 PROMPTS = Path(__file__).resolve().parents[2]/'prompts'
@@ -180,3 +180,4 @@ class UMLRepairAgent:
                      usage_complete=all(t['tokens_in'] is not None and t['tokens_out'] is not None for t in trace))
         self.last_final_state=state
         return state if return_state else diagram
+

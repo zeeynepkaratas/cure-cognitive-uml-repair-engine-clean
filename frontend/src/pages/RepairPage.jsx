@@ -55,7 +55,7 @@ const IterCard = ({ iter, isLatest }) => {
 
   // Backend'in döndürdüğü iterasyon yapısına göre alan isimleri:
   const no = iter.iteration_no ?? iter.iterasyon_no ?? '?';
-  const compileOk = iter.compile_result?.basarili ?? (iter.status === 'AI_HEALER_APPLIED' || iter.status === 'COMPILE_OK');
+  const compileOk = iter.compile_result?.compiler_valid === true;
   const fixSummary = iter.fix_summary ?? iter.duzeltme_ozeti ?? null;
   const compileErrors = iter.compile_result?.syntax?.hatalar ?? iter.compile_result?.ocl?.hatalar ?? [];
   const ocl = iter.compile_result?.ocl ?? null;
@@ -171,7 +171,7 @@ const RepairPage = ({ data, onNavigate }) => {
       clearInterval(phaseRef.current);
       setActivePhase(PHASES.length - 1);
       setResult(res);
-      setStatus(res.basarili ? 'success' : 'failed');
+      setStatus(res.compiler_valid === true && res.project_valid === true && res.agent_status === 'ok' ? 'success' : 'failed');
     } catch (err) {
       clearInterval(phaseRef.current);
       setError(typeof err === 'string' ? err : 'Onarım sırasında beklenmedik bir hata oluştu.');
@@ -195,6 +195,14 @@ const RepairPage = ({ data, onNavigate }) => {
   return (
     <div className="page repair-page">
       <div className="container">
+        {result && <div className="content-card" role="status">
+          <p>Project validation: {String(result.project_valid ?? 'unavailable')}</p>
+          <p>PlantUML compilation: {String(result.compiler_valid ?? 'unavailable')}</p>
+          <p>Critic decision: {String(result.critic_valid ?? 'not evaluated')}</p>
+          <p>Agent: {result.agent_status} / {result.terminated_by}</p>
+          {result.agent_error && <p role="alert">{result.agent_error}</p>}
+          {result.reverted && <p>The raw repair failed compilation; the compiling input was restored.</p>}
+        </div>}
         {toast && (
           <div className="toast-notification">
             <CheckCircle size={15} />

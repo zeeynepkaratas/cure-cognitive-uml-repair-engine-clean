@@ -235,6 +235,7 @@ class UMLRepairAgent:
                     if not isinstance(raw, str) or not raw.strip():
                         raise ValueError("Empty/non-text Healer output")
                     diagram = normalize_plantuml_text(raw)
+                    item["output_plantuml"] = diagram
                     repairs += 1
                     validation = self.validator(diagram)
                     item.update(

@@ -35,35 +35,41 @@ def parse_iliskiler(plantuml_kodu: str) -> list:
     return list(parse_relationships(plantuml_kodu))
 
 def detect_cycle(siniflar: list, iliskiler: list) -> list:
-    """DFS ile döngüsel bağımlılık tespit eder."""
-    graph = {s: [] for s in siniflar}
-    for src, tgt in iliskiler:
-        if src in graph:
-            graph[src].append(tgt)
-    
-    donguler = []
-    visited = set()
-    rec_stack = set()
-    
-    def dfs(node, path):
-        visited.add(node)
-        rec_stack.add(node)
-        for neighbor in graph.get(node, []):
-            if neighbor not in visited:
-                if dfs(neighbor, path + [neighbor]):
-                    return True
-            elif neighbor in rec_stack:
-                cycle = path[path.index(neighbor):] if neighbor in path else [neighbor]
-                donguler.append(" -> ".join(cycle + [neighbor]))
-                return True
-        rec_stack.discard(node)
-        return False
-    
-    for sinif in siniflar:
-        if sinif not in visited:
-            dfs(sinif, [sinif])
-    
-    return donguler
+    """Return every cyclic strongly connected component using Tarjan's method."""
+    nodes = set(siniflar)
+    graph = {n: set() for n in nodes}
+    for source, target in iliskiler:
+        if source in nodes and target in nodes:
+            graph[source].add(target)
+    index = 0
+    stack, on_stack, indices, low, components = [], set(), {}, {}, []
+    def visit(node):
+        nonlocal index
+        indices[node] = low[node] = index
+        index += 1
+        stack.append(node)
+        on_stack.add(node)
+        for target in sorted(graph[node]):
+            if target not in indices:
+                visit(target)
+                low[node] = min(low[node], low[target])
+            elif target in on_stack:
+                low[node] = min(low[node], indices[target])
+        if low[node] == indices[node]:
+            component = []
+            while True:
+                member = stack.pop()
+                on_stack.remove(member)
+                component.append(member)
+                if member == node:
+                    break
+            if len(component) > 1 or node in graph[node]:
+                components.append('SCC: {' + ', '.join(sorted(component)) + '}')
+    for node in sorted(nodes):
+        if node not in indices:
+            visit(node)
+    return sorted(components)
+
 
 def validate_ocl(plantuml_kodu: str, legacy: bool = False) -> dict:
     """
@@ -115,14 +121,13 @@ def validate_ocl(plantuml_kodu: str, legacy: bool = False) -> dict:
         detaylar["OCL-03"] = "GECTI"
     
     # OCL-04: God Class tespiti
-    sinif_bloklari = re.findall(
-        r'class\s+(\w+)\s*\{([^}]*)\}', plantuml_kodu, re.DOTALL
-    )
     god_classes = []
-    for sinif_adi, blok in sinif_bloklari:
-        metot_sayisi = len(re.findall(r'[+\-#~]\w+\(', blok))
-        if metot_sayisi > 10:
-            god_classes.append(f"{sinif_adi} ({metot_sayisi} metot)")
+    for declaration in parse_model(plantuml_kodu).declarations:
+        count = sum(bool(re.match(r'^[+\-#~]?\s*[A-Za-z_]\w*\s*\(', method))
+                    and not method.lstrip().startswith(('if ', 'if(', 'while', 'for ', 'for('))
+                    for method in declaration.methods)
+        if count > 10:
+            god_classes.append(f"{declaration.name} ({count} methods)")
     if god_classes:
         uyarilar.append(f"{OCL_KURALLARI['OCL-04'].aciklama}: {', '.join(god_classes)}")
         detaylar["OCL-04"] = f"UYARI: {god_classes}"

@@ -25,13 +25,23 @@ def olcum_kaydet(endpoint: str, sure_saniye: float, basarili: bool):
     })
 
 
-def percentile_hesapla(veriler: List[float], p: float) -> float:
-    """P50/P95/P99 gibi yuzdelik dilim hesaplar."""
+def percentile_hesapla(veriler: List[float], p: float, legacy: bool = False) -> float:
+    """Linear quantile, equivalent to numpy.percentile(method='linear').
+
+    Position is (n-1)*p/100. At n=50, P99 interpolates between the top two
+    samples. Legacy nearest-rank indexing is available only for reproduction.
+    """
+    if not 0 <= p <= 100:
+        raise ValueError("percentile must be between 0 and 100")
     if not veriler:
         return 0.0
-    sirali = sorted(veriler)
-    index = int(len(sirali) * p / 100)
-    return round(sirali[min(index, len(sirali) - 1)], 3)
+    ordered = sorted(veriler)
+    if legacy:
+        return round(ordered[min(int(len(ordered)*p/100), len(ordered)-1)], 3)
+    position = (len(ordered)-1)*p/100
+    lower = int(position)
+    upper = min(lower+1, len(ordered)-1)
+    return ordered[lower] + (ordered[upper]-ordered[lower])*(position-lower)
 
 
 def performans_raporu(endpoint: Optional[str] = None) -> dict:

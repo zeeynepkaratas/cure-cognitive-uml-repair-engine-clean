@@ -157,8 +157,7 @@ ExportService --> Case""",
         "category": "duplicate_class_missing_start",
         "description": "Case access control with duplicate user group and missing start boundary.",
         "srs_metni": (
-            "The System must allow the user to limit access to cases to specified "
-            "users or user groups."
+            "The System must allow the user to limit access to cases to specified users or user groups."
         ),
         "reference_plantuml": """@startuml
 class System {}
@@ -189,8 +188,7 @@ AccessControl --> Case
         "category": "missing_startuml",
         "description": "Admin user profile setup with missing @startuml boundary.",
         "srs_metni": (
-            "The System must allow only admin-users to set up user profiles and "
-            "allocate users to groups."
+            "The System must allow only admin-users to set up user profiles and allocate users to groups."
         ),
         "reference_plantuml": """@startuml
 class System {}

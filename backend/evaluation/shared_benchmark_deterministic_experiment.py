@@ -9,11 +9,9 @@ from __future__ import annotations
 
 import csv
 import json
-import platform
 import sys
 import time
 import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 
 EVALUATION_ROOT = Path(__file__).resolve().parent
@@ -98,9 +96,7 @@ def build_report() -> dict:
     cases = [run_case(case) for case in SHARED_REPAIR_BENCHMARK_CASES]
     total = len(cases)
     project_successes = sum(1 for case in cases if case["project_defined_final_success"])
-    plantuml_runtime_available = any(
-        case["final_compile"]["plantuml_runtime_available"] for case in cases
-    )
+    plantuml_runtime_available = any(case["final_compile"]["plantuml_runtime_available"] for case in cases)
     plantuml_successes = (
         sum(1 for case in cases if case["plantuml_validated_final_success"])
         if plantuml_runtime_available
@@ -129,9 +125,15 @@ def build_report() -> dict:
             "project_defined_success_rate": round(project_successes / total, 4),
             "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
             "plantuml_validated_successful_repairs": plantuml_successes,
-            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1)
+            if plantuml_successes is not None
+            else None,
         },
         "project_defined_wilson_95_ci": {
             "successes": project_interval["successes"],

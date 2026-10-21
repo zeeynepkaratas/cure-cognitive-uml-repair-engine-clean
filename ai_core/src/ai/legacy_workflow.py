@@ -12,6 +12,7 @@ from ai.workflow_control import route_repair_decision
 # Loglama entegrasyonu
 logger = logging.getLogger("MultiAgentWorkflow")
 
+
 # LangGraph state güncellemesi: iteration_count eklendi
 class WorkflowState(TypedDict):
     original_text: str
@@ -20,6 +21,7 @@ class WorkflowState(TypedDict):
     error_categories: List[str]
     is_valid: bool
     repair_attempt_count: int
+
 
 class UMLMultiAgentSystem:
     def __init__(self, model_name="gpt-4o-mini", temperature=0, max_iterations: int = 3):
@@ -32,47 +34,51 @@ class UMLMultiAgentSystem:
         self.llm = ChatOpenAI(model=model_name, temperature=temperature)
         self.critic_llm = self.llm.with_structured_output(CRITIC_DECISION_SCHEMA)
 
-        #RAG modülü başlatılıyor
+        # RAG modülü başlatılıyor
         self.retriever = OCLRetrieverEngine(legacy=True)
-        
+
         # Critic hata tespit promptu
         self.critic_prompt = PromptTemplate(
-        input_variables=["original_text", "current_uml", "ocl_rules"],
-        template=(__import__("pathlib").Path(__file__).resolve().parents[2] / "prompts/legacy/critic_prompt.txt").read_text(encoding="utf-8")
-    )
-        
+            input_variables=["original_text", "current_uml", "ocl_rules"],
+            template=(
+                __import__("pathlib").Path(__file__).resolve().parents[2] / "prompts/legacy/critic_prompt.txt"
+            ).read_text(encoding="utf-8"),
+        )
+
         # Onarım promptu
         self.healer_prompt = PromptTemplate(
             input_variables=["current_uml", "errors"],
-            template=(__import__("pathlib").Path(__file__).resolve().parents[2] / "prompts/legacy/healer_prompt.txt").read_text(encoding="utf-8")
+            template=(
+                __import__("pathlib").Path(__file__).resolve().parents[2] / "prompts/legacy/healer_prompt.txt"
+            ).read_text(encoding="utf-8"),
         )
-        
+
         self.workflow = self._build_graph()
 
     def critic_node(self, state: WorkflowState) -> WorkflowState:
         logger.info(f"Critic Node çalışıyor. Onarım denemesi: {state['repair_attempt_count']}")
-        
+
         #  RAG modülü ile OCL kurallarını çekiyoruz
         relevant_rules = self.retriever.retrieve_relevant_rules(state["current_uml"])
         logger.info(f"Critic'e sağlanan OCL kuralları: {relevant_rules}")
-        
+
         # LLM'i çağırırken prompta 'ocl_rules' değişkenini de gönderiyoruz
         self.llm_call_count += 1
         response = self.critic_llm.invoke(
             self.critic_prompt.format(
-                original_text=state["original_text"], 
+                original_text=state["original_text"],
                 current_uml=state["current_uml"],
-                ocl_rules=relevant_rules
+                ocl_rules=relevant_rules,
             )
         )
-        
+
         decision = parse_critic_decision(response)
         state["is_valid"] = decision["is_valid"]
         state["errors"] = decision["errors"]
         state["error_categories"] = decision["categories"]
         if not state["is_valid"]:
             logger.warning("Critic hata buldu.")
-            
+
         return state
 
     def healer_node(self, state: WorkflowState) -> WorkflowState:
@@ -81,9 +87,9 @@ class UMLMultiAgentSystem:
         response = self.llm.invoke(
             self.healer_prompt.format(current_uml=state["current_uml"], errors=json.dumps(state["errors"]))
         )
-        
+
         state["current_uml"] = normalize_plantuml_text(response.content)
-        state["errors"] = [] 
+        state["errors"] = []
         state["repair_attempt_count"] += 1
         logger.info(f"Healer yeni UML üretti. Onarım denemesi: {state['repair_attempt_count']}")
         return state
@@ -106,12 +112,8 @@ class UMLMultiAgentSystem:
         workflow.add_node("Critic", self.critic_node)
         workflow.add_node("Healer", self.healer_node)
         workflow.set_entry_point("Critic")
-        
-        workflow.add_conditional_edges(
-            "Critic",
-            self.routing_logic,
-            {"continue": "Healer", "end": END}
-        )
+
+        workflow.add_conditional_edges("Critic", self.routing_logic, {"continue": "Healer", "end": END})
         workflow.add_edge("Healer", "Critic")
         return workflow.compile()
 
@@ -123,7 +125,7 @@ class UMLMultiAgentSystem:
             errors=[],
             error_categories=[],
             is_valid=False,
-            repair_attempt_count=0
+            repair_attempt_count=0,
         )
         final_state = self.workflow.invoke(initial_state)
         self.last_final_state = final_state

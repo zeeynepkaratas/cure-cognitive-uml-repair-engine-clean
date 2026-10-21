@@ -1,61 +1,207 @@
 import re
-from typing import Optional
 
 # İlişki kalıpları — SRS belgelerinde yaygın fiiller
 RELATIONSHIP_PATTERNS = [
-    (r'\b(\w+)\s+(?:uses?|utilizes?)\s+(?:the\s+)?(\w+)', 'uses'),
-    (r'\b(\w+)\s+(?:extends?|inherits?)\s+(?:the\s+)?(\w+)', 'extends'),
-    (r'\b(\w+)\s+(?:implements?)\s+(?:the\s+)?(\w+)', 'implements'),
-    (r'\b(\w+)\s+(?:contains?|has)\s+(?:a|an|one|many|the)?\s*(\w+)', 'has'),
-    (r'\b(\w+)\s+(?:manages?|handles?)\s+(?:the\s+)?(\w+)', 'manages'),
-    (r'\b(\w+)\s+(?:creates?|generates?)\s+(?:the\s+)?(\w+)', 'creates'),
-    (r'\b(\w+)\s+(?:communicates?\s+with|connects?\s+to)\s+(?:the\s+)?(\w+)', 'connects'),
-    (r'\b(\w+)\s+(?:sends?|notifies?)\s+(?:\w+\s+)?(?:to\s+)?(?:the\s+)?(\w+)', 'sends'),
-    (r'\b(\w+)\s+(?:stores?|retrieves?)\s+(?:\w+\s+)*(?:from\s+)?(?:the\s+)?(\w+)', 'stores'),
-    (r'\b(\w+)\s+(?:depends?\s+on|relies?\s+on)\s+(?:the\s+)?(\w+)', 'depends'),
-    (r'\b(\w+)\s+(?:calls?|invokes?)\s+(?:the\s+)?(\w+)', 'uses'),
-    (r'\b(\w+)\s+(?:accesses?)\s+(?:the\s+)?(\w+)', 'uses'),
-    (r'\b(\w+)\s+(?:interacts?\s+with)\s+(?:the\s+)?(\w+)', 'connects'),
-    (r'\b(\w+)\s+(?:delegates?\s+to)\s+(?:the\s+)?(\w+)', 'uses'),
+    (r"\b(\w+)\s+(?:uses?|utilizes?)\s+(?:the\s+)?(\w+)", "uses"),
+    (r"\b(\w+)\s+(?:extends?|inherits?)\s+(?:the\s+)?(\w+)", "extends"),
+    (r"\b(\w+)\s+(?:implements?)\s+(?:the\s+)?(\w+)", "implements"),
+    (r"\b(\w+)\s+(?:contains?|has)\s+(?:a|an|one|many|the)?\s*(\w+)", "has"),
+    (r"\b(\w+)\s+(?:manages?|handles?)\s+(?:the\s+)?(\w+)", "manages"),
+    (r"\b(\w+)\s+(?:creates?|generates?)\s+(?:the\s+)?(\w+)", "creates"),
+    (r"\b(\w+)\s+(?:communicates?\s+with|connects?\s+to)\s+(?:the\s+)?(\w+)", "connects"),
+    (r"\b(\w+)\s+(?:sends?|notifies?)\s+(?:\w+\s+)?(?:to\s+)?(?:the\s+)?(\w+)", "sends"),
+    (r"\b(\w+)\s+(?:stores?|retrieves?)\s+(?:\w+\s+)*(?:from\s+)?(?:the\s+)?(\w+)", "stores"),
+    (r"\b(\w+)\s+(?:depends?\s+on|relies?\s+on)\s+(?:the\s+)?(\w+)", "depends"),
+    (r"\b(\w+)\s+(?:calls?|invokes?)\s+(?:the\s+)?(\w+)", "uses"),
+    (r"\b(\w+)\s+(?:accesses?)\s+(?:the\s+)?(\w+)", "uses"),
+    (r"\b(\w+)\s+(?:interacts?\s+with)\s+(?:the\s+)?(\w+)", "connects"),
+    (r"\b(\w+)\s+(?:delegates?\s+to)\s+(?:the\s+)?(\w+)", "uses"),
 ]
 
 # Kesinlikle sınıf olmayan kelimeler
 STOP_WORDS = {
     # Zamirler ve belirteçler
-    'the','a','an','is','are','was','were','be','been','being',
-    'have','has','had','do','does','did','will','would','could',
-    'should','may','might','shall','can','need','must','ought',
-    'this','that','these','those','it','its','they','them','their',
-    'when','where','which','who','how','what','all','each','every',
+    "the",
+    "a",
+    "an",
+    "is",
+    "are",
+    "was",
+    "were",
+    "be",
+    "been",
+    "being",
+    "have",
+    "has",
+    "had",
+    "do",
+    "does",
+    "did",
+    "will",
+    "would",
+    "could",
+    "should",
+    "may",
+    "might",
+    "shall",
+    "can",
+    "need",
+    "must",
+    "ought",
+    "this",
+    "that",
+    "these",
+    "those",
+    "it",
+    "its",
+    "they",
+    "them",
+    "their",
+    "when",
+    "where",
+    "which",
+    "who",
+    "how",
+    "what",
+    "all",
+    "each",
+    "every",
     # Bağlaçlar ve edatlar
-    'and','or','but','not','with','from','into','onto','upon',
-    'after','before','during','while','through','about','over',
+    "and",
+    "or",
+    "but",
+    "not",
+    "with",
+    "from",
+    "into",
+    "onto",
+    "upon",
+    "after",
+    "before",
+    "during",
+    "while",
+    "through",
+    "about",
+    "over",
     # Genel yazılım terimleri (sınıf adı olamaz)
-    'system','user','data','information','process','function',
-    'feature','requirement','functionality','operation','action',
-    'input','output','result','value','type','list','item','set',
+    "system",
+    "user",
+    "data",
+    "information",
+    "process",
+    "function",
+    "feature",
+    "requirement",
+    "functionality",
+    "operation",
+    "action",
+    "input",
+    "output",
+    "result",
+    "value",
+    "type",
+    "list",
+    "item",
+    "set",
     # Kısaltmalar (sınıf değil)
-    'api','rest','json','xml','html','css','sql','url',
-    'http','https','pdf','csv','srs','ocl','llm','ai','ui','ux',
-    'sms','mms','ftp','tcp','ip','id','ui','db',
+    "api",
+    "rest",
+    "json",
+    "xml",
+    "html",
+    "css",
+    "sql",
+    "url",
+    "http",
+    "https",
+    "pdf",
+    "csv",
+    "srs",
+    "ocl",
+    "llm",
+    "ai",
+    "ui",
+    "ux",
+    "sms",
+    "mms",
+    "ftp",
+    "tcp",
+    "ip",
+    "id",
+    "ui",
+    "db",
     # Modal fiiller ve kip belirteçleri
-    'shall','must','should','will','can','may','need',
+    "shall",
+    "must",
+    "should",
+    "will",
+    "can",
+    "may",
+    "need",
     # Yaygın İngilizce isimler (sınıf değil)
-    'email','password','token','role','record','session',
-    'request','response','message','error','status','code',
-    'name','date','time','number','version','level','mode',
-    'active','current','new','old','base','core','main',
+    "email",
+    "password",
+    "token",
+    "role",
+    "record",
+    "session",
+    "request",
+    "response",
+    "message",
+    "error",
+    "status",
+    "code",
+    "name",
+    "date",
+    "time",
+    "number",
+    "version",
+    "level",
+    "mode",
+    "active",
+    "current",
+    "new",
+    "old",
+    "base",
+    "core",
+    "main",
 }
 
 # Teknik sınıf son ekleri — bunları içeren kelimeler büyük ihtimalle sınıftır
 CLASS_SUFFIXES = (
-    'Service','Manager','Controller','Repository','Handler',
-    'Engine','Validator','Parser','Generator','Processor',
-    'Factory','Builder','Monitor','Analyzer','Evaluator',
-    'Executor','Scheduler','Adapter','Provider','Client',
-    'Server','Gateway','Proxy','Registry','Store','Cache',
-    'Dispatcher','Observer','Listener','Notifier','Sender',
+    "Service",
+    "Manager",
+    "Controller",
+    "Repository",
+    "Handler",
+    "Engine",
+    "Validator",
+    "Parser",
+    "Generator",
+    "Processor",
+    "Factory",
+    "Builder",
+    "Monitor",
+    "Analyzer",
+    "Evaluator",
+    "Executor",
+    "Scheduler",
+    "Adapter",
+    "Provider",
+    "Client",
+    "Server",
+    "Gateway",
+    "Proxy",
+    "Registry",
+    "Store",
+    "Cache",
+    "Dispatcher",
+    "Observer",
+    "Listener",
+    "Notifier",
+    "Sender",
 )
+
 
 def is_valid_class(word: str) -> bool:
     """Bir kelimenin sınıf adı olup olmadığını kontrol eder."""
@@ -67,9 +213,10 @@ def is_valid_class(word: str) -> bool:
     if word.isupper() and len(word) <= 4:
         return False
     # PascalCase veya bilinen suffix içermeli
-    if not re.match(r'^[A-Z][a-zA-Z0-9]{2,}$', word):
+    if not re.match(r"^[A-Z][a-zA-Z0-9]{2,}$", word):
         return False
     return True
+
 
 def extract_classes(text: str) -> list:
     """
@@ -80,20 +227,20 @@ def extract_classes(text: str) -> list:
 
     # 1. Yüksek güven: bilinen teknik suffix içerenler
     for suffix in CLASS_SUFFIXES:
-        pattern = rf'\b([A-Z][a-zA-Z0-9]*{suffix})\b'
+        pattern = rf"\b([A-Z][a-zA-Z0-9]*{suffix})\b"
         for match in re.finditer(pattern, text):
             word = match.group(1)
             if is_valid_class(word):
                 candidates[word] = candidates.get(word, 0) + 3  # yüksek skor
 
     # 2. Orta güven: CamelCase (birden fazla büyük harf içeren)
-    for match in re.finditer(r'\b([A-Z][a-z]+(?:[A-Z][a-z]+)+)\b', text):
+    for match in re.finditer(r"\b([A-Z][a-z]+(?:[A-Z][a-z]+)+)\b", text):
         word = match.group(1)
         if is_valid_class(word):
             candidates[word] = candidates.get(word, 0) + 2
 
     # 3. Düşük güven: büyük harfle başlayan tekil kelimeler (3+ tekrar edenler)
-    singles = re.findall(r'\b([A-Z][a-zA-Z]{3,})\b', text)
+    singles = re.findall(r"\b([A-Z][a-zA-Z]{3,})\b", text)
     freq = {}
     for w in singles:
         freq[w] = freq.get(w, 0) + 1
@@ -132,11 +279,7 @@ def extract_relationships(text: str, classes: list) -> list:
                 continue
             seen.add(key)
 
-            relationships.append({
-                "source": src,
-                "target": tgt,
-                "type": rel_type
-            })
+            relationships.append({"source": src, "target": tgt, "type": rel_type})
 
     return relationships
 
@@ -154,11 +297,11 @@ def generate_plantuml(classes: list, relationships: list) -> str:
         lines.append("' Iliskiler")
         for rel in relationships:
             if rel["type"] in ("extends", "implements"):
-                lines.append(f'{rel["source"]} --|> {rel["target"]}')
+                lines.append(f"{rel['source']} --|> {rel['target']}")
             elif rel["type"] == "has":
-                lines.append(f'{rel["source"]} *-- {rel["target"]}')
+                lines.append(f"{rel['source']} *-- {rel['target']}")
             else:
-                lines.append(f'{rel["source"]} --> {rel["target"]}')
+                lines.append(f"{rel['source']} --> {rel['target']}")
 
     lines.append("")
     lines.append("@enduml")
@@ -175,7 +318,7 @@ def srs_to_plantuml(srs_metni: str) -> dict:
             "bulunan_siniflar": [],
             "iliskiler": [],
             "sinif_sayisi": 0,
-            "hata": "Metin çok kısa veya boş"
+            "hata": "Metin çok kısa veya boş",
         }
 
     try:
@@ -188,7 +331,7 @@ def srs_to_plantuml(srs_metni: str) -> dict:
             "bulunan_siniflar": classes,
             "iliskiler": relationships,
             "sinif_sayisi": len(classes),
-            "hata": None
+            "hata": None,
         }
     except Exception as e:
         return {
@@ -196,7 +339,7 @@ def srs_to_plantuml(srs_metni: str) -> dict:
             "bulunan_siniflar": [],
             "iliskiler": [],
             "sinif_sayisi": 0,
-            "hata": str(e)
+            "hata": str(e),
         }
 
 

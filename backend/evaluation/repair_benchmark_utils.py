@@ -67,9 +67,7 @@ def compile_check(plantuml_code: str, legacy: bool = True) -> dict:
     ocl = validate_ocl(plantuml_code, legacy=legacy)
     plantuml_runtime = validate_with_plantuml(plantuml_code)
     project_defined_success = syntax["gecerli"] and ocl["gecerli_mi"]
-    plantuml_validated_success = (
-        plantuml_runtime["successful"] if plantuml_runtime["available"] else None
-    )
+    plantuml_validated_success = plantuml_runtime["successful"] if plantuml_runtime["available"] else None
     errors = syntax["hatalar"] + ocl["hatalar"]
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         errors.extend(plantuml_runtime["errors"])

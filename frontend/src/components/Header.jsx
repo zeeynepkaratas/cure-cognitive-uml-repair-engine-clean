@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/theme-context';
 import { Sun, Moon, Home, AlertCircle, Activity, BarChart2, Wifi, WifiOff } from 'lucide-react';
 import { checkHealth } from '../services/api';
 

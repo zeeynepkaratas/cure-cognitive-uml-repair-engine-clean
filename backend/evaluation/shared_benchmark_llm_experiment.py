@@ -12,11 +12,9 @@ import csv
 import json
 import logging
 import os
-import platform
 import sys
 import time
 import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 
 EVALUATION_ROOT = Path(__file__).resolve().parent
@@ -87,7 +85,9 @@ def run_case(case: dict, max_iterations: int) -> dict:
     )
     elapsed = round(time.perf_counter() - started, 3)
     final_compile = response.get("final_compile") or {}
-    project_defined_success = bool(final_compile.get("project_defined_success", final_compile.get("basarili")))
+    project_defined_success = bool(
+        final_compile.get("project_defined_success", final_compile.get("basarili"))
+    )
     plantuml_validated_success = final_compile.get("plantuml_validated_success")
     return {
         "case_id": case["case_id"],
@@ -204,9 +204,7 @@ def build_report(max_iterations: int) -> dict:
         (row.get("final_compile") or {}).get("plantuml_runtime_available") for row in rows
     )
     plantuml_successes = (
-        sum(1 for row in rows if row["plantuml_validated_basarili"])
-        if plantuml_runtime_available
-        else None
+        sum(1 for row in rows if row["plantuml_validated_basarili"]) if plantuml_runtime_available else None
     )
     agent_terminal_valid = sum(1 for row in rows if row.get("agent_is_valid") is True)
     both_final_and_agent_valid = sum(
@@ -238,9 +236,15 @@ def build_report(max_iterations: int) -> dict:
             "project_defined_success_rate": round(project_successes / total, 4),
             "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
             "plantuml_validated_successful_repairs": plantuml_successes,
-            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1)
+            if plantuml_successes is not None
+            else None,
             "agent_terminal_valid": agent_terminal_valid,
             "both_final_compile_and_agent_terminal_valid": both_final_and_agent_valid,
             "final_compile_valid_but_agent_terminal_invalid": final_valid_agent_invalid,
@@ -308,7 +312,9 @@ def write_csv(report: dict) -> None:
                     "project_defined_basarili": row["project_defined_basarili"],
                     "plantuml_validated_basarili": row["plantuml_validated_basarili"],
                     "project_defined_final_compile_success": row["project_defined_final_compile_success"],
-                    "plantuml_validated_final_compile_success": row["plantuml_validated_final_compile_success"],
+                    "plantuml_validated_final_compile_success": row[
+                        "plantuml_validated_final_compile_success"
+                    ],
                     "sure_saniye": row["sure_saniye"],
                     "wall_time_saniye": row["wall_time_saniye"],
                     "iterasyon_sayisi": row["iterasyon_sayisi"],

@@ -5,7 +5,7 @@ import {
   ArrowRight, Home, BarChart2, ChevronDown, ChevronUp,
   Info, BookOpen, Layers,
 } from 'lucide-react';
-import { copyToClipboard, downloadPuml, downloadSvg, formatTimestamp, scoreColor } from '../utils';
+import { copyToClipboard, downloadPuml, downloadSvg, scoreColor } from '../utils';
 import Alert from '../components/Alert';
 
 // ── Yardımcı bileşenler ───────────────────────────────────────────────────────

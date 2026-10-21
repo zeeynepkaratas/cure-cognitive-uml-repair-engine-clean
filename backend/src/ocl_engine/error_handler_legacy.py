@@ -2,6 +2,7 @@
 CP2 - Hata isleme ve dogrulama yardimcilari.
 AI/validator ciktilarini tek tip JSON formata cevirir ve runtime hatalarini loglar.
 """
+
 import json
 import re
 import logging
@@ -19,7 +20,7 @@ HATA_KATEGORILERI = {
     "HALLUCINATION": "Hallusinasyon tespit edildi",
     "MISSING_CLASS": "Eksik sinif",
     "PARSE": "Parser hatasi",
-    "UNKNOWN": "Bilinmeyen hata"
+    "UNKNOWN": "Bilinmeyen hata",
 }
 
 
@@ -34,7 +35,7 @@ def json_hata_parse_et(ham_json: str) -> dict:
         pass
 
     # LLM bazen JSON'u ```json ... ``` icinde doner; once bu sarimi temizleriz.
-    temiz = re.sub(r'```json\s*|\s*```', '', ham_json).strip()
+    temiz = re.sub(r"```json\s*|\s*```", "", ham_json).strip()
     try:
         return json.loads(temiz)
     except json.JSONDecodeError:
@@ -63,17 +64,24 @@ def hata_normalize_et(hata_listesi: list, kaynak: str = "OCL") -> list:
     normalize_edilmis = []
     for hata in hata_listesi:
         if isinstance(hata, str):
-            kategori = "OCL" if "OCL" in hata.upper() else \
-                       "SYNTAX" if any(k in hata.lower() for k in ["startuml", "enduml", "sozdizim"]) else \
-                       "SEMANTIC" if any(k in hata.lower() for k in ["semantik", "hallusin", "eksik"]) else \
-                       "UNKNOWN"
-            normalize_edilmis.append({
-                "mesaj": hata,
-                "kategori": kategori,
-                "aciklama": HATA_KATEGORILERI.get(kategori, ""),
-                "kaynak": kaynak,
-                "zaman": datetime.now().isoformat()
-            })
+            kategori = (
+                "OCL"
+                if "OCL" in hata.upper()
+                else "SYNTAX"
+                if any(k in hata.lower() for k in ["startuml", "enduml", "sozdizim"])
+                else "SEMANTIC"
+                if any(k in hata.lower() for k in ["semantik", "hallusin", "eksik"])
+                else "UNKNOWN"
+            )
+            normalize_edilmis.append(
+                {
+                    "mesaj": hata,
+                    "kategori": kategori,
+                    "aciklama": HATA_KATEGORILERI.get(kategori, ""),
+                    "kaynak": kaynak,
+                    "zaman": datetime.now().isoformat(),
+                }
+            )
         elif isinstance(hata, dict):
             hata.setdefault("kaynak", kaynak)
             hata.setdefault("zaman", datetime.now().isoformat())
@@ -88,7 +96,7 @@ def exception_logla(exc: Exception, baglam: str = "") -> dict:
         "tip": type(exc).__name__,
         "mesaj": str(exc),
         "baglam": baglam,
-        "zaman": datetime.now().isoformat()
+        "zaman": datetime.now().isoformat(),
     }
     logger.error(f"[{baglam}] {type(exc).__name__}: {exc}")
     return hata_kaydi
@@ -106,20 +114,16 @@ def plantuml_syntax_kontrol(plantuml_kodu: str) -> dict:
     if "@enduml" not in plantuml_kodu:
         hatalar.append("@enduml etiketi eksik")
 
-    siniflar = re.findall(r'class\s+(\w+)', plantuml_kodu)
+    siniflar = re.findall(r"class\s+(\w+)", plantuml_kodu)
     if not siniflar:
         hatalar.append("Hic sinif tanimlanmamis")
 
-    acan = plantuml_kodu.count('{')
-    kapanan = plantuml_kodu.count('}')
+    acan = plantuml_kodu.count("{")
+    kapanan = plantuml_kodu.count("}")
     if acan != kapanan:
         hatalar.append(f"Eslesmeyen suslu parantez: {acan} acik, {kapanan} kapali")
 
-    return {
-        "gecerli": len(hatalar) == 0,
-        "hatalar": hatalar,
-        "sinif_sayisi": len(siniflar)
-    }
+    return {"gecerli": len(hatalar) == 0, "hatalar": hatalar, "sinif_sayisi": len(siniflar)}
 
 
 if __name__ == "__main__":

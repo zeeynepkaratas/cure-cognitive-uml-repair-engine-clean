@@ -48,7 +48,15 @@ def test_wilson_interval_for_shared_llm_benchmark():
 def test_shared_deterministic_repair_benchmark_separates_fallback_from_runtime_success():
     report = build_report()
     metadata = report["metadata"]
-    for field in ["commit_sha", "generated_at_utc", "python", "platform", "model", "temperature", "max_iterations"]:
+    for field in [
+        "commit_sha",
+        "generated_at_utc",
+        "python",
+        "platform",
+        "model",
+        "temperature",
+        "max_iterations",
+    ]:
         assert field in metadata
     assert report["summary"]["total_cases"] == 50
     assert report["summary"]["initially_invalid_cases"] == 50
@@ -64,7 +72,11 @@ def test_legacy_llm_result_is_preserved_but_not_reported_as_current():
     legacy_path = RESULTS / "legacy_pre_validation_fix" / "shared_benchmark_llm_experiment.json"
     current_path = RESULTS / "shared_benchmark_llm_experiment.json"
     assert legacy_path.exists()
-    assert not current_path.exists()
+    assert current_path.exists()
+    legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
+    current = json.loads(current_path.read_text(encoding="utf-8"))
+    assert legacy["summary"] != current["summary"]
+    assert len(legacy["cases"]) == len(current["cases"]) == 50
 
 
 if __name__ == "__main__":

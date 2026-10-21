@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 
 try:
     from utils.plantuml_parser import parse_classes, parse_relationships
@@ -8,49 +7,168 @@ except ModuleNotFoundError:  # package import path: src.evaluators.semantic_eval
 
 # Sınıf adı olmayan genel kelimeler
 STOP_WORDS = {
-    'The','This','These','That','When','Where','Which','Each',
-    'All','Any','Some','Both','For','And','But','Or','Not',
-    'With','From','Into','Upon','After','Before','During',
-    'the','this','these','that','when','where','which','each',
-    'all','any','some','both','for','and','but','or','not',
-    'with','from','into','upon','after','before','during',
-    'System','User','Data','Information','Process','Function',
-    'system','user','data','information','process','function',
-    'Email','Password','Token','Role','Record','Session',
-    'email','password','token','role','record','session',
-    'Request','Response','Message','Error','Status','Code',
-    'request','response','message','error','status','code',
-    'SMS','MMS','API','URL','HTTP','PDF','CSV','SRS','OCL',
-    'Active','Current','New','Old','Base','Core','Main',
-    'active','current','new','old','base','core','main',
-    'Database','Server','Client','Interface',
+    "The",
+    "This",
+    "These",
+    "That",
+    "When",
+    "Where",
+    "Which",
+    "Each",
+    "All",
+    "Any",
+    "Some",
+    "Both",
+    "For",
+    "And",
+    "But",
+    "Or",
+    "Not",
+    "With",
+    "From",
+    "Into",
+    "Upon",
+    "After",
+    "Before",
+    "During",
+    "the",
+    "this",
+    "these",
+    "that",
+    "when",
+    "where",
+    "which",
+    "each",
+    "all",
+    "any",
+    "some",
+    "both",
+    "for",
+    "and",
+    "but",
+    "or",
+    "not",
+    "with",
+    "from",
+    "into",
+    "upon",
+    "after",
+    "before",
+    "during",
+    "System",
+    "User",
+    "Data",
+    "Information",
+    "Process",
+    "Function",
+    "system",
+    "user",
+    "data",
+    "information",
+    "process",
+    "function",
+    "Email",
+    "Password",
+    "Token",
+    "Role",
+    "Record",
+    "Session",
+    "email",
+    "password",
+    "token",
+    "role",
+    "record",
+    "session",
+    "Request",
+    "Response",
+    "Message",
+    "Error",
+    "Status",
+    "Code",
+    "request",
+    "response",
+    "message",
+    "error",
+    "status",
+    "code",
+    "SMS",
+    "MMS",
+    "API",
+    "URL",
+    "HTTP",
+    "PDF",
+    "CSV",
+    "SRS",
+    "OCL",
+    "Active",
+    "Current",
+    "New",
+    "Old",
+    "Base",
+    "Core",
+    "Main",
+    "active",
+    "current",
+    "new",
+    "old",
+    "base",
+    "core",
+    "main",
+    "Database",
+    "Server",
+    "Client",
+    "Interface",
 }
 
 CLASS_SUFFIXES = (
-    'Service','Manager','Controller','Repository','Handler',
-    'Engine','Validator','Parser','Generator','Processor',
-    'Factory','Builder','Monitor','Analyzer','Evaluator',
-    'Executor','Scheduler','Adapter','Provider','Gateway',
-    'Proxy','Registry','Store','Cache','Dispatcher',
-    'Observer','Listener','Notifier','Sender',
+    "Service",
+    "Manager",
+    "Controller",
+    "Repository",
+    "Handler",
+    "Engine",
+    "Validator",
+    "Parser",
+    "Generator",
+    "Processor",
+    "Factory",
+    "Builder",
+    "Monitor",
+    "Analyzer",
+    "Evaluator",
+    "Executor",
+    "Scheduler",
+    "Adapter",
+    "Provider",
+    "Gateway",
+    "Proxy",
+    "Registry",
+    "Store",
+    "Cache",
+    "Dispatcher",
+    "Observer",
+    "Listener",
+    "Notifier",
+    "Sender",
 )
 
 RELATIONSHIP_PATTERNS = [
-    r'\b(\w+)\s+uses?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+manages?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+extends?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+contains?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+handles?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+communicates?\s+with\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+sends?\s+(?:\w+\s+)?(?:to\s+)?(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+stores?\s+(?:\w+\s+)*(?:from\s+)?(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+depends?\s+on\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+calls?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+accesses?\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+interacts?\s+with\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+delegates?\s+to\s+(?:the\s+)?(\w+)\b',
-    r'\b(\w+)\s+connects?\s+to\s+(?:the\s+)?(\w+)\b',
+    r"\b(\w+)\s+uses?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+manages?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+extends?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+contains?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+handles?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+communicates?\s+with\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+sends?\s+(?:\w+\s+)?(?:to\s+)?(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+stores?\s+(?:\w+\s+)*(?:from\s+)?(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+depends?\s+on\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+calls?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+accesses?\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+interacts?\s+with\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+delegates?\s+to\s+(?:the\s+)?(\w+)\b",
+    r"\b(\w+)\s+connects?\s+to\s+(?:the\s+)?(\w+)\b",
 ]
+
 
 def is_valid_srs_class(word: str) -> bool:
     if word in STOP_WORDS or word.lower() in {s.lower() for s in STOP_WORDS}:
@@ -59,9 +177,10 @@ def is_valid_srs_class(word: str) -> bool:
         return False
     if word.isupper() and len(word) <= 4:
         return False
-    if not re.match(r'^[A-Z][a-zA-Z0-9]{2,}$', word):
+    if not re.match(r"^[A-Z][a-zA-Z0-9]{2,}$", word):
         return False
     return True
+
 
 def extract_srs_entities(srs_metni: str) -> dict:
     """SRS metninden varlıkları çıkarır — gelişmiş filtreli versiyon."""
@@ -69,14 +188,14 @@ def extract_srs_entities(srs_metni: str) -> dict:
 
     # Önce bilinen suffix'li sınıflar
     for suffix in CLASS_SUFFIXES:
-        pattern = rf'\b([A-Z][a-zA-Z0-9]*{suffix})\b'
+        pattern = rf"\b([A-Z][a-zA-Z0-9]*{suffix})\b"
         for m in re.finditer(pattern, srs_metni):
             w = m.group(1)
             if is_valid_srs_class(w):
                 candidates[w] = candidates.get(w, 0) + 3
 
     # CamelCase
-    for m in re.finditer(r'\b([A-Z][a-z]+(?:[A-Z][a-z]+)+)\b', srs_metni):
+    for m in re.finditer(r"\b([A-Z][a-z]+(?:[A-Z][a-z]+)+)\b", srs_metni):
         w = m.group(1)
         if is_valid_srs_class(w) and w not in candidates:
             candidates[w] = candidates.get(w, 0) + 2
@@ -122,14 +241,9 @@ def hesapla_f1(tahmin: set, gercek: set) -> dict:
     kesisim = len(tahmin_n & gercek_n)
     precision = kesisim / len(tahmin_n) if tahmin_n else 0.0
     recall = kesisim / len(gercek_n) if gercek_n else 0.0
-    f1 = (2 * precision * recall / (precision + recall)
-          if (precision + recall) > 0 else 0.0)
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
 
-    return {
-        "precision": round(precision, 3),
-        "recall": round(recall, 3),
-        "f1": round(f1, 3)
-    }
+    return {"precision": round(precision, 3), "recall": round(recall, 3), "f1": round(f1, 3)}
 
 
 def calculate_semantic_fidelity(srs_metni: str, plantuml_kodu: str) -> dict:
@@ -172,9 +286,9 @@ def calculate_semantic_fidelity(srs_metni: str, plantuml_kodu: str) -> dict:
             "C1_sinif_dogrulugu": round(c1, 3),
             "C2_iliski_dogrulugu": round(c2, 3),
             "C3_butunluk": round(c3, 3),
-            "C4_tutarlilik": round(c4, 3)
+            "C4_tutarlilik": round(c4, 3),
         },
-        "gecti_mi": genel_skor >= 0.75
+        "gecti_mi": genel_skor >= 0.75,
     }
 
 
@@ -191,6 +305,7 @@ if __name__ == "__main__":
     The AdminController extends the BaseController with admin-specific permissions.
     """
     from srs_parser import srs_to_plantuml
+
     r = srs_to_plantuml(srs)
     print("Sınıflar:", r["bulunan_siniflar"])
     ev = calculate_semantic_fidelity(srs, r["plantuml_kodu"])

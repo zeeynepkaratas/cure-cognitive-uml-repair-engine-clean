@@ -81,7 +81,7 @@ export const saveToHistory = (entry) => {
     const existing = JSON.parse(localStorage.getItem(key) || '[]');
     const updated = [entry, ...existing].slice(0, 20);
     localStorage.setItem(key, JSON.stringify(updated));
-  } catch (_) {
+  } catch {
     // localStorage erişim hatalarını yut
   }
 };
@@ -90,7 +90,7 @@ export const saveToHistory = (entry) => {
 export const loadHistory = () => {
   try {
     return JSON.parse(localStorage.getItem('cure_analysis_history') || '[]');
-  } catch (_) {
+  } catch {
     return [];
   }
 };
@@ -99,5 +99,5 @@ export const loadHistory = () => {
 export const clearHistory = () => {
   try {
     localStorage.removeItem('cure_analysis_history');
-  } catch (_) {}
+  } catch { /* Storage is optional when browser privacy settings deny access. */ }
 };

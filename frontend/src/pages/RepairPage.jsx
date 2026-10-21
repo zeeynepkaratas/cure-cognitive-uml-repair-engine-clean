@@ -4,7 +4,7 @@ import {
   Wrench, Home, BarChart2, AlertCircle, Clock, Cpu,
 } from 'lucide-react';
 import { autonomousRepair } from '../services/api';
-import { downloadPuml, downloadSvg, formatDuration } from '../utils';
+import { downloadPuml, downloadSvg } from '../utils';
 import Alert from '../components/Alert';
 
 // ── Faz sabitleri (artık mockData'ya bağımlı değil) ──────────────────────────

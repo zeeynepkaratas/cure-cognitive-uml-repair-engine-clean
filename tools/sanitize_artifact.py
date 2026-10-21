@@ -1,4 +1,5 @@
 """Redact contributor identities without altering numeric/boolean evidence."""
+
 from __future__ import annotations
 
 import argparse
@@ -18,7 +19,9 @@ PERSONAL_OWNERS = set()
 
 def redact(text: str) -> str:
     for owner in PERSONAL_OWNERS:
-        text = re.sub(r"https?://github\.com/" + re.escape(owner) + r"/[^\s\"'<>)]*", ANONYMOUS_URL, text, flags=re.I)
+        text = re.sub(
+            r"https?://github\.com/" + re.escape(owner) + r"/[^\s\"'<>)]*", ANONYMOUS_URL, text, flags=re.I
+        )
     # JSON strings and ordinary text can contain differently escaped backslashes.
     text = re.sub(r"[A-Za-z]:[\\/]+Users[\\/]+[^\s\"'<>\r\n]*", "<REDACTED_PATH>", text, flags=re.I)
     if PERSONAL is not None:
@@ -39,8 +42,12 @@ def numeric_values(value, path=()):
 
 
 def evidence_manifest(root=ROOT):
-    return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-            for directory in EVIDENCE_DIRS for p in sorted((root / directory).rglob("*")) if p.is_file()}
+    return {
+        p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+        for directory in EVIDENCE_DIRS
+        for p in sorted((root / directory).rglob("*"))
+        if p.is_file()
+    }
 
 
 def main():
@@ -62,7 +69,12 @@ def main():
     checks = []
     for name in files:
         path = root / name
-        if not name or name == "data_pipeline/datasets/pure_dataset.csv" or not path.is_file() or path.suffix.lower() not in {".json", ".csv", ".md", ".py", ".txt", ".yml", ".yaml"}:
+        if (
+            not name
+            or name == "data_pipeline/datasets/pure_dataset.csv"
+            or not path.is_file()
+            or path.suffix.lower() not in {".json", ".csv", ".md", ".py", ".txt", ".yml", ".yaml"}
+        ):
             continue
         try:
             before = path.read_text(encoding="utf-8")
@@ -70,25 +82,47 @@ def main():
             continue
         if path.suffix == ".json":
             original = json.loads(before)
+
             def strings(v):
-                if isinstance(v, str): return redact(v)
-                if isinstance(v, list): return [strings(x) for x in v]
-                if isinstance(v, dict): return {k: strings(x) for k, x in v.items()}
+                if isinstance(v, str):
+                    return redact(v)
+                if isinstance(v, list):
+                    return [strings(x) for x in v]
+                if isinstance(v, dict):
+                    return {k: strings(x) for k, x in v.items()}
                 return v
+
             cleaned = strings(original)
-            after = json.dumps(cleaned, ensure_ascii=False, indent=2) + "\n" if cleaned != original else before
+            after = (
+                json.dumps(cleaned, ensure_ascii=False, indent=2) + "\n" if cleaned != original else before
+            )
             assert numeric_values(original) == numeric_values(json.loads(after)), name
         else:
             after = redact(before)
         if before != after:
             path.write_text(after, encoding="utf-8")
-            checks.append({"file": name, "numeric_boolean_values_unchanged": True,
-                           "sha256_before": hashlib.sha256(before.encode()).hexdigest(),
-                           "sha256_after": hashlib.sha256(after.encode()).hexdigest()})
+            checks.append(
+                {
+                    "file": name,
+                    "numeric_boolean_values_unchanged": True,
+                    "sha256_before": hashlib.sha256(before.encode()).hexdigest(),
+                    "sha256_after": hashlib.sha256(after.encode()).hexdigest(),
+                }
+            )
     target = root / "docs/evidence-redaction-verification.json"
-    target.write_text(json.dumps({"changes": checks, "json_numeric_boolean_verification": "passed",
-                                  "history_anonymous": False,
-                                  "note": "The repository host and Git history still identify contributors; use an exported snapshot for blind review."}, indent=2) + "\n", encoding="utf-8")
+    target.write_text(
+        json.dumps(
+            {
+                "changes": checks,
+                "json_numeric_boolean_verification": "passed",
+                "history_anonymous": False,
+                "note": "The repository host and Git history still identify contributors; use an exported snapshot for blind review.",
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     print(f"Redacted {len(checks)} text files; numeric and boolean JSON values preserved.")
 
 

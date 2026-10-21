@@ -273,14 +273,14 @@ SHARED_REPAIR_BENCHMARK_CASES = [
         "category": "only_notes",
         "description": "Only PlantUML note text, no classes",
         "srs_metni": "The ConfigService loads runtime configuration.",
-        "plantuml_kodu": "@startuml\nnote \"configuration flow\" as N1\n@enduml",
+        "plantuml_kodu": '@startuml\nnote "configuration flow" as N1\n@enduml',
     },
     {
         "case_id": "S39",
         "category": "missing_both_only_notes",
         "description": "Only note text and missing boundaries",
         "srs_metni": "The ConfigService loads runtime configuration.",
-        "plantuml_kodu": "note \"configuration flow\" as N1",
+        "plantuml_kodu": 'note "configuration flow" as N1',
     },
     {
         "case_id": "S40",

@@ -177,6 +177,12 @@ def metadata(args, cases):
         "input_sha256": sha(json.dumps(cases, sort_keys=True).encode()),
         "config": {k: v for k, v in vars(args).items() if k not in {"run_dir", "resume"}},
         "compiler_cache": "per-process diagram SHA; measurements reused, repair timing separate from validation",
+        "extended_baseline_version": "v4.1-truncated-source-fix; post-test exploratory revision",
+        "runtime_source_sha256": {
+            str(p.relative_to(ROOT)).replace(chr(92), "/"): sha(p.read_bytes())
+            for folder in ["backend/src", "ai_core/src"]
+            for p in sorted((ROOT / folder).rglob("*.py"))
+        },
         "C5_caveat": "Original prompts and loop; local lexical selection of original four rules replaces historical OpenAI embedding ranking. Not a bit-identical full v2 replication.",
         "pricing_usd_per_million": {
             "input": 0.15,

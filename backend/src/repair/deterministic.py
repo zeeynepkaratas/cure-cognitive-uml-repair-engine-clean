@@ -74,6 +74,9 @@ def deterministic_extended(code: str) -> tuple[str, list[str]]:
             actions.append("removed_relation_with_undeclared_endpoint:" + line.strip())
             continue
         clean = strip_comments(line, mask_strings=True).strip()
+        if not rels and re.match(r"^(?:[<*o|]+)?[-.][-.<>|*o\[\]#\w,]*", clean):
+            actions.append("removed_truncated_relation_without_source:" + line.strip())
+            continue
         if (
             not rels
             and re.match(r'^\w+\s+(?:"[^"]*"\s*)?(?:[-.][-.<>|*o\[\]#\w,]*)', clean)

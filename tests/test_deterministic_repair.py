@@ -48,3 +48,15 @@ def test_minimal_is_original_function():
 
     code = "' class Fake {}"
     assert deterministic_minimal(code) == deterministic_backend_repair(code)
+
+
+import pytest
+
+
+@pytest.mark.parametrize("fragment", ["--> WorkerService", "<-- WorkerService", "..> WorkerService"])
+def test_truncated_arrow_without_source_is_dropped(fragment):
+    code = "@startuml\nclass WorkerService {}\n" + fragment + "\n@enduml"
+    output, actions = deterministic_extended(code)
+    assert fragment not in output
+    assert any("without_source" in action for action in actions)
+    assert "class WorkerService" in output

@@ -48,3 +48,7 @@ Retain every attempt, including unsuccessful model/API calls. No selective retri
 ## Release and manuscript handoff
 
 Historical results retain their v2/v3 identifiers. The intended future paper artifact is the fully audited v4 commit after actual experiment completion; no v4 tag is created here. The revision report records the current code/protocol commit and execution status. A final immutable tag must be chosen after remaining experiments and independent checks, without moving earlier tags. The manuscript is outside this revision task.
+
+## F22 addendum — post-test deterministic bug fix, before any LLM call
+
+The first non-LLM test run at code commit d5cf751b9197835bf947c4eaf6f8a29b6ba19cc1 compiled 49/50 shared C2 outputs. Inspection found a missing-source truncated-arrow pattern (S33, `--> WorkerService`) was not covered despite the pre-specified requirement to drop truncated relations. A unit test and conservative source-missing-arrow removal were added. The first run and its original protocol hash remain unchanged in `nonllm-20261022`; the new run is separately labelled `nonllm-sourcefix-20261022`. The revised C2 result is a post-test exploratory measurement, not an unbiased confirmation of an untouched baseline. No prompt or retrieval rule was tuned from these outcomes. Fresh independent scenarios are needed for confirmatory evaluation of the modified baseline. This addendum is committed before the second run and before any paid LLM call.

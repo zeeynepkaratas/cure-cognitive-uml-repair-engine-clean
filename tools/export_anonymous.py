@@ -20,7 +20,12 @@ def export(output: Path):
     remotes = subprocess.check_output(["git", "remote", "-v"], cwd=ROOT).decode()
     owners = set(re.findall(r"github\.com[:/]([^/\s]+)", remotes))
     identities = [
-        s for s in authors | owners if s and "[bot]" not in s and not s.lower().startswith("anonymous")
+        s
+        for s in authors | owners
+        if s
+        and "[bot]" not in s
+        and not s.lower().startswith("anonymous")
+        and s.lower() not in {"cure team", "codex"}
     ]
     patterns = [re.compile(re.escape(s), re.I) for s in identities]
     paths = []

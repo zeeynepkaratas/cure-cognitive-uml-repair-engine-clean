@@ -177,6 +177,7 @@ class UMLRepairAgent:
                     }
                 )
                 item["latency_s"] = time.perf_counter() - started
+                item["response_text"] = response["content"]
                 trace.append(item)
                 return response["content"], item
             except Exception as exc:
@@ -238,6 +239,8 @@ class UMLRepairAgent:
                         critic = decision["is_valid"]
                         errors = decision["errors"]
                         item["critic_valid"] = critic
+                        item["critic_errors"] = list(errors)
+                        item["critic_categories"] = decision.get("categories", [])
                         accepted = critic and (
                             legacy or (validation["project_valid"] and validation["compiler_valid"] is True)
                         )
@@ -304,6 +307,7 @@ class UMLRepairAgent:
             repair_attempt_count=repairs,
             is_valid=critic,
             critic_valid=critic,
+            final_critic_errors=list(errors),
             project_valid=validation["project_valid"],
             compiler_valid=validation["compiler_valid"],
             regression=regression,

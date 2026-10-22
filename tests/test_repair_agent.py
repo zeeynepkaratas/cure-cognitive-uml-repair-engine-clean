@@ -158,3 +158,10 @@ def test_legacy_healer_error_serialisation_matches_original():
     assert agent._prompt("healer", "SRS", BAD, errors, validation(BAD), []) == template.format(
         current_uml=BAD, errors=json.dumps(errors)
     )
+
+
+def test_raw_critic_response_and_findings_are_retained():
+    state, _ = run([decision(False), GOOD, decision(True)])
+    assert state["trace"][0]["response_text"] == decision(False)
+    assert state["trace"][0]["critic_errors"] == ["invalid"]
+    assert state["final_critic_errors"] == []

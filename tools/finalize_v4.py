@@ -110,15 +110,7 @@ def finalize(directory, audit_directory):
             else:
                 cache.setdefault(digest, row)
     paths = [p / "results.json" for p in sources]
-    paths += [
-        ROOT / "backend/evaluation/results" / name
-        for name in [
-            "shared_benchmark_deterministic_experiment.json",
-            "shared_benchmark_llm_experiment.json",
-            "pure_external_deterministic_experiment.json",
-            "pure_external_llm_experiment.json",
-        ]
-    ]
+    paths += sorted((ROOT / "backend/evaluation/results").rglob("*.json"))
     result = audit(paths, cached=cache)
     # Publish portable source identifiers rather than local absolute paths.
     for occurrence in result["occurrences"]:

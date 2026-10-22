@@ -1,6 +1,10 @@
 # Revision report v4
 
-## Status at the pre-LLM code freeze
+## Current execution
+
+All800 development case-runs are complete and retained. The frozen2800-case-run main matrix is running at source/protocol1ead72ff7071e1f6de5867aaa250b0483d91431f; RUN_LLM_EXPERIMENTS.md records exact commands. Final conclusions await its completed, verified outputs. The local PURE index has now executed; F26 supersedes its earlier pending status. Current offline checks:164passed,2optionalcompiler skips; two real compiler smoke tests separately pass with the pinned JAR. GitHubCI passed for the generation freeze. The manuscript remains untouched.
+
+## Historical status at the pre-LLM code freeze
 
 The project has been revised on `revision/v4`; the manuscript has not been edited. Real non-LLM measurements are complete: two separately retained 300-case runs (C0–C2 on 100 inputs). LLM runs are authorized without a human USD ceiling, and a key is configured locally; provider availability and real experiments are still pending at this commit. Presence of code/fake-client tests is not LLM evidence. Subsequent run manifests and execution addenda must identify what actually completed.
 
@@ -31,7 +35,7 @@ The compiler-grounded validator audit covers 248 unique diagrams (2,656 recorded
 | F7 | Single run, missing traces/snapshot/usage/cost | Five-repetition plan, explicit snapshot, every-call metadata/timing/token trace, durable budgets and exact paired analysis | run_matrix.py, analyze_v4.py | test_run_matrix.py, test_analysis_v4.py | Repeated LLM evidence pending |
 | F8 | Free relationship credit and poor source extraction | Frozen legacy reproduces S02=.25; modern proxy drops absent relation term and returns N/A if no entities; shared stop words | semantic_eval.py, entity_rules.py, docs/metrics.md | test_semantic_proxy.py | S02 modern score0, legacy.25; proxy is not semantic correctness |
 | F9 | Weak reference matching; missing SD/model sizes | Explicit normalization; undirected/directed/typed/multiplicity relations, attributes, missing/spurious elements; all vs compiling-only summaries | reference_metrics.py, analyze_v4.py | test_reference_metrics.py | Derived tables include macro mean, sample SD, median and reference sizes |
-| F10 | Missing raw pipeline/index and pilot provenance | Verified v1 archive; XML/HTML/Punkt processing; new CSV+document manifest; local index builder | data_pipeline/, docs/pure-pipeline-v4.md | test_pure_pipeline.py | 18 XML documents, 7017 new rows vs retained7219; index not executed |
+| F10 | Missing raw pipeline/index and pilot provenance | Verified v1 archive; XML/HTML/Punkt processing; new CSV+document manifest; local index builder | data_pipeline/, docs/pure-pipeline-v4.md | test_pure_pipeline.py | 18 XML documents, 7017 new rows vs retained7219; executed7162-chunk384-d index (F26) |
 | F11 | Per-request embedding-index rebuild with four arbitrary rules | Cached deterministic lexical fallback with catalogue/domain guards and logged rule IDs/scores | rag/local_rules.py, rules/catalogue.json | rule-cache/domain-guard tests | No embedding API calls; C5 adaptation below |
 | F12 | Silent agent/API errors; unbounded requests | Explicit status/error, timeout/retry/token limits, structured decisions, stop permanent provider failures | repair_agent.py, endpoints.py | parse/API/timeout tests | Error records retained; secrets redacted |
 | F13 | basarili had inconsistent meaning | Independent project/compiler/Critic fields across current endpoints and UI; deprecated aliases explained | endpoints.py, frontend/src/ | test_api_safety.py; frontend lint/build | Compiler-unavailable remains null |
@@ -49,7 +53,7 @@ The compiler-grounded validator audit covers 248 unique diagrams (2,656 recorded
 
 K1: content redaction and an export procedure are provided; the public account/history and linkable retained commit IDs are not anonymous. A genuinely independent anonymous upload and contextual identity review remain necessary. K2: current docs qualify claims; manuscript rewriting is deliberately outside this task. K3: infrastructure and actual non-LLM baselines are complete, real repeated LLM baselines/ablations remain pending at freeze. K4: semantic defects and structural metrics exist; independently reviewed, structurally diverse gold data remain open. K5: compiler feedback/Critic conjunction are implemented and tested, empirical effect remains unmeasured. K6: primary metrics are separated and compiler agreement audited; this does not validate natural-language semantics.
 
-Other open items: local bge model/index execution (not installed), Docker image build (Docker unavailable), exact historical34268-to7219 filtering, full historical embedding-retrieval distribution, independent domain-expert validation and anonymous hosting. None is replaced by an invented result. Manuscript ORCIDs/contributions/funding/acknowledgements were not touched.
+Other open items: Docker image build (Docker unavailable), exact historical34268-to7219 filtering, full historical embedding-retrieval distribution, independent domain-expert validation and anonymous hosting. None is replaced by an invented result. Manuscript ORCIDs/contributions/funding/acknowledgements were not touched.
 
 Automatic approval review rejected deleting the two historical not_run notices and broad rewriting of protected evidence because those conflict with retained-evidence immutability. They remain in the repository, with explicit supersession guidance, and are excluded from anonymous export. Legacy missing-value strings in protected files are likewise retained. No rejected deletion was retried through a workaround.
 
@@ -70,3 +74,11 @@ New explicit v4.1 English templates clarify generic PlantUML endpoint multiplici
 ## F25 — final prompt selection and safe concurrent execution
 
 All800 development case-runs are preserved. The final v4.1 selection record explicitly discloses connection failures and does not claim a causal improvement. The runner now uses bounded case concurrency, a two-process compiler semaphore, atomic thread-safe budget reservations, reproducible randomized task order and per-case SDK connection reuse/cleanup. Worker failures retain in-flight outputs and separate error records. End-to-end timing is separate from repair-loop timing. Resume preserves completed errored cases and archives incomplete budget traces. The API/UI overall acceptance now requires an accepted termination as well as compiler/project validity, avoiding a success indication when the Critic still rejects a compiled candidate. Offline tests cover concurrent budget contention, task completeness, resume, failure preservation and retained-evidence path protection.
+
+## F26 — completed local index and analysis presentation
+
+The CPU bge-small-en-v1.5 build completed at immutable model revision5c38ec7c405ec4b44b94cc5a9bb96e735b38267a. The7017-row source CSV produced7162 overlapping chunks and a persisted384-dimensional FAISS index. Source/output hashes and the separate package lock are published. The index was loaded and its dimension/count/normalized-vector self-similarity verified. No embedding API was used, and this document index is not claimed as the rule retriever used in C0–C7.
+
+The analysis now handles development runs without C0, reports paired between-condition semantic differences in addition to delta-vs-input, semantic mean/SD across repetitions and output-hash disagreement. Known-usage cost subtotals preserve unknown-usage counts. Compiler/defect/Critic/iteration figures show actual bars/heatmaps rather than text lists. All-zero scenario means receive a defined Wilcoxon p=1 rather than NaN, including opposing within-scenario case differences. These are analysis-only changes; generation code/prompts remain frozen at1ead72ff7071e1f6de5867aaa250b0483d91431f during the main test.
+
+The local CPU index build overlapped the first2.6 minutes of the main test (index manifest timestamp14:29:24UTC; main start14:26:46UTC). Conditions were assigned in seeded shuffled order. Timing remains a contended local measurement, not isolated model-inference latency; this does not change the compiler/gold-metric definitions.

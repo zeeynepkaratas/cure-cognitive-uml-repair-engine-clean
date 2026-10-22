@@ -1,0 +1,7 @@
+| dataset | condition | rep | n | compiler_pass | compiler_rate | project_pass | regressions | estimated_cost_usd |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| semantic | C6 | 1 | 20 | 20 | 1.0 | 20 | 0 | 0.0120804 |
+| semantic | C6 | 2 | 20 | 20 | 1.0 | 20 | 0 | 0.010849349999999999 |
+| semantic | C6 | 3 | 20 | 20 | 1.0 | 20 | 0 | 0.011685599999999999 |
+| semantic | C6 | 4 | 20 | 20 | 1.0 | 20 | 0 | 0.0105813 |
+| semantic | C6 | 5 | 20 | 18 | 0.9 | 16 | 0 | None |

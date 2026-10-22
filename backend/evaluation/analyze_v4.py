@@ -62,12 +62,13 @@ def paired_delta(values, groups, seed=1729, draws=10000):
         "wilcoxon_unit": "scenario mean difference (individual case when the scenario is unique)",
         "mean_delta": float(values.mean()),
         "wilcoxon_p": float(wilcoxon(cluster_means, alternative="two-sided", zero_method="wilcox").pvalue)
-        if np.any(values)
+        if np.any(cluster_means)
         else 1.0,
         "bootstrap_ci": list(map(float, np.quantile(means, [0.025, 0.975], method="linear"))),
         "bootstrap_draws": draws,
         "bootstrap_seed": seed,
         "all_zero": not bool(np.any(values)),
+        "all_cluster_means_zero": not bool(np.any(cluster_means)),
     }
 
 
@@ -118,6 +119,13 @@ def compute(rows):
             "tokens_in": tokens_in,
             "tokens_out": tokens_out,
             "estimated_cost_usd": (tokens_in * 0.15 + tokens_out * 0.60) / 1e6 if usage_known else None,
+            "estimated_cost_per_case_usd": describe(
+                (r["tokens_in"] * 0.15 + r["tokens_out"] * 0.60) / 1e6
+                if r["tokens_in"] is not None and r["tokens_out"] is not None
+                else None
+                for r in items
+            ),
+            "case_usage_unknown_n": sum(r["tokens_in"] is None or r["tokens_out"] is None for r in items),
             "warnings_added": sum(r["warnings_added"] for r in items),
             "warnings_removed": sum(r["warnings_removed"] for r in items),
             "reference_sizes": {
@@ -149,6 +157,7 @@ def compute(rows):
         }
         summaries.append(summary)
     comparisons = []
+    semantic_comparisons = []
     datasets = sorted({r["dataset"] for r in complete})
     for dataset in datasets:
         reps = sorted({r["rep"] for r in complete if r["dataset"] == dataset})
@@ -171,7 +180,7 @@ def compute(rows):
             for a, b in pairs:
                 if rep > 1 and a in {"C0", "C1", "C2"} and b in {"C0", "C1", "C2"}:
                     continue
-                if not by[a] or not by[b]:
+                if not by.get(a) or not by.get(b):
                     continue
                 common = sorted(set(by[a]) & set(by[b]))
                 for field in ["compiler_valid", "project_valid"]:
@@ -188,6 +197,26 @@ def compute(rows):
                         **exact_mcnemar([by[a][i][field] for i in ids], [by[b][i][field] for i in ids]),
                     }
                     family.append(result)
+                for metric in ["reference_class", "reference_rel_typed"]:
+                    ids = [i for i in common if by[a][i].get("metrics") and by[b][i].get("metrics")]
+                    if ids:
+                        semantic_comparisons.append(
+                            {
+                                "dataset": dataset,
+                                "rep": rep,
+                                "a": a,
+                                "b": b,
+                                "metric": metric,
+                                "difference": "b minus a; identical input cancels in delta-F1 difference",
+                                **paired_delta(
+                                    [
+                                        by[b][i]["metrics"][metric]["f1"] - by[a][i]["metrics"][metric]["f1"]
+                                        for i in ids
+                                    ],
+                                    [by[a][i].get("scenario_id", i) for i in ids],
+                                ),
+                            }
+                        )
             for result, corrected in zip(family, holm([r["p_exact_two_sided"] for r in family])):
                 result["p_holm"] = corrected
             comparisons.extend(family)
@@ -196,9 +225,11 @@ def compute(rows):
         for condition in sorted({r["condition"] for r in complete if r["dataset"] == dataset}):
             sample = [s for s in summaries if s["dataset"] == dataset and s["condition"] == condition]
             by_case = defaultdict(list)
+            by_hash = defaultdict(list)
             for row in complete:
                 if row["dataset"] == dataset and row["condition"] == condition:
                     by_case[row["case_id"]].append(row["compiler_valid"])
+                    by_hash[row["case_id"]].append(row.get("output_sha256"))
             repeated = {key: values for key, values in by_case.items() if len(values) > 1}
             repetitions.append(
                 {
@@ -206,6 +237,18 @@ def compute(rows):
                     "condition": condition,
                     "repetitions_observed": len(sample),
                     "compile_rate_across_reps": describe(s["compiler_rate"] for s in sample),
+                    "class_f1_across_reps": describe(
+                        s["metrics"].get("reference_class", {}).get("all_outputs", {}).get("mean")
+                        for s in sample
+                    ),
+                    "typed_rel_f1_across_reps": describe(
+                        s["metrics"].get("reference_rel_typed", {}).get("all_outputs", {}).get("mean")
+                        for s in sample
+                    ),
+                    "output_disagreement_rate": sum(len(set(by_hash[k])) > 1 for k in repeated)
+                    / len(repeated)
+                    if repeated
+                    else None,
                     "case_disagreement_rate": sum(len(set(v)) > 1 for v in repeated.values()) / len(repeated)
                     if repeated
                     else None,
@@ -233,9 +276,14 @@ def compute(rows):
                     "delta_class_f1": describe(
                         r["metrics"].get("delta_class_f1") for r in items if r.get("metrics")
                     ),
+                    "delta_rel_typed_f1": describe(
+                        r["metrics"].get("delta_rel_typed_f1") for r in items if r.get("metrics")
+                    ),
                 }
             )
     observed = sorted({r["condition"] for r in complete})
+    calls = [t for r in rows for t in r.get("trace", [])]
+    known = [t for t in calls if t.get("tokens_in") is not None and t.get("tokens_out") is not None]
     return {
         "schema_version": 4,
         "completed_case_runs": len(complete),
@@ -244,6 +292,16 @@ def compute(rows):
         "missing_conditions": [f"C{i}" for i in range(8) if f"C{i}" not in observed],
         "summaries": summaries,
         "mcnemar": comparisons,
+        "paired_semantic": semantic_comparisons,
+        "all_recorded_attempt_usage": {
+            "attempts": len(calls),
+            "known_usage_attempts": len(known),
+            "unknown_usage_attempts": len(calls) - len(known),
+            "estimated_known_usage_subtotal_usd": sum(
+                (t["tokens_in"] * 0.15 + t["tokens_out"] * 0.60) / 1e6 for t in known
+            ),
+            "caveat": "Subtotal excludes unknown provider usage; not a complete bill. Includes incomplete rows present in results.json; archived attempts reported separately.",
+        },
         "repetitions": repetitions,
         "defects": defects,
         "limitations": [
@@ -319,6 +377,7 @@ def render(directory, numbers):
         (tables / (stem + ".tex")).write_text("\n".join(content + [r"\end{tabular}"]), encoding="utf-8")
 
     extra_table("mcnemar", numbers["mcnemar"])
+    extra_table("paired-semantic", numbers["paired_semantic"])
     extra_table("repetitions", numbers["repetitions"])
     extra_table("defects", numbers["defects"])
     reference_rows = []
@@ -358,50 +417,115 @@ def render(directory, numbers):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots(figsize=(9, 4))
-    labels = [f"{s['dataset']}/{s['condition']}/r{s['rep']}" for s in numbers["summaries"]]
-    ax.bar(labels, [s["compiler_rate"] or 0 for s in numbers["summaries"]])
-    ax.set_ylim(0, 1)
-    ax.set_ylabel("Observed compilation rate")
-    ax.tick_params(axis="x", rotation=70)
+    datasets = sorted({s["dataset"] for s in numbers["summaries"]})
+    fig, axes = plt.subplots(1, max(1, len(datasets)), figsize=(5 * max(1, len(datasets)), 4), squeeze=False)
+    for ax, dataset in zip(axes[0], datasets):
+        entries = [s for s in numbers["summaries"] if s["dataset"] == dataset]
+        conditions = sorted({s["condition"] for s in entries})
+        rates = [
+            [s["compiler_rate"] for s in entries if s["condition"] == c and s["compiler_rate"] is not None]
+            for c in conditions
+        ]
+        ax.bar(conditions, [np.mean(v) if v else 0 for v in rates], color="#4C78A8", alpha=0.75)
+        for i, values in enumerate(rates):
+            ax.scatter([i] * len(values), values, color="black", s=10, zorder=3)
+        ax.set_ylim(0, 1.05)
+        ax.set_title(dataset)
+        ax.set_ylabel("Compilation rate (bar: repetition mean; dots: repetitions)")
     fig.tight_layout()
     fig.savefig(figures / "compile-rate.pdf")
     plt.close(fig)
-    fig, ax = plt.subplots(figsize=(9, 4))
-    data = [
-        d
-        for d in numbers["defects"]
-        if d["dataset"] == "semantic" and d["delta_class_f1"]["mean"] is not None
-    ]
-    ax.bar([d["condition"] + "/" + d["defect_id"] for d in data], [d["delta_class_f1"]["mean"] for d in data])
-    ax.set_ylabel("Mean class delta-F1 (descriptive)")
-    ax.tick_params(axis="x", rotation=90)
+
+    data = [d for d in numbers["defects"] if d["dataset"] == "semantic"]
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    conditions = sorted({d["condition"] for d in data})
+    defect_ids = sorted({d["defect_id"] for d in data}, key=lambda x: int(x[1:]) if x[1:].isdigit() else 99)
+    for ax, field, title in zip(
+        axes, ["delta_class_f1", "delta_rel_typed_f1"], ["Class delta-F1", "Typed relationship delta-F1"]
+    ):
+        if not data:
+            ax.text(0.5, 0.5, "Semantic outcomes not observed", ha="center")
+            ax.set_axis_off()
+            continue
+        matrix = np.full((len(conditions), len(defect_ids)), np.nan)
+        for i, c in enumerate(conditions):
+            for j, d in enumerate(defect_ids):
+                values = [
+                    e[field]["mean"]
+                    for e in data
+                    if e["condition"] == c and e["defect_id"] == d and e[field]["mean"] is not None
+                ]
+                if values:
+                    matrix[i, j] = np.mean(values)
+        im = ax.imshow(matrix, cmap="RdBu", vmin=-1, vmax=1, aspect="auto")
+        ax.set_xticks(range(len(defect_ids)), defect_ids)
+        ax.set_yticks(range(len(conditions)), conditions)
+        ax.set_title(title + " (descriptive, mean across repetitions)")
+        for i in range(len(conditions)):
+            for j in range(len(defect_ids)):
+                if np.isfinite(matrix[i, j]):
+                    ax.text(j, i, f"{matrix[i, j]:.2f}", ha="center", va="center", fontsize=7)
+        fig.colorbar(im, ax=ax, shrink=0.7)
     fig.tight_layout()
     fig.savefig(figures / "delta-f1-defect.pdf")
     plt.close(fig)
-    for filename, title, field in [
-        ("critic-confusion.pdf", "Critic/compiler/project observations", "critic_compiler_project"),
-        ("iteration-trace.pdf", "First compiler-valid iteration", "first_compiler_valid_iteration"),
-    ]:
-        fig, ax = plt.subplots(figsize=(8, 4))
-        observed = [s for s in numbers["summaries"] if s["condition"] not in {"C0", "C1", "C2"}]
+
+    observed = [s for s in numbers["summaries"] if s["critic_compiler_project"]]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 5))
+    conditions = sorted({s["condition"] for s in observed})
+    combinations = [(True, True), (True, False), (False, True), (False, False)]
+    for ax, field in zip(axes, ["compiler", "project"]):
         if not observed:
-            ax.text(0.5, 0.5, "LLM conditions not executed", ha="center", va="center")
+            ax.text(0.5, 0.5, "Critic outcomes not observed", ha="center")
             ax.set_axis_off()
-        else:
-            ax.text(
-                0.01,
-                0.99,
-                "\n".join(f"{s['dataset']}/{s['condition']}/r{s['rep']}: {s[field]}" for s in observed),
-                va="top",
-                fontsize=6,
-                wrap=True,
-            )
-            ax.set_axis_off()
-        ax.set_title(title)
-        fig.tight_layout()
-        fig.savefig(figures / filename)
-        plt.close(fig)
+            continue
+        matrix = np.zeros((len(conditions), 4), dtype=int)
+        unknown = 0
+        for entry in observed:
+            for key, count in entry["critic_compiler_project"].items():
+                statuses = dict(pair.split("=") for pair in key.split("|"))
+                if statuses[field] not in {"True", "False"}:
+                    unknown += count
+                    continue
+                pair = (statuses["critic"] == "True", statuses[field] == "True")
+                matrix[conditions.index(entry["condition"]), combinations.index(pair)] += count
+        ax.imshow(matrix, cmap="Blues", aspect="auto")
+        ax.set_xticks(range(4), [f"C={c}\nV={v}" for c, v in combinations], fontsize=8)
+        ax.set_yticks(range(len(conditions)), conditions)
+        ax.set_title(f"Critic (C) × {field} (V), unknown={unknown}")
+        for i in range(len(conditions)):
+            for j in range(4):
+                ax.text(j, i, str(matrix[i, j]), ha="center", va="center")
+    fig.suptitle("Observed case-run counts; repeated cases are not independent samples")
+    fig.tight_layout()
+    fig.savefig(figures / "critic-confusion.pdf")
+    plt.close(fig)
+
+    observed = [s for s in numbers["summaries"] if s["condition"] not in {"C0", "C1", "C2"}]
+    fig, ax = plt.subplots(figsize=(9, 4))
+    conditions = sorted({s["condition"] for s in observed})
+    if not observed:
+        ax.text(0.5, 0.5, "LLM conditions not executed", ha="center")
+        ax.set_axis_off()
+    else:
+        bottom = np.zeros(len(conditions), dtype=int)
+        for iteration in ["0", "1", "2", "3", "None"]:
+            values = [
+                sum(
+                    s["first_compiler_valid_iteration_counts"].get(iteration, 0)
+                    for s in observed
+                    if s["condition"] == c
+                )
+                for c in conditions
+            ]
+            ax.bar(conditions, values, bottom=bottom, label="never" if iteration == "None" else iteration)
+            bottom += np.array(values)
+        ax.set_ylabel("Observed case-runs (all datasets/repetitions)")
+        ax.set_xlabel("Condition; 0 means already compiling input")
+        ax.legend(title="First compiling iteration")
+    fig.tight_layout()
+    fig.savefig(figures / "iteration-trace.pdf")
+    plt.close(fig)
 
 
 def combine_runs(sources, destination):
@@ -441,11 +565,11 @@ def combine_runs(sources, destination):
     write_outputs(destination, manifest)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--combine", nargs="+", type=Path)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.combine:
         combine_runs(args.combine, args.run_dir)
     raw = args.run_dir / "results.json"

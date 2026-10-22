@@ -1,11 +1,11 @@
-| dataset | condition | repetitions_observed | compile_rate_across_reps | case_disagreement_rate | per_case_disagreement |
-| --- | --- | --- | --- | --- | --- |
-| pure | C0 | 1 | {"max": 0.2, "mean": 0.2, "median": 0.2, "min": 0.2, "n": 1, "sd": 0.0} | None | {} |
-| pure | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
-| pure | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
-| semantic | C0 | 1 | {"max": 0.9, "mean": 0.9, "median": 0.9, "min": 0.9, "n": 1, "sd": 0.0} | None | {} |
-| semantic | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
-| semantic | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
-| shared | C0 | 1 | {"max": 0.24, "mean": 0.24, "median": 0.24, "min": 0.24, "n": 1, "sd": 0.0} | None | {} |
-| shared | C1 | 1 | {"max": 0.82, "mean": 0.82, "median": 0.82, "min": 0.82, "n": 1, "sd": 0.0} | None | {} |
-| shared | C2 | 1 | {"max": 0.98, "mean": 0.98, "median": 0.98, "min": 0.98, "n": 1, "sd": 0.0} | None | {} |
+| dataset | condition | repetitions_observed | compile_rate_across_reps | class_f1_across_reps | typed_rel_f1_across_reps | output_disagreement_rate | case_disagreement_rate | per_case_disagreement |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| pure | C0 | 1 | {"max": 0.2, "mean": 0.2, "median": 0.2, "min": 0.2, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | None | {} |
+| pure | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | None | {} |
+| pure | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | None | {} |
+| semantic | C0 | 1 | {"max": 0.9, "mean": 0.9, "median": 0.9, "min": 0.9, "n": 1, "sd": 0.0} | {"max": 0.9496031746031746, "mean": 0.9496031746031746, "median": 0.9496031746031746, "min": 0.9496031746031746, "n": 1, "sd": 0.0} | {"max": 0.8300595238095237, "mean": 0.8300595238095237, "median": 0.8300595238095237, "min": 0.8300595238095237, "n": 1, "sd": 0.0} | None | None | {} |
+| semantic | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 0.9496031746031746, "mean": 0.9496031746031746, "median": 0.9496031746031746, "min": 0.9496031746031746, "n": 1, "sd": 0.0} | {"max": 0.8300595238095237, "mean": 0.8300595238095237, "median": 0.8300595238095237, "min": 0.8300595238095237, "n": 1, "sd": 0.0} | None | None | {} |
+| semantic | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 0.9496031746031746, "mean": 0.9496031746031746, "median": 0.9496031746031746, "min": 0.9496031746031746, "n": 1, "sd": 0.0} | {"max": 0.8300595238095237, "mean": 0.8300595238095237, "median": 0.8300595238095237, "min": 0.8300595238095237, "n": 1, "sd": 0.0} | None | None | {} |
+| shared | C0 | 1 | {"max": 0.24, "mean": 0.24, "median": 0.24, "min": 0.24, "n": 1, "sd": 0.0} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | None | None | {} |
+| shared | C1 | 1 | {"max": 0.82, "mean": 0.82, "median": 0.82, "min": 0.82, "n": 1, "sd": 0.0} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | None | None | {} |
+| shared | C2 | 1 | {"max": 0.98, "mean": 0.98, "median": 0.98, "min": 0.98, "n": 1, "sd": 0.0} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | {"max": null, "mean": null, "median": null, "min": null, "n": 0, "sd": null} | None | None | {} |

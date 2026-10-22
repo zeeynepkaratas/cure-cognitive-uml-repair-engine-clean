@@ -1,0 +1,4 @@
+| dataset | condition | repetitions_observed | compile_rate_across_reps | class_f1_across_reps | typed_rel_f1_across_reps | output_disagreement_rate | case_disagreement_rate | per_case_disagreement |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| semantic | C3 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | None | {} |
+| semantic | C7 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | None | {} |

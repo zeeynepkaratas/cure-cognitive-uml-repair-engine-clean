@@ -81,6 +81,10 @@ v1.0, DOI 10.5281/zenodo.1414117; current v2.0: 10.5281/zenodo.7118517.
 Both DOI registrations declare CC BY 4.0, while v2 curators disclaim knowledge
 of licence agreements or intellectual property rights in source requirements.
 Keep upstream attribution and disclose changes; this metadata is not clearance
-of every original document. See data_pipeline/datasets/README.md. The consumed
-legacy archive version and exact P-case source documents are NOT RECORDED
-unless independently recovered.
+of every original document. See data_pipeline/datasets/README.md. The historical consumed archive version remains NOT RECORDED. The new v4 pipeline
+independently downloads the official v1 XML subset and aligns P01–P10 to
+XMLZIPFile/0000 - cctns.xml, distinguishing verbatim text from paraphrases.
+It produces7017 rows from18 XML documents; the retained7219-row CSV is unchanged.
+The executed local384-dimensional index contains7162 chunks; see
+data_pipeline/vector_db/execution_status.json. This new reconstruction does not
+prove the original34268-to7219 filtering procedure.

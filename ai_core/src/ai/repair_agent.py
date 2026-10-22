@@ -6,6 +6,8 @@ from dataclasses import dataclass
 import hashlib
 import json
 import logging
+import os
+import re
 from pathlib import Path
 import time
 from typing import Literal
@@ -94,6 +96,14 @@ def digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def safe_error_text(error):
+    text = str(error)
+    key = os.getenv("OPENAI_API_KEY")
+    if key:
+        text = text.replace(key, "<REDACTED_API_KEY>")
+    return re.sub(r"sk-[^\s\"']+", "<REDACTED_API_KEY>", text)
+
+
 class UMLRepairAgent:
     def __init__(
         self,
@@ -123,7 +133,7 @@ class UMLRepairAgent:
         return template.format(
             original_text=srs if role == "critic" or self.config.healer_sees_srs else "",
             current_uml=diagram,
-            errors=json.dumps(errors, ensure_ascii=False),
+            errors=json.dumps(errors, ensure_ascii=legacy),
             feedback=feedback,
             ocl_rules="\n".join(
                 "- " + r.get("legacy_text", r["text"]) if legacy else "- " + r["text"] for r in rules
@@ -171,10 +181,17 @@ class UMLRepairAgent:
                 return response["content"], item
             except Exception as exc:
                 item.update(
-                    error_type=type(exc).__name__, error=str(exc), latency_s=time.perf_counter() - started
+                    error_type=type(exc).__name__,
+                    error=safe_error_text(exc),
+                    latency_s=time.perf_counter() - started,
                 )
                 trace.append(item)
-                if attempt == self.config.max_retries:
+                if attempt == self.config.max_retries or getattr(exc, "status_code", None) in {
+                    400,
+                    401,
+                    403,
+                    404,
+                }:
                     raise
                 time.sleep(min(2**attempt, 4))
 
@@ -260,16 +277,23 @@ class UMLRepairAgent:
                     if config.mode == "single_pass":
                         break
             except (ValueError, json.JSONDecodeError) as exc:
-                state.update(agent_status="parse_error", agent_error=str(exc), terminated_by="error")
+                state.update(
+                    agent_status="parse_error", agent_error=safe_error_text(exc), terminated_by="error"
+                )
             except Exception as exc:
                 if getattr(exc, "budget_exceeded", False):
-                    state.update(budget_stopped=True, agent_error=str(exc), terminated_by="budget_exhausted")
+                    state.update(
+                        budget_stopped=True,
+                        agent_error=safe_error_text(exc),
+                        terminated_by="budget_exhausted",
+                    )
                     status = "ok"
                 else:
                     status = "timeout" if "timeout" in type(exc).__name__.lower() else "api_error"
                     state.update(
+                        provider_status_code=getattr(exc, "status_code", None),
                         agent_status=status,
-                        agent_error=type(exc).__name__ + ": " + str(exc),
+                        agent_error=type(exc).__name__ + ": " + safe_error_text(exc),
                         terminated_by="error",
                     )
         else:

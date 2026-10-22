@@ -2,7 +2,9 @@ from tools.sanitize_artifact import numeric_values, redact
 
 
 def test_identity_redaction_preserves_other_text():
-    assert "<REDACTED_PATH>" in redact(r"Error C:\Users\example\Temp\diagram.puml")
+    assert "<REDACTED_PATH>" in redact(
+        "Error " + chr(92).join(["C:", "Users", "example", "Temp", "diagram.puml"])
+    )
     assert "anonymous@example.invalid" in redact("author@example.org")
     assert redact("rate=0.82, compiler=True") == "rate=0.82, compiler=True"
 

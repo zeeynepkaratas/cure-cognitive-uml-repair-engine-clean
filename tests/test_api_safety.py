@@ -33,3 +33,16 @@ def test_api_returns_safe_output_and_retains_raw_regression(monkeypatch):
     assert result["reverted"] is True
     assert result["compiler_valid"] is True
     assert result["raw_compiler_valid"] is False
+
+
+def test_evaluate_endpoint_returns_new_proxy_and_not_applicable():
+    result = endpoints.semantik_degerlendir(
+        endpoints.TamAnalizGirdisi(srs_metni="The User signs in.", plantuml_kodu="class User {}")
+    )
+    assert result["status"] == "applicable" and result["score"] == 1
+    result = endpoints.semantik_degerlendir(
+        endpoints.TamAnalizGirdisi(
+            srs_metni="the solution should respond quickly.", plantuml_kodu="class User {}"
+        )
+    )
+    assert result["status"] == "not_applicable" and result["score"] is None

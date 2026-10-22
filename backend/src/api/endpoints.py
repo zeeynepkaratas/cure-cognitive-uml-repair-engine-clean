@@ -219,6 +219,17 @@ def _compile_test(plantuml_kodu: str) -> dict:
     }
 
 
+def _validation_status_fields(code: str) -> dict:
+    result = _compile_test(code)
+    return {
+        "project_valid": result["project_valid"],
+        "compiler_valid": result["compiler_valid"],
+        "critic_valid": None,
+        "validation": result,
+        "success_definition": "basarili is a deprecated request-completed alias; inspect independent validation statuses",
+    }
+
+
 @app.post("/generate-uml")
 def generate_uml(girdi: SRSGirdisi):
     """
@@ -243,6 +254,7 @@ def srs_parse_et(girdi: SRSGirdisi):
         # 3) UML, OCL kurallariyla dogrulanir ve ayni JSON cevabina eklenir.
         ocl_sonuc = validate_ocl(sonuc["plantuml_kodu"])
         cevap = {
+            **_validation_status_fields(sonuc["plantuml_kodu"]),
             "basarili": True,
             "plantuml_kodu": sonuc["plantuml_kodu"],
             "siniflar": sonuc["bulunan_siniflar"],
@@ -279,6 +291,9 @@ def plantuml_render_et(girdi: UMLDogrulamaGirdisi):
             "plantuml_kodu": girdi.plantuml_kodu,
             "render": render_plantuml(girdi.plantuml_kodu),
             "compile": compile_sonuc,
+            "project_valid": compile_sonuc["project_valid"],
+            "compiler_valid": compile_sonuc["compiler_valid"],
+            "critic_valid": None,
         }
     except HTTPException:
         raise
@@ -294,6 +309,7 @@ def uml_dogrula(girdi: UMLDogrulamaGirdisi):
         sonuc = validate_ocl(girdi.plantuml_kodu)
         return {
             "basarili": True,
+            **_validation_status_fields(girdi.plantuml_kodu),
             "gecerli_mi": sonuc["gecerli_mi"],
             "skor": sonuc["skor"],
             "yuzde": sonuc["yuzde"],
@@ -313,16 +329,8 @@ def semantik_degerlendir(girdi: TamAnalizGirdisi):
         raise HTTPException(status_code=400, detail="Degerlendirme icin plantuml_kodu gerekli")
     try:
         sonuc = calculate_semantic_fidelity(girdi.srs_metni, girdi.plantuml_kodu)
-        return {
-            "basarili": True,
-            "genel_skor": sonuc["genel_skor"],
-            "yuzde": sonuc["yuzde"],
-            "gecti_mi": sonuc["gecti_mi"],
-            "halusinasyonlar": sonuc["halusinasyonlar"],
-            "eksik_siniflar": sonuc["eksik_siniflar"],
-            "ieee_kriterleri": sonuc["ieee_kriterleri"],
-            "sinif_metrikleri": sonuc["sinif_metrikleri"],
-        }
+        return {"basarili": True, **sonuc}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Degerlendirme hatasi: {str(e)}")
 
@@ -556,6 +564,7 @@ def tam_analiz_yap(girdi: SRSGirdisi):
         uml = parse_sonuc["plantuml_kodu"]
         ocl_sonuc = validate_ocl(uml)
         eval_sonuc = calculate_semantic_fidelity(girdi.metin, uml)
+        independent_statuses = _validation_status_fields(uml)
 
         gecen_sure = round(time.time() - baslangic, 3)
         olcum_kaydet("/api/analyze", gecen_sure, True)
@@ -564,6 +573,7 @@ def tam_analiz_yap(girdi: SRSGirdisi):
             "basarili": True,
             "sure_saniye": gecen_sure,
             "sla_gecti_mi": gecen_sure < 15,
+            **independent_statuses,
             "uretilen_uml": uml,
             "siniflar": parse_sonuc["bulunan_siniflar"],
             "iliskiler": parse_sonuc["iliskiler"],

@@ -162,10 +162,14 @@ def generate_plantuml(classes: list, relationships: list) -> str:
     return "\n".join(lines)
 
 
-def srs_to_plantuml(srs_metni: str) -> dict:
+def srs_to_plantuml(srs_metni: str, legacy: bool = False) -> dict:
     """
     Ana fonksiyon: SRS metnini PlantUML diyagramına çevirir.
     """
+    if legacy:
+        from backend.src.parsers.srs_parser_legacy import srs_to_plantuml as old_parser
+
+        return old_parser(srs_metni)
     if not srs_metni or len(srs_metni.strip()) < 10:
         return {
             "plantuml_kodu": "@startuml\n@enduml",

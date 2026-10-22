@@ -83,7 +83,7 @@ const OclPanel = ({ ocl }) => {
       <div className="ocl-panel__header">
         <div className="ocl-panel__status">
           {ocl.gecerli_mi
-            ? <><CheckCircle size={20} className="icon-success" /> <span>OCL Geçti</span></>
+            ? <><CheckCircle size={20} className="icon-success" /> <span>Project rules passed</span></>
             : <><XCircle size={20} className="icon-failed" /> <span>OCL Başarısız</span></>
           }
         </div>
@@ -134,7 +134,8 @@ const OclPanel = ({ ocl }) => {
 
 const SemanticPanel = ({ semantik }) => {
   if (!semantik) return null;
-  const percent = semantik.yuzde ?? Math.round((semantik.genel_skor ?? 0) * 100);
+  if (semantik.status === 'not_applicable') return <p>Structural proxy unavailable: no requirement entities were extracted.</p>;
+  const percent = Math.round((semantik.score ?? semantik.genel_skor ?? 0) * 100);
   const halucinasyonlar = semantik.halusinasyonlar ?? [];
   const eksikSiniflar = semantik.eksik_siniflar ?? [];
   const ieee = semantik.ieee_kriterleri ?? {};
@@ -144,11 +145,11 @@ const SemanticPanel = ({ semantik }) => {
       <div className="semantic-panel__header">
         <div className="semantic-panel__status">
           {semantik.gecti_mi
-            ? <><CheckCircle size={20} className="icon-success" /> <span>Semantik Geçti</span></>
-            : <><XCircle size={20} className="icon-failed" /> <span>Semantik Düşük</span></>
+            ? <><CheckCircle size={20} className="icon-success" /> <span>Structural proxy above threshold</span></>
+            : <><XCircle size={20} className="icon-failed" /> <span>Structural proxy below threshold</span></>
           }
         </div>
-        <ScoreRing percent={percent} label="Sadakat" size={90} />
+        <ScoreRing percent={percent} label="Proxy" size={90} />
       </div>
 
       {/* IEEE Kriterleri */}
@@ -239,7 +240,7 @@ const ResultsPage = ({ data, onNavigate }) => {
   const sure = result.sure_saniye;
 
   const hasOclErrors = (ocl?.hatalar ?? []).length > 0;
-  const canRepair = hasOclErrors || !(ocl?.gecerli_mi ?? true);
+  const canRepair = hasOclErrors || !(ocl?.gecerli_mi ?? true) || result.compiler_valid === false;
 
   const handleDownloadPuml = () => {
     downloadPuml(uml, document_name ? `${document_name}.puml` : 'diagram.puml');
@@ -264,6 +265,11 @@ const ResultsPage = ({ data, onNavigate }) => {
   return (
     <div className="page results-page">
       <div className="container">
+        <div className="content-card" role="status">
+          <p>Project validation: {String(result.project_valid ?? 'unavailable')}</p>
+          <p>PlantUML compilation: {String(result.compiler_valid ?? 'unavailable')}</p>
+          <p>Critic: {String(result.critic_valid ?? 'not evaluated')}</p>
+        </div>
         {/* Toast */}
         {toast && (
           <div className="toast-notification">
@@ -414,7 +420,7 @@ const ResultsPage = ({ data, onNavigate }) => {
             {/* Semantik Değerlendirme */}
             {semantik && (
               <CollapsibleSection
-                title="Semantik Sadakat"
+                title="Structural proxy (heuristic)"
                 icon={Info}
                 badge={semantik?.gecti_mi ? 'Geçti' : 'Düşük'}
               >

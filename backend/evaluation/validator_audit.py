@@ -37,6 +37,7 @@ def extract_diagrams(value):
         "gold",
         "defective",
         "raw_final_plantuml",
+        "output_if_reverted",
     }
     if isinstance(value, dict):
         for key, item in value.items():
@@ -49,7 +50,7 @@ def extract_diagrams(value):
             yield from extract_diagrams(item)
 
 
-def run(paths, checker=check_diagram):
+def run(paths, checker=check_diagram, cached=None):
     unique = {}
     occurrences = []
     for path in paths:
@@ -58,7 +59,7 @@ def run(paths, checker=check_diagram):
             sha = hashlib.sha256(diagram.encode()).hexdigest()
             occurrences.append({"file": str(path).replace("\\", "/"), "field": field, "diagram_sha256": sha})
             if sha not in unique:
-                unique[sha] = {"diagram_sha256": sha, **checker(diagram)}
+                unique[sha] = (cached or {}).get(sha) or {"diagram_sha256": sha, **checker(diagram)}
     rows = list(unique.values())
     rules = [
         {

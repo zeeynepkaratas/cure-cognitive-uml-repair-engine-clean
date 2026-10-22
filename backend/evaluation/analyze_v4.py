@@ -55,11 +55,13 @@ def paired_delta(values, groups, seed=1729, draws=10000):
     for _ in range(draws):
         sample = rng.integers(0, len(clusters), size=len(clusters))
         means.append(float(np.concatenate([clusters[i] for i in sample]).mean()))
+    cluster_means = np.array([cluster.mean() for cluster in clusters])
     return {
         "n": len(values),
         "clusters": len(clusters),
+        "wilcoxon_unit": "scenario mean difference (individual case when the scenario is unique)",
         "mean_delta": float(values.mean()),
-        "wilcoxon_p": float(wilcoxon(values, alternative="two-sided", zero_method="wilcox").pvalue)
+        "wilcoxon_p": float(wilcoxon(cluster_means, alternative="two-sided", zero_method="wilcox").pvalue)
         if np.any(values)
         else 1.0,
         "bootstrap_ci": list(map(float, np.quantile(means, [0.025, 0.975], method="linear"))),
@@ -105,6 +107,9 @@ def compute(rows):
             "budget_exhaustion_rate": sum(r["terminated_by"] == "budget_exhausted" for r in items)
             / len(items),
             "critic_compiler_project": dict(sorted(critic.items())),
+            "first_compiler_valid_iteration_counts": dict(
+                sorted(Counter(str(r.get("first_compiler_valid_iteration")) for r in items).items())
+            ),
             "first_compiler_valid_iteration": describe(
                 r.get("first_compiler_valid_iteration") for r in items
             ),
@@ -163,6 +168,8 @@ def compute(rows):
             ]
             family = []
             for a, b in pairs:
+                if rep > 1 and a in {"C0", "C1", "C2"} and b in {"C0", "C1", "C2"}:
+                    continue
                 if not by[a] or not by[b]:
                     continue
                 common = sorted(set(by[a]) & set(by[b]))
@@ -283,6 +290,68 @@ def render(directory, numbers):
     ]
     tex.extend(" & ".join(str(row[c]).replace("_", r"\_") for c in columns) + r" \\" for row in rows)
     (tables / "outcomes.tex").write_text("\n".join(tex + ["\\end{tabular}"]), encoding="utf-8")
+
+    def extra_table(stem, entries):
+        if not entries:
+            entries = [{"status": "not_executed_or_not_applicable"}]
+        fields = list(entries[0])
+        flattened = [
+            {
+                key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
+                for key, value in row.items()
+            }
+            for row in entries
+        ]
+        with (tables / (stem + ".csv")).open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(flattened)
+        content = ["| " + " | ".join(fields) + " |", "| " + " | ".join(["---"] * len(fields)) + " |"]
+        content.extend("| " + " | ".join(str(row.get(key, "")) for key in fields) + " |" for row in flattened)
+        (tables / (stem + ".md")).write_text("\n".join(content) + "\n", encoding="utf-8")
+
+        def escape(value):
+            return str(value).replace("&", r"\&").replace("%", r"\%").replace("_", r"\_")
+
+        content = [r"\begin{tabular}{" + "l" * len(fields) + "}", " & ".join(map(escape, fields)) + r" \\"]
+        content.extend(" & ".join(escape(row.get(key, "")) for key in fields) + r" \\" for row in flattened)
+        (tables / (stem + ".tex")).write_text("\n".join(content + [r"\end{tabular}"]), encoding="utf-8")
+
+    extra_table("mcnemar", numbers["mcnemar"])
+    extra_table("repetitions", numbers["repetitions"])
+    extra_table("defects", numbers["defects"])
+    reference_rows = []
+    for summary in numbers["summaries"]:
+        for metric, subsets in summary["metrics"].items():
+            for subset, statistics in subsets.items():
+                reference_rows.append(
+                    {
+                        "dataset": summary["dataset"],
+                        "condition": summary["condition"],
+                        "rep": summary["rep"],
+                        "metric": metric,
+                        "subset": subset,
+                        **statistics,
+                    }
+                )
+    extra_table("reference-metrics", reference_rows)
+    extra_table(
+        "latency-cost-warnings",
+        [
+            {
+                "dataset": row["dataset"],
+                "condition": row["condition"],
+                "rep": row["rep"],
+                "latency": row["latency"],
+                "tokens_in": row["tokens_in"],
+                "tokens_out": row["tokens_out"],
+                "estimated_cost_usd": row["estimated_cost_usd"],
+                "warnings_added": row["warnings_added"],
+                "warnings_removed": row["warnings_removed"],
+            }
+            for row in numbers["summaries"]
+        ],
+    )
     import matplotlib
 
     matplotlib.use("Agg")
@@ -334,10 +403,50 @@ def render(directory, numbers):
         plt.close(fig)
 
 
+def combine_runs(sources, destination):
+    """Combine disjoint observed records only, retaining source manifests and hashes."""
+    from backend.evaluation.run_matrix import dump, write_outputs
+
+    manifests = [
+        json.loads((directory / "manifest.json").read_text(encoding="utf-8")) for directory in sources
+    ]
+    for key in ["protocol_sha256", "input_sha256"]:
+        if len({m[key] for m in manifests}) != 1:
+            raise ValueError("Cannot combine mismatched protocols/inputs: " + key)
+    if (destination / "manifest.json").exists():
+        raise ValueError("Combined destination already exists")
+    all_rows = {}
+    for directory in sources:
+        for row in json.loads((directory / "results.json").read_text(encoding="utf-8")):
+            key = (row["condition"], row["case_id"], row["rep"])
+            if key in all_rows:
+                raise ValueError("Duplicate condition/case/repetition across source runs")
+            all_rows[key] = row
+    (destination / "cases").mkdir(parents=True, exist_ok=True)
+    for (condition, case_id, rep), row in sorted(all_rows.items()):
+        dump(destination / "cases" / f"{condition}_{case_id}_{rep}.json", row)
+    manifest = {
+        **manifests[0],
+        "status": "combined_observations",
+        "source_runs": [
+            {
+                "run_id": directory.name,
+                "manifest": original,
+                "results_sha256": hashlib.sha256((directory / "results.json").read_bytes()).hexdigest(),
+            }
+            for directory, original in zip(sources, manifests)
+        ],
+    }
+    write_outputs(destination, manifest)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-dir", type=Path, required=True)
+    parser.add_argument("--combine", nargs="+", type=Path)
     args = parser.parse_args()
+    if args.combine:
+        combine_runs(args.combine, args.run_dir)
     raw = args.run_dir / "results.json"
     numbers = compute(json.loads(raw.read_text(encoding="utf-8")))
     numbers["source_results_sha256"] = hashlib.sha256(raw.read_bytes()).hexdigest()
@@ -345,6 +454,16 @@ def main():
     output.mkdir(exist_ok=True)
     (output / "numbers.json").write_text(json.dumps(numbers, indent=2, allow_nan=False), encoding="utf-8")
     render(output, numbers)
+    manifest_path = args.run_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["output_hashes"] = {
+        str(path.relative_to(args.run_dir)).replace(chr(92), "/"): hashlib.sha256(
+            path.read_bytes()
+        ).hexdigest()
+        for path in args.run_dir.rglob("*")
+        if path.is_file() and path.name != "manifest.json" and path.suffix != ".tmp"
+    }
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     print(
         json.dumps(
             {

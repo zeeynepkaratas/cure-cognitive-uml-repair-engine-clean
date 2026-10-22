@@ -240,6 +240,7 @@ def evaluate(case, condition, rep, args, budget):
         "critic_valid": state.get("critic_valid"),
         "agent_status": state.get("agent_status", "not_applicable"),
         "agent_error": state.get("agent_error"),
+        "provider_status_code": state.get("provider_status_code"),
         "run_status": "budget_stopped" if state.get("budget_stopped") else "completed",
         "terminated_by": state.get("terminated_by", "not_applicable"),
         "repair_attempt_count": state.get("repair_attempt_count", 0),
@@ -314,6 +315,7 @@ def main(argv=None):
         default=["shared", "pure", "semantic"],
     )
     parser.add_argument("--split", choices=["dev", "test"], default="test")
+    parser.add_argument("--case-ids", nargs="+", help="Explicit development-pilot selection only")
     parser.add_argument("--reps", type=int, default=5)
     parser.add_argument("--seed", type=int, default=1729)
     parser.add_argument(
@@ -333,6 +335,13 @@ def main(argv=None):
     if args.reps < 1 or args.max_calls < 0 or args.max_cost_usd < 0:
         parser.error("Repetitions and budget limits must be non-negative (reps >= 1)")
     cases = load_cases(args.split, args.datasets)
+    if args.case_ids:
+        if args.split != "dev":
+            parser.error("Pilot case selection is allowed only on the development split")
+        selected = set(args.case_ids)
+        cases = [case for case in cases if case["case_id"] in selected]
+        if {case["case_id"] for case in cases} != selected:
+            parser.error("Unknown pilot case ID")
     planned = plan(cases, args.conditions, args.reps)
     print(json.dumps(planned), flush=True)
     if args.dry_run:
@@ -379,6 +388,13 @@ def main(argv=None):
                         manifest["status"] = "budget_stopped"
                         raise
                     dump(path, row)
+                    if row["provider_status_code"] in {401, 403, 404}:
+                        manifest["status"] = "provider_blocked"
+                        print(
+                            "Provider authentication/access/model unavailable; stopping, failed case retained.",
+                            flush=True,
+                        )
+                        return manifest
                     if row["run_status"] == "budget_stopped":
                         manifest["status"] = "budget_stopped"
                         raise BudgetExceeded(

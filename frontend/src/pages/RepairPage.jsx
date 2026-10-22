@@ -369,7 +369,7 @@ const RepairPage = ({ data, onNavigate }) => {
                     <div key={idx} className="repair-timeline__item">
                       <div className="repair-timeline__line-wrap">
                         <div className={`repair-timeline__dot ${
-                          iter.compile_result?.basarili ? 'repair-timeline__dot--success' : 'repair-timeline__dot--failed'
+                          iter.compile_result?.compiler_valid === true ? 'repair-timeline__dot--success' : 'repair-timeline__dot--failed'
                         }`} />
                         {idx < iterasyonlar.length - 1 && <div className="repair-timeline__connector" />}
                       </div>
@@ -406,13 +406,13 @@ const RepairPage = ({ data, onNavigate }) => {
             {semantik && status === 'success' && (
               <div className="content-card" style={{ marginTop: 24 }}>
                 <div className="card-header" style={{ textAlign: 'left', marginBottom: 16 }}>
-                  <h3 style={{ fontSize: 20 }}>Semantik Değerlendirme (Onarım Sonrası)</h3>
+                  <h3 style={{ fontSize: 20 }}>Structural proxy after repair</h3>
                 </div>
                 <div className="repair-semantik">
                   <div className="repair-semantik__score">
-                    <span>Semantik Skoru</span>
+                    <span>Heuristic proxy</span>
                     <strong style={{ color: semantik.gecti_mi ? 'var(--success)' : 'var(--warning)' }}>
-                      {semantik.yuzde ?? Math.round((semantik.genel_skor ?? 0) * 100)}%
+                      {semantik.status === 'not_applicable' ? 'N/A' : `${Math.round((semantik.score ?? semantik.genel_skor ?? 0) * 100)}%`}
                     </strong>
                     <span className={semantik.gecti_mi ? 'meta-ok' : 'meta-warn'}>
                       {semantik.gecti_mi ? '✓ Eşiği Geçti' : '⚠ Eşik Altı'}

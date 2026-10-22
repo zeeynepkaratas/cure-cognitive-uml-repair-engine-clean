@@ -1,0 +1,11 @@
+| dataset | condition | repetitions_observed | compile_rate_across_reps | case_disagreement_rate | per_case_disagreement |
+| --- | --- | --- | --- | --- | --- |
+| pure | C0 | 1 | {"max": 0.2, "mean": 0.2, "median": 0.2, "min": 0.2, "n": 1, "sd": 0.0} | None | {} |
+| pure | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
+| pure | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
+| semantic | C0 | 1 | {"max": 0.9, "mean": 0.9, "median": 0.9, "min": 0.9, "n": 1, "sd": 0.0} | None | {} |
+| semantic | C1 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
+| semantic | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |
+| shared | C0 | 1 | {"max": 0.24, "mean": 0.24, "median": 0.24, "min": 0.24, "n": 1, "sd": 0.0} | None | {} |
+| shared | C1 | 1 | {"max": 0.82, "mean": 0.82, "median": 0.82, "min": 0.82, "n": 1, "sd": 0.0} | None | {} |
+| shared | C2 | 1 | {"max": 1.0, "mean": 1.0, "median": 1.0, "min": 1.0, "n": 1, "sd": 0.0} | None | {} |

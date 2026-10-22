@@ -12,8 +12,8 @@ environment; loose requirement files are kept for development.
 ```sh
 python -m venv .venv
 # Activate the environment for your shell.
-pip install -r backend/requirements.txt -r ai_core/requirements.txt -r requirements-dev.txt
-bash tools/setup_plantuml.sh
+pip install -r requirements.lock.txt -r requirements-dev.txt
+bash tools/setup_plantuml.sh "$PWD/tools/plantuml.jar"
 export PLANTUML_JAR="$PWD/tools/plantuml.jar"
 uvicorn backend.src.api.endpoints:app --host 127.0.0.1 --port 8000
 ```
@@ -42,9 +42,9 @@ inputs. Semantic development and test scenarios are disjoint; legacy S/P sets
 are test-only. New measurements go exclusively into results_v4/<run_id>/.
 
 ```sh
-python backend/evaluation/run_matrix.py --dry-run --reps 5
-python backend/evaluation/run_matrix.py --conditions C0 C1 C2
-python backend/evaluation/analyze_v4.py --run-dir backend/evaluation/results_v4/RUN_ID
+python -m backend.evaluation.run_matrix --dry-run --reps 5
+python -m backend.evaluation.run_matrix --conditions C0 C1 C2
+python -m backend.evaluation.analyze_v4 --run-dir backend/evaluation/results_v4/RUN_ID
 python tools/check_numbers.py --run-dir backend/evaluation/results_v4/RUN_ID
 ```
 

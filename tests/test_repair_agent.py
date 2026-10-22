@@ -144,3 +144,17 @@ def test_missing_usage_is_unknown_and_counts_reset_per_run():
         assert state["llm_call_count"] == 1
         assert state["tokens_in"] is None
         assert state["usage_complete"] is False
+
+
+def test_legacy_healer_error_serialisation_matches_original():
+    from pathlib import Path
+
+    config = replace(RepairConfig(), mode="legacy_critic_healer")
+    agent = UMLRepairAgent(config, ScriptedClient([]), validation)
+    errors = ["Invalid: ölçüm"]
+    template = (Path(__file__).resolve().parents[1] / "ai_core/prompts/legacy/healer_prompt.txt").read_text(
+        encoding="utf-8"
+    )
+    assert agent._prompt("healer", "SRS", BAD, errors, validation(BAD), []) == template.format(
+        current_uml=BAD, errors=json.dumps(errors)
+    )

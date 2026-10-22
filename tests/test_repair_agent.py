@@ -165,3 +165,19 @@ def test_raw_critic_response_and_findings_are_retained():
     assert state["trace"][0]["response_text"] == decision(False)
     assert state["trace"][0]["critic_errors"] == ["invalid"]
     assert state["final_critic_errors"] == []
+
+
+def test_explicit_prompt_revision_preserves_prior_templates():
+    from pathlib import Path
+
+    config = replace(RepairConfig(), prompt_revision="v4.1")
+    agent = UMLRepairAgent(config, ScriptedClient([]), validation)
+    prompt = agent._prompt("critic", "Requirements example", BAD, [], validation(BAD), [])
+    assert "Do not require a redundant reverse association" in prompt
+    assert "Project-validator warnings are advisory" in prompt
+    root = Path(__file__).resolve().parents[1]
+    assert "Use these UML interpretation rules" not in (root / "ai_core/prompts/v4/critic.txt").read_text(
+        encoding="utf-8"
+    )
+    with pytest.raises(ValueError):
+        RepairConfig(prompt_revision="unknown")

@@ -36,6 +36,7 @@ class RepairConfig:
         "single_pass",
         "improved_critic_healer",
     ] = "improved_critic_healer"
+    prompt_revision: Literal["v4", "v4.1"] = "v4"
     use_rules: bool = True
     compiler_feedback: bool = True
     healer_sees_srs: bool = True
@@ -49,6 +50,8 @@ class RepairConfig:
     max_tokens: int = 2048
 
     def __post_init__(self):
+        if self.prompt_revision not in {"v4", "v4.1"}:
+            raise ValueError("Unsupported prompt revision")
         if (
             self.mode not in MODES
             or self.max_iterations < 1
@@ -123,7 +126,11 @@ class UMLRepairAgent:
 
     def _prompt(self, role, srs, diagram, errors, validation, rules):
         legacy = self.config.mode in {"legacy_critic_healer", "critic_healer_norules"}
-        filename = ("legacy/" + role + "_prompt.txt") if legacy else ("v4/" + role + ".txt")
+        filename = (
+            ("legacy/" + role + "_prompt.txt")
+            if legacy
+            else (self.config.prompt_revision + "/" + role + ".txt")
+        )
         template = (PROMPTS / filename).read_text(encoding="utf-8")
         feedback = (
             json.dumps(validation, ensure_ascii=False)

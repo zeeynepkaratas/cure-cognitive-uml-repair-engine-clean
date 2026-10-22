@@ -212,6 +212,7 @@ def evaluate(case, condition, rep, args, budget):
     else:
         config = RepairConfig(
             mode=CONDITIONS[condition],
+            prompt_revision=args.prompt_revision,
             use_rules=condition not in {"C3", "C4", "C6"},
             compiler_feedback=condition in {"C4", "C7"},
             healer_sees_srs=condition not in {"C5", "C6"},
@@ -315,6 +316,7 @@ def main(argv=None):
         default=["shared", "pure", "semantic"],
     )
     parser.add_argument("--split", choices=["dev", "test"], default="test")
+    parser.add_argument("--prompt-revision", choices=["v4", "v4.1"], default="v4")
     parser.add_argument("--case-ids", nargs="+", help="Explicit development-pilot selection only")
     parser.add_argument("--reps", type=int, default=5)
     parser.add_argument("--seed", type=int, default=1729)
@@ -372,6 +374,10 @@ def main(argv=None):
         ]:
             if old[key] != manifest[key]:
                 raise ValueError("Resume configuration mismatch: " + key)
+        for name in ["conditions", "datasets", "split", "reps", "seed", "prompt_revision", "case_ids"]:
+            previous = old["config"].get(name, "v4" if name == "prompt_revision" else None)
+            if previous != getattr(args, name):
+                raise ValueError("Resume configuration mismatch: " + name)
         manifest = old
     dump(directory / "manifest.json", manifest)
     budget = Budget(directory / "budget.json", args.max_calls, args.max_cost_usd)

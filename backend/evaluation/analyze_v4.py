@@ -410,8 +410,8 @@ def combine_runs(sources, destination):
     manifests = [
         json.loads((directory / "manifest.json").read_text(encoding="utf-8")) for directory in sources
     ]
-    for key in ["protocol_sha256", "input_sha256"]:
-        if len({m[key] for m in manifests}) != 1:
+    for key in ["protocol_sha256", "input_sha256", "prompt_hashes", "model_critic", "model_healer", "seed"]:
+        if any(m[key] != manifests[0][key] for m in manifests[1:]):
             raise ValueError("Cannot combine mismatched protocols/inputs: " + key)
     if (destination / "manifest.json").exists():
         raise ValueError("Combined destination already exists")

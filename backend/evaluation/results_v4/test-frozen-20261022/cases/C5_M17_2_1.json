@@ -1,0 +1,612 @@
+{
+  "case_id": "M17_2",
+  "scenario_id": "M17",
+  "srs": "The vehicle rental system records Driver, Rental, RentalService, and Vehicle; each has an id attribute. Each Driver can have zero or more Rental records, and each Rental belongs to exactly one Driver. Each Rental uses exactly one RentalService, and each RentalService serves zero or more Rental records. Each RentalService manages one or more Vehicle records by composition, and each Vehicle belongs to exactly one RentalService. Each Driver can reference zero or more Vehicle records, and each Vehicle can be referenced by zero or more Driver records.",
+  "gold": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defective": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1900,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1900,
+      "selected_class": "Driver",
+      "original_relation": [
+        "RentalService",
+        "Vehicle",
+        "composition",
+        "1",
+        "1..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer [1..120] // Age must be between 1 and 120\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"1\" --> \"1\" RentalService // Ensuring at least one RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\nRental \"1\" --> \"1..*\" Vehicle // Ensuring at least one Vehicle for each Rental\n@enduml",
+  "output_sha256": "580d23fe7c2c32fe970870c973ddb1dc1a5ebe94fccfa7b89b63892e09dd8b8b",
+  "input_sha256": "c6c722365febf2aa3ed19cad4c64c08e40de659a4159de77c889423e008e8965",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2257b3fd5eef8051dc8208195040d66cb2bad83fff07424f2cb1d0ff7b29d571",
+      "tokens_in": 459,
+      "tokens_out": 73,
+      "latency_s": 2.4376659999998083,
+      "diagram_hash": "c6c722365febf2aa3ed19cad4c64c08e40de659a4159de77c889423e008e8965",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9a40c9633ad9412b9a26d8310ab37592",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile ilişkisi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile ilişkisi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "db6b32bc7fd454ae6126666a6c49e7fbb0bb035028dc9bccca298aedd86301b6",
+      "tokens_in": 250,
+      "tokens_out": 107,
+      "latency_s": 1.9667704000003141,
+      "diagram_hash": "11610046b28ae2aec53fef1070bd07213a8a99f8b3b3238ebdf526054614e056",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d3b38c8dc1",
+      "request_id": "req_3d610db487564151997a42c275c7a819",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ea47a1cd2e42ac1de89a328e3332db731591d440d3567c0054880b760bf316ec",
+      "tokens_in": 465,
+      "tokens_out": 77,
+      "latency_s": 1.6882402000001093,
+      "diagram_hash": "11610046b28ae2aec53fef1070bd07213a8a99f8b3b3238ebdf526054614e056",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5259f89fd4a240d4966bb925b6fa8c70",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "db0d8aea448e53e5087943e4e1d434732f44b0943c4d09f333c5ac0683dcdc95",
+      "tokens_in": 264,
+      "tokens_out": 129,
+      "latency_s": 2.684986499999468,
+      "diagram_hash": "2a26ee9e437ea14a8fc1b63c881c4676480ad26ad3e3929c223d2a8a7ac3fbe0",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_0cef674490ab4ffa8a936a95a7968e37",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer [1..120] // Age must be between 1 and 120\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"1\" --> \"1\" RentalService // Ensuring at least one RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer [1..120] // Age must be between 1 and 120\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"1\" --> \"1\" RentalService // Ensuring at least one RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ef128b1eb9cc403384e84c2c87bcca1eab5eaf12acc750dc2b9e7487c1bf2245",
+      "tokens_in": 487,
+      "tokens_out": 77,
+      "latency_s": 1.6911866000000373,
+      "diagram_hash": "2a26ee9e437ea14a8fc1b63c881c4676480ad26ad3e3929c223d2a8a7ac3fbe0",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.20833333333333334
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.15384615384615385
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_4103a4483b814d178d9f5bdf8cc47497",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "32e07525cf6f0169e624147a4ec75bc6747870193305dec7353d7679878d3ca0",
+      "tokens_in": 286,
+      "tokens_out": 150,
+      "latency_s": 2.7016994999994495,
+      "diagram_hash": "580d23fe7c2c32fe970870c973ddb1dc1a5ebe94fccfa7b89b63892e09dd8b8b",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e0851bd988",
+      "request_id": "req_850dd329614d411382a0e50679d8656f",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer [1..120] // Age must be between 1 and 120\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"1\" --> \"1\" RentalService // Ensuring at least one RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\nRental \"1\" --> \"1..*\" Vehicle // Ensuring at least one Vehicle for each Rental\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer [1..120] // Age must be between 1 and 120\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"1\" --> \"1\" RentalService // Ensuring at least one RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\nRental \"1\" --> \"1..*\" Vehicle // Ensuring at least one Vehicle for each Rental\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8b23b345f70597dd791f1232e077037c32b1cb55ed20858715a6519f43c0c348",
+      "tokens_in": 508,
+      "tokens_out": 77,
+      "latency_s": 1.784022300000288,
+      "diagram_hash": "580d23fe7c2c32fe970870c973ddb1dc1a5ebe94fccfa7b89b63892e09dd8b8b",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.19230769230769232
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.14285714285714285
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_12769ee5260344eb92c98824b8d71793",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2719,
+  "tokens_out": 690,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Driver, Rental, RentalService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Driver, Rental, RentalService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Driver\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 1,
+  "elapsed_seconds": 18.31592780000028,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "rental",
+          "rentalservice"
+        ],
+        [
+          "rentalservice",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "rentalservice"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1785714285714285,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "rental",
+          "rentalservice"
+        ],
+        [
+          "rentalservice",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.1785714285714285,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "rental",
+          "rentalservice",
+          "association"
+        ],
+        [
+          "rentalservice",
+          "vehicle",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.1785714285714285,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "rental",
+          "rentalservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "rentalservice",
+          "vehicle",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.1785714285714285,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "driver",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "rentalservice",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "rentalservice"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "rentalservice",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "rentalservice",
+          "vehicle",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "rentalservice",
+          "vehicle",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "rentalservice",
+          "driver",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 18.321960899999794,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

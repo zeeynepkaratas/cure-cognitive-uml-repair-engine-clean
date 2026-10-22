@@ -1,0 +1,429 @@
+{
+  "case_id": "M12_1",
+  "scenario_id": "M12",
+  "srs": "The clinic booking system records Patient, Appointment, BookingService, and Clinician; each has an id attribute. Each Patient can have zero or more Appointment records, and each Appointment belongs to exactly one Patient. Each Appointment uses exactly one BookingService, and each BookingService serves zero or more Appointment records. Each BookingService manages one or more Clinician records by composition, and each Clinician belongs to exactly one BookingService. Each Patient can reference zero or more Clinician records, and each Clinician can be referenced by zero or more Patient records.",
+  "gold": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defective": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nAppointment \"0..*\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defect_ids": [
+    "D3"
+  ],
+  "seed": 1849,
+  "injections": [
+    {
+      "defect_id": "D3",
+      "seed": 1849,
+      "selected_class": "BookingService",
+      "original_relation": [
+        "Patient",
+        "Appointment",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nAppointment \"0..*\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "output_sha256": "a1c3c0a3020d718c43018d15ad70e0d76194bbc9ea59c4485b0f43276ea8d5aa",
+  "input_sha256": "7c95bf9fcd0d1e8bc3d292e06fa519b4f5f04dbf2693abb6234c907e524a89a9",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "9ba8e53154d7a61f1fee775333316fae7dff83dd24c0e522b3670504374422fc",
+      "tokens_in": 892,
+      "tokens_out": 33,
+      "latency_s": 1.5348711999999978,
+      "diagram_hash": "7c95bf9fcd0d1e8bc3d292e06fa519b4f5f04dbf2693abb6234c907e524a89a9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_b15ba93c9e7e4fb3957929245a8e2dfe",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Each Appointment must belong to exactly one Patient, but the diagram does not show this relationship.\"],\"categories\":[\"missing relationship\"]}",
+      "critic_errors": [
+        "Each Appointment must belong to exactly one Patient, but the diagram does not show this relationship."
+      ],
+      "critic_categories": [
+        "missing relationship"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "31b8f2c2848e0673508404e46ce7203681d11aa6e7f2251b891b01f172be92ca",
+      "tokens_in": 664,
+      "tokens_out": 103,
+      "latency_s": 2.683759999999893,
+      "diagram_hash": "a1c3c0a3020d718c43018d15ad70e0d76194bbc9ea59c4485b0f43276ea8d5aa",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_bc04434186194fbead18f3efbb5c0cfe",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "cd9f953e47549a88cda3d23a122504c46955bdc4cd156d3d49e522ab77466664",
+      "tokens_in": 902,
+      "tokens_out": 12,
+      "latency_s": 0.8930802999998377,
+      "diagram_hash": "a1c3c0a3020d718c43018d15ad70e0d76194bbc9ea59c4485b0f43276ea8d5aa",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_12eec9869aa84748b1aea1e85fd66d72",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 2458,
+  "tokens_out": 148,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 5.146414399999685,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.1071428571428571,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.1071428571428571,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 5.153665000000274,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

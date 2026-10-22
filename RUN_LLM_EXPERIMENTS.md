@@ -4,7 +4,7 @@ Paid experiments were explicitly authorized; the API key remains local and is ne
 
 ## Frozen main test
 
-Source and protocol freeze:1ead72ff7071e1f6de5867aaa250b0483d91431f. The running test is backend/evaluation/results_v4/test-frozen-20261022. It contains100 fixed cases: shared50, PURE10, semantic test40. C0–C2 run once; C3–C7 run five repetitions each, totaling2800 case-runs and2500 paid case-runs. The conservative37500-call maximum includes retries. USD1000 is a finite operator guardrail under no-ceiling user authorization, not predicted spend.
+Source and protocol freeze:1ead72ff7071e1f6de5867aaa250b0483d91431f. The completed, verified test is backend/evaluation/results_v4/test-frozen-20261022. It contains100 fixed cases: shared50, PURE10, semantic test40. C0–C2 run once; C3–C7 run five repetitions each, totaling2800 case-runs and2500 paid case-runs. The conservative37500-call maximum includes retries. USD1000 is a finite operator guardrail under no-ceiling user authorization, not predicted spend.
 
 Configure OPENAI_API_KEY locally, the pinned PLANTUML_JAR, Python lock and Java/Graphviz. Never paste a key into chat or commit it. From the recorded source revision:
 
@@ -23,4 +23,4 @@ python -m backend.evaluation.analyze_v4 --run-dir backend/evaluation/results_v4/
 python tools/check_numbers.py --run-dir backend/evaluation/results_v4/test-frozen-20261022
 ```
 
-All conditions now share one main-test manifest, so no protocol-mismatched merge with the earlier non-LLM runs is needed. Earlier nonllm-20261022 and nonllm-sourcefix-20261022 remain separate evidence, including the disclosed post-test exploratory C2 fix. C5 reproduces original prompt/control flow with cached lexical retrieval of four original rules, not the historical embedding-retrieval distribution. Final execution counts and limitations belong in docs/revision-report.md; do not describe a running experiment as completed.
+All conditions now share one main-test manifest, so no protocol-mismatched merge with the earlier non-LLM runs is needed. Earlier nonllm-20261022 and nonllm-sourcefix-20261022 remain separate evidence, including the disclosed post-test exploratory C2 fix. C5 reproduces original prompt/control flow with cached lexical retrieval of four original rules, not the historical embedding-retrieval distribution. All2800 registered main case-runs completed,7936 model calls returned the requested snapshot and no main-test API errors occurred. tools/finalize_v4.py verified full coverage, raw hashes, generation-source freeze and all derived numbers; the expanded audit covers2353 unique diagrams. Final outcomes and remaining limitations are in docs/revision-report.md.

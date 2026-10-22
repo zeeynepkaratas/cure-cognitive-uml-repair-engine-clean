@@ -1,0 +1,581 @@
+{
+  "case_id": "M26_1",
+  "scenario_id": "M26",
+  "srs": "The laboratory testing system records Scientist, TestRequest, LabService, and Sample; each has an id attribute. Each Scientist can have zero or more TestRequest records, and each TestRequest belongs to exactly one Scientist. Each TestRequest uses exactly one LabService, and each LabService serves zero or more TestRequest records. Each LabService manages one or more Sample records by composition, and each Sample belongs to exactly one LabService. Each Scientist can reference zero or more Sample records, and each Sample can be referenced by zero or more Scientist records.",
+  "gold": "@startuml\nclass Scientist {\n  +id: String\n}\nclass TestRequest {\n  +id: String\n}\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nScientist \"1\" --> \"0..*\" TestRequest\nTestRequest \"0..*\" --> \"1\" LabService\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "defective": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1989,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1989,
+      "selected_class": "TestRequest"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "output_sha256": "ce037f1c31052779f8be09d9cedf77eb688d3ba4f67c8c9225789c768d4c075d",
+  "input_sha256": "667b0b721fbe6a4dc5e49e71ab0867a411a516d8e440b3b0723ec0ce88838d01",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "18ff3c04642c9d60f152579e93a2095b183dd76c1cdae86d30ad630ad7c25091",
+      "tokens_in": 432,
+      "tokens_out": 77,
+      "latency_s": 2.700371299999915,
+      "diagram_hash": "667b0b721fbe6a4dc5e49e71ab0867a411a516d8e440b3b0723ec0ce88838d01",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5bfc7d2c31f644229023f2b2b256358e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "dcf4f1e78c48f1ba21eb7280ade4098e15e1a2bcf56edfbcc9bf70f86713598b",
+      "tokens_in": 208,
+      "tokens_out": 75,
+      "latency_s": 2.5412928000000647,
+      "diagram_hash": "ce037f1c31052779f8be09d9cedf77eb688d3ba4f67c8c9225789c768d4c075d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_eeaf2c44dff44acbb093c3f16a5d450f",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dbcca8076918c1cd4a7d757e826d88e1191eb0ea60ed48db90e206eb6327074e",
+      "tokens_in": 438,
+      "tokens_out": 80,
+      "latency_s": 1.6551911000001382,
+      "diagram_hash": "ce037f1c31052779f8be09d9cedf77eb688d3ba4f67c8c9225789c768d4c075d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05555555555555555
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_5345a55460b74523810f5e6c6c9b4bca",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi arasında bir ilişki tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi arasında bir ilişki tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2f761b20f2119d5280bf9aa43627dd2ba823fe6d6ba3d53036036662b3cd8d8b",
+      "tokens_in": 238,
+      "tokens_out": 84,
+      "latency_s": 2.422556099999838,
+      "diagram_hash": "47f89f66fa0b53463dc6e784e9ff72a4239c1d965a05070e83c9bbe0368f3d61",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_a4d1d00c5c0b4d619520867565a17f3a",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7fa8c0d8e9f499a8a02d6459792dd847cd1d39cdba7f52fbef1ed87eac351c21",
+      "tokens_in": 447,
+      "tokens_out": 80,
+      "latency_s": 1.9861928999998781,
+      "diagram_hash": "47f89f66fa0b53463dc6e784e9ff72a4239c1d965a05070e83c9bbe0368f3d61",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d73b40aefa6142699eb52e58ba3089ea",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Scientist nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Kısıtlamaları\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Scientist nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Kısıtlamaları",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d5a2be27b5eaad6b40ec2f2fe6361855686c939ef48b81910aa90826d4b1a834",
+      "tokens_in": 233,
+      "tokens_out": 75,
+      "latency_s": 1.5713693000002422,
+      "diagram_hash": "ce037f1c31052779f8be09d9cedf77eb688d3ba4f67c8c9225789c768d4c075d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ad31506360",
+      "request_id": "req_fe5b14c3283b4830bd2367a3abbbe5e5",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dbcca8076918c1cd4a7d757e826d88e1191eb0ea60ed48db90e206eb6327074e",
+      "tokens_in": 438,
+      "tokens_out": 77,
+      "latency_s": 1.6902675000001182,
+      "diagram_hash": "ce037f1c31052779f8be09d9cedf77eb688d3ba4f67c8c9225789c768d4c075d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05555555555555555
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_eb72c5e7bfe64493a3a15ec926ef2718",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı kontrol edilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı kontrol edilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2434,
+  "tokens_out": 548,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Scientist {\n  +id: String\n  +age: Integer\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 16.548835300000064,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 3,
+    "output_relationship_count": 2,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        "testrequest"
+      ],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "labservice",
+          "testrequest"
+        ],
+        [
+          "scientist",
+          "testrequest"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest"
+        ],
+        [
+          "testrequest",
+          "labservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "testrequest",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "scientist",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.1071428571428571
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 3,
+    "output_relationship_count": 2,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        "testrequest"
+      ],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "labservice",
+          "testrequest"
+        ],
+        [
+          "scientist",
+          "testrequest"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest"
+        ],
+        [
+          "testrequest",
+          "labservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "testrequest",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "scientist",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.1071428571428571
+  },
+  "end_to_end_seconds": 16.551968599999782,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

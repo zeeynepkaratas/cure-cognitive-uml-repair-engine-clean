@@ -1,0 +1,379 @@
+{
+  "case_id": "M25_1",
+  "scenario_id": "M25",
+  "srs": "The warehouse stock system records Operator, StockEntry, InventoryService, and Bin; each has an id attribute. Each Operator can have zero or more StockEntry records, and each StockEntry belongs to exactly one Operator. Each StockEntry uses exactly one InventoryService, and each InventoryService serves zero or more StockEntry records. Each InventoryService manages one or more Bin records by composition, and each Bin belongs to exactly one InventoryService. Each Operator can reference zero or more Bin records, and each Bin can be referenced by zero or more Operator records.",
+  "gold": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml",
+  "defective": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nclass Operator {}\n@enduml",
+  "defect_ids": [
+    "D9"
+  ],
+  "seed": 1979,
+  "injections": [
+    {
+      "defect_id": "D9",
+      "seed": 1979,
+      "selected_class": "Operator"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nclass Operator {}\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"1\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"0..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml",
+  "output_sha256": "0098fe8617f625583c63cb908e40142474341304a8b1537135bf544b1e272d0d",
+  "input_sha256": "6a77447f1221fc68a2b9ce04ab1295c3a6b80cae3953698fcf16bca3c3341790",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "53d1d25ee085be61984daab781d19acd964432e1c9a60e08b850b0019ca34bef",
+      "tokens_in": 392,
+      "tokens_out": 106,
+      "latency_s": 2.038782699999956,
+      "diagram_hash": "6a77447f1221fc68a2b9ce04ab1295c3a6b80cae3953698fcf16bca3c3341790",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_32833d60aa834d52bfa1147ac15a37d8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between StockEntry and InventoryService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each StockEntry uses exactly one InventoryService.\",\"The relationship between InventoryService and Bin is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to indicate that each InventoryService manages one or more Bin records.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "The relationship between StockEntry and InventoryService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each StockEntry uses exactly one InventoryService.",
+        "The relationship between InventoryService and Bin is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to indicate that each InventoryService manages one or more Bin records."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "78d10aacbd8ed82230cbc25f6c11b56fce59392f624d93e1e0a56aa1ad9467f6",
+      "tokens_in": 259,
+      "tokens_out": 103,
+      "latency_s": 3.607545200000004,
+      "diagram_hash": "0098fe8617f625583c63cb908e40142474341304a8b1537135bf544b1e272d0d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_0aa5a26036ee4a329761009b63f18472",
+      "response_text": "```plantuml\n@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"1\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"0..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"1\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"0..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6e5cab8e19bfa863d8b1fa975358c310acc6670da4d29637bf2d78b2ec0cb99f",
+      "tokens_in": 388,
+      "tokens_out": 12,
+      "latency_s": 0.9653001000001495,
+      "diagram_hash": "0098fe8617f625583c63cb908e40142474341304a8b1537135bf544b1e272d0d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_84192f30dd5745a4809afd7f2d82f2fd",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 1039,
+  "tokens_out": 221,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['Operator']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['Operator', 'Operator']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"1\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"0..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 6.636500900000101,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "inventoryservice",
+          "bin",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "stockentry",
+          "inventoryservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "inventoryservice",
+          "bin",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "stockentry",
+          "inventoryservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "inventoryservice",
+          "bin",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "stockentry",
+          "inventoryservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "inventoryservice",
+          "bin",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "stockentry",
+          "inventoryservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 6.648511299999882,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

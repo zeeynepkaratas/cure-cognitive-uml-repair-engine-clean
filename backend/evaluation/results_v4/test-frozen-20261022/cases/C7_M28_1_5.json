@@ -1,0 +1,617 @@
+{
+  "case_id": "M28_1",
+  "scenario_id": "M28",
+  "srs": "The restaurant booking system records Diner, TableBooking, RestaurantService, and Table; each has an id attribute. Each Diner can have zero or more TableBooking records, and each TableBooking belongs to exactly one Diner. Each TableBooking uses exactly one RestaurantService, and each RestaurantService serves zero or more TableBooking records. Each RestaurantService manages one or more Table records by composition, and each Table belongs to exactly one RestaurantService. Each Diner can reference zero or more Table records, and each Table can be referenced by zero or more Diner records.",
+  "gold": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"0..*\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "defective": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 2009,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 2009,
+      "selected_class": "RestaurantService",
+      "original_relation": [
+        "TableBooking",
+        "RestaurantService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"0..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml",
+  "output_sha256": "2b1fde92ec87077129d608a65f2b07ebb2366a2ffe82bef520f3b68ee8b94450",
+  "input_sha256": "6e308a9e44ca4a29dac3ec43f32dafc2e91dd9bb91796d77a449bcd67b4d664a",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 2,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0cfaba237b70cd4379838138b652eb79b623f7fc589c1efca7adc41ada886baa",
+      "tokens_in": 911,
+      "tokens_out": 126,
+      "latency_s": 2.439509899999848,
+      "diagram_hash": "6e308a9e44ca4a29dac3ec43f32dafc2e91dd9bb91796d77a449bcd67b4d664a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_e2041c7b135141a4ba0051dd17e2a7f2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between RestaurantService and TableBooking is incorrectly defined. Requirement states that each TableBooking uses exactly one RestaurantService, which should be represented as 'TableBooking \\\"1\\\" --> \\\"1\\\" RestaurantService' instead of 'RestaurantService \\\"0..*\\\" --> \\\"1\\\" TableBooking'.\",\"The multiplicity between RestaurantService and TableBooking does not match the requirement that each RestaurantService serves zero or more TableBooking records. The current representation implies that a TableBooking can exist without a RestaurantService, which contradicts the requirement.\"],\"categories\":[\"relationship errors\",\"multiplicity errors\"]}",
+      "critic_errors": [
+        "The relationship between RestaurantService and TableBooking is incorrectly defined. Requirement states that each TableBooking uses exactly one RestaurantService, which should be represented as 'TableBooking \"1\" --> \"1\" RestaurantService' instead of 'RestaurantService \"0..*\" --> \"1\" TableBooking'.",
+        "The multiplicity between RestaurantService and TableBooking does not match the requirement that each RestaurantService serves zero or more TableBooking records. The current representation implies that a TableBooking can exist without a RestaurantService, which contradicts the requirement."
+      ],
+      "critic_categories": [
+        "relationship errors",
+        "multiplicity errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "bc7474fae55f65c5c4333597a5f6752490692457944bb308caf19499df1f361b",
+      "tokens_in": 773,
+      "tokens_out": 105,
+      "latency_s": 2.579572299999654,
+      "diagram_hash": "c18bee8f5d9abb556133cde5e8263b7252b6fcc9b34cb475dc0ec980d8cbdce2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_5bb993f15bd94f0a904e8a5845f20864",
+      "response_text": "```plantuml\n@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"0..*\" --> \"1..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"0..*\" --> \"1..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6fde232e920eb334cebebfaeaedbec19ab4279a6215153956a7af4f3d0e4b938",
+      "tokens_in": 952,
+      "tokens_out": 42,
+      "latency_s": 1.354435199999898,
+      "diagram_hash": "c18bee8f5d9abb556133cde5e8263b7252b6fcc9b34cb475dc0ec980d8cbdce2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_fb0b7a59a94d4d5e8c46563b299d5872",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Each RestaurantService manages one or more Table records by composition, but the diagram shows a '0..*' association instead of composition.\"],\"categories\":[\"Composition Error\"]}",
+      "critic_errors": [
+        "Each RestaurantService manages one or more Table records by composition, but the diagram shows a '0..*' association instead of composition."
+      ],
+      "critic_categories": [
+        "Composition Error"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9aca05e8a4a50ba8d044897e07ebf217bbaebc1692241449cf660aeee125472b",
+      "tokens_in": 733,
+      "tokens_out": 105,
+      "latency_s": 3.0563560999999027,
+      "diagram_hash": "2b1fde92ec87077129d608a65f2b07ebb2366a2ffe82bef520f3b68ee8b94450",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_150d60cb34324e238634eea19dabedfb",
+      "response_text": "```plantuml\n@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"0..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"0..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "57164dae1a69d68c0cfb8f8bce12783763b3b8ab1ce2c4be45b154b1f6ffe9c3",
+      "tokens_in": 952,
+      "tokens_out": 12,
+      "latency_s": 0.9922996000000239,
+      "diagram_hash": "2b1fde92ec87077129d608a65f2b07ebb2366a2ffe82bef520f3b68ee8b94450",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_85d8441d606b4810b25611171ea648e3",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 5,
+  "tokens_in": 4321,
+  "tokens_out": 390,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Diner, RestaurantService, Table, TableBooking}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Diner, RestaurantService, Table, TableBooking}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"1\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"0..*\" Table\nTable \"1\" --> \"0..*\" Diner\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.638549299999795,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table"
+        ]
+      ],
+      "spurious": [
+        [
+          "table",
+          "diner"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "table",
+          "diner",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "restaurantservice",
+          "table",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "restaurantservice",
+          "table",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "table",
+          "diner",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table"
+        ]
+      ],
+      "spurious": [
+        [
+          "table",
+          "diner"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "table",
+          "diner",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "diner",
+          "table",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "restaurantservice",
+          "table",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "restaurantservice",
+          "table",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "table",
+          "diner",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 13.642073500000151,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

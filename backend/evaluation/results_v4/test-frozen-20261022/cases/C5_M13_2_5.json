@@ -1,0 +1,630 @@
+{
+  "case_id": "M13_2",
+  "scenario_id": "M13",
+  "srs": "The parcel tracking system records Sender, Parcel, TrackingService, and TrackingEvent; each has an id attribute. Each Sender can have zero or more Parcel records, and each Parcel belongs to exactly one Sender. Each Parcel uses exactly one TrackingService, and each TrackingService serves zero or more Parcel records. Each TrackingService manages one or more TrackingEvent records by composition, and each TrackingEvent belongs to exactly one TrackingService. Each Sender can reference zero or more TrackingEvent records, and each TrackingEvent can be referenced by zero or more Sender records.",
+  "gold": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --> \"0..*\" TrackingEvent\n@enduml",
+  "defective": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1860,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1860,
+      "selected_class": "TrackingService",
+      "original_relation": [
+        "Sender",
+        "TrackingEvent",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "4230e68365324a0e594c53367d66fe1045f38bc12eb69ff62559c8655802741c",
+  "input_sha256": "be336fbd991f0a2274b647159054b4395278fde520818a3ec0364704c426cda2",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "176fb204665866ecca01df6d256b30a3fbb95402fc5bbd5d4b5bb2be61a2bdab",
+      "tokens_in": 469,
+      "tokens_out": 74,
+      "latency_s": 3.8036876000005577,
+      "diagram_hash": "be336fbd991f0a2274b647159054b4395278fde520818a3ec0364704c426cda2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9340494471a04ae180a79cabed0a0d01",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "17c773bb0981dc0f59f0680b66846090bab245dc4e5bf05d849e0930a3cf6db8",
+      "tokens_in": 253,
+      "tokens_out": 125,
+      "latency_s": 2.4220408999999563,
+      "diagram_hash": "4e9352966a57e27c795ef3fbdc234f3ab1fdc67a9cae02b5866e9e16f2ad7433",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_6d16bc276a3a453e83d88c2757e4747e",
+      "response_text": "```plantuml\n@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8ca0f144c8b25d3d14c042836f8a74b242cf1c5827522469383de788e3873215",
+      "tokens_in": 488,
+      "tokens_out": 74,
+      "latency_s": 2.126083000000108,
+      "diagram_hash": "4e9352966a57e27c795ef3fbdc234f3ab1fdc67a9cae02b5866e9e16f2ad7433",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_ff271bdeb8594e42aaa70018c4a8aa1c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e2c0b0e9d947665092af16863c8fc2da59f429bc93d80f5fb87259d5576f0c53",
+      "tokens_in": 287,
+      "tokens_out": 137,
+      "latency_s": 2.56590739999956,
+      "diagram_hash": "85184ba67b569574e410836d68db405b71393b6f62bde2caf1054e50373b5107",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_5c41d4c827104de792066f5d12c0b832",
+      "response_text": "```plantuml\n@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ea3ea4a9798b35c59c54a52d9de9b6fa1e84e8ddc6beebf94b63b0f60f455818",
+      "tokens_in": 500,
+      "tokens_out": 77,
+      "latency_s": 1.840744099999938,
+      "diagram_hash": "85184ba67b569574e410836d68db405b71393b6f62bde2caf1054e50373b5107",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_edb5dd39f92b4c808db2188e193903e4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2e6ea02f2a3f65db575a254998dac1ac0ef01e4bb9db018812c8ee4a5e640156",
+      "tokens_in": 305,
+      "tokens_out": 148,
+      "latency_s": 2.6922882999997455,
+      "diagram_hash": "4230e68365324a0e594c53367d66fe1045f38bc12eb69ff62559c8655802741c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_78ec4c0582f64e38a3cd5fb6c081945f",
+      "response_text": "```plantuml\n@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "54e15de04f19d917e6853c31f160b19a00a2f116e247d836f370370e08796910",
+      "tokens_in": 511,
+      "tokens_out": 94,
+      "latency_s": 1.7576015999993615,
+      "diagram_hash": "4230e68365324a0e594c53367d66fe1045f38bc12eb69ff62559c8655802741c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_21d52814e7d44963a575467bfd28d4e3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş.\"],\"categories\":[\"OCL Kuralı 1 İhlali\",\"OCL Kuralı 2 İhlali\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 1 İhlali",
+        "OCL Kuralı 2 İhlali"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2813,
+  "tokens_out": 729,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']",
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --|> \"0..*\" TrackingEvent\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 2,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.25575519999984,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.15000000000000002,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.15000000000000002,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "end_to_end_seconds": 17.26373390000026,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

@@ -1,0 +1,700 @@
+{
+  "case_id": "M28_1",
+  "scenario_id": "M28",
+  "srs": "The restaurant booking system records Diner, TableBooking, RestaurantService, and Table; each has an id attribute. Each Diner can have zero or more TableBooking records, and each TableBooking belongs to exactly one Diner. Each TableBooking uses exactly one RestaurantService, and each RestaurantService serves zero or more TableBooking records. Each RestaurantService manages one or more Table records by composition, and each Table belongs to exactly one RestaurantService. Each Diner can reference zero or more Table records, and each Table can be referenced by zero or more Diner records.",
+  "gold": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nTableBooking \"0..*\" --> \"1\" RestaurantService\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "defective": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 2009,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 2009,
+      "selected_class": "RestaurantService",
+      "original_relation": [
+        "TableBooking",
+        "RestaurantService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "e2356d87bc2fb4bd5e75a29355a0dd29ad81483820b2e9bc0b31ab7642097db2",
+  "input_sha256": "6e308a9e44ca4a29dac3ec43f32dafc2e91dd9bb91796d77a449bcd67b4d664a",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "eafbc33a5e247715177649237add723fdd452273d49d0381607532c2801437fb",
+      "tokens_in": 475,
+      "tokens_out": 75,
+      "latency_s": 2.3582947000004424,
+      "diagram_hash": "6e308a9e44ca4a29dac3ec43f32dafc2e91dd9bb91796d77a449bcd67b4d664a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_c16e23994a7049d1a970e18e9161cb43",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f0d748b2850744d42bb6a5e2b902632feadc5deb1f64552523ffbc1a936e1da6",
+      "tokens_in": 240,
+      "tokens_out": 162,
+      "latency_s": 3.195727600000282,
+      "diagram_hash": "9a67f8eefe28c4f6d06dd185bcfee6657b23c736f61f60bf8a910ceb142bcebb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_b8b8a26dd6eb40ccb686636c8e987afa",
+      "response_text": "```plantuml\n@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "19db922ba3e30b59c7db5024fecdc21446d0f381bd9357316dc964f62714f13e",
+      "tokens_in": 530,
+      "tokens_out": 50,
+      "latency_s": 2.033545199999935,
+      "diagram_hash": "9a67f8eefe28c4f6d06dd185bcfee6657b23c736f61f60bf8a910ceb142bcebb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d6b9e6b7eee547b884418f75627c59cc",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "294276f364fca976da1e99b7b3da83a6514e63b3715bb4a8db16cf700ec1ffec",
+      "tokens_in": 279,
+      "tokens_out": 162,
+      "latency_s": 3.2060639000001174,
+      "diagram_hash": "865ef7494692e773158b7ae076945ad49a3c46d7846d693135a877f68f486155",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_d3257468b40e44f08aa8547b44f67d19",
+      "response_text": "```plantuml\n@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8d33fbf610823fde112224a79f48bb11348981d114455864ee61072d4c71e9f7",
+      "tokens_in": 530,
+      "tokens_out": 50,
+      "latency_s": 2.541926400000193,
+      "diagram_hash": "865ef7494692e773158b7ae076945ad49a3c46d7846d693135a877f68f486155",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_f4ddae25ad11447e9aff559aa7e8786d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b09e639feff3a97967535dcc02bb54d231112dee81017195a093c24ec4a72461",
+      "tokens_in": 279,
+      "tokens_out": 173,
+      "latency_s": 3.6667920999998387,
+      "diagram_hash": "e2356d87bc2fb4bd5e75a29355a0dd29ad81483820b2e9bc0b31ab7642097db2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_6f2bf42265774fadadb10d4068217efc",
+      "response_text": "```plantuml\n@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d21c69d608f276e45a3610a6d36b3b799e87aa83ea49e8151038fd9bdf08dcc6",
+      "tokens_in": 541,
+      "tokens_out": 50,
+      "latency_s": 1.5632879999993747,
+      "diagram_hash": "e2356d87bc2fb4bd5e75a29355a0dd29ad81483820b2e9bc0b31ab7642097db2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_cd60962c233045039231c181da5294d6",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2874,
+  "tokens_out": 722,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Diner {\n  +id: String\n}\nclass TableBooking {\n  +id: String\n}\nclass RestaurantService {\n  +id: String\n}\nclass Table {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nDiner \"1\" --> \"0..*\" TableBooking\nRestaurantService \"0..*\" --> \"1\" TableBooking\nRestaurantService \"1\" *-- \"1..*\" Table\nDiner \"0..*\" --> \"0..*\" Table\nUser \"1\" --> \"0..*\" Diner\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.903397799999766,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "diner",
+          "user"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking"
+        ],
+        [
+          "user",
+          "diner"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.20454545454545459,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking",
+          "association"
+        ],
+        [
+          "user",
+          "diner",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "user",
+          "diner",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "diner",
+          "user"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking"
+        ],
+        [
+          "user",
+          "diner"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.20454545454545459,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking",
+          "association"
+        ],
+        [
+          "user",
+          "diner",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "tablebooking",
+          "restaurantservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "restaurantservice",
+          "tablebooking",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "user",
+          "diner",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 21.913678300000356,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

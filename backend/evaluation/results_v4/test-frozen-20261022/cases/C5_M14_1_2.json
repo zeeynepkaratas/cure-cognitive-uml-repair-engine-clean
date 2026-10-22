@@ -1,0 +1,773 @@
+{
+  "case_id": "M14_1",
+  "scenario_id": "M14",
+  "srs": "The course enrollment system records Student, Enrollment, EnrollmentService, and Course; each has an id attribute. Each Student can have zero or more Enrollment records, and each Enrollment belongs to exactly one Student. Each Enrollment uses exactly one EnrollmentService, and each EnrollmentService serves zero or more Enrollment records. Each EnrollmentService manages one or more Course records by composition, and each Course belongs to exactly one EnrollmentService. Each Student can reference zero or more Course records, and each Course can be referenced by zero or more Student records.",
+  "gold": "@startuml\nclass Student {\n  +id: String\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defective": "@startuml\nclass Student {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1869,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1869,
+      "selected_class": "Enrollment"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Student {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\n\nclass UnspecifiedEntity {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml",
+  "output_sha256": "a870e8bc3dc043368ed2ec6810c1f909380607442e2bc582633bcdf25e0ff5d1",
+  "input_sha256": "9eb67bab31398b38e86611acaf776d56e9029667baa685fd5180edf41fba42db",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "79e9f6da1174b54f0001296b122a245f91d63c21acacee7ecd996188c853ca46",
+      "tokens_in": 465,
+      "tokens_out": 85,
+      "latency_s": 2.684155300000384,
+      "diagram_hash": "9eb67bab31398b38e86611acaf776d56e9029667baa685fd5180edf41fba42db",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c664a6f286f94d5eb200ba79eedbaf8e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "cd683ca31570c6dab0d1272c2dbf7126bcd67a5768b38e105b50a1c8001a5395",
+      "tokens_in": 254,
+      "tokens_out": 146,
+      "latency_s": 3.932508699999744,
+      "diagram_hash": "c109fd9904875e13a3d7fb19faaa26cbd415817374a87d58c9d4e522908aa66e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_090ab518174a4914ac3c5ef25ae6b7ba",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b68df122b3a5401c543bae84d1deddee1e48ccf076f06fa22eb94e0550a03ffd",
+      "tokens_in": 504,
+      "tokens_out": 49,
+      "latency_s": 2.2676746999995885,
+      "diagram_hash": "c109fd9904875e13a3d7fb19faaa26cbd415817374a87d58c9d4e522908aa66e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_8b06b87cb19f4a7a846e1c3d82ab9cf2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "371efc1c36155a781b30e54411710b55dde6b2fdee1462901826d67fb65ed00c",
+      "tokens_in": 262,
+      "tokens_out": 146,
+      "latency_s": 3.1394787000008364,
+      "diagram_hash": "f6909e94dab0c5f6fcf9e64a97dc85fac3e74c07fd5908cdb1a22b567a367e5e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e0851bd988",
+      "request_id": "req_1a39ab52d6e14a0689f7456c2c754e34",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e0dba33a53070f11aa8f0672eda59802a7543096b83274d00b32bd22c9c24797",
+      "tokens_in": 504,
+      "tokens_out": 77,
+      "latency_s": 2.7028391000003467,
+      "diagram_hash": "f6909e94dab0c5f6fcf9e64a97dc85fac3e74c07fd5908cdb1a22b567a367e5e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_6cd16aa59e4a49899a9fab5579ac6e8f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı kontrol edilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı kontrol edilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "5cd2367a7a048800f87f7fcced12179477d14f28190473d408fc2a333eedc178",
+      "tokens_in": 298,
+      "tokens_out": 159,
+      "latency_s": 3.1922241999991456,
+      "diagram_hash": "a870e8bc3dc043368ed2ec6810c1f909380607442e2bc582633bcdf25e0ff5d1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e0851bd988",
+      "request_id": "req_873205df52bf435681ddedacba77a706",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\n\nclass UnspecifiedEntity {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\n\nclass UnspecifiedEntity {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "cacfc8d9a4faea4f99a79c2ccb8fc6014573c8ed77fa830b33993ffa84f29b6a",
+      "tokens_in": 517,
+      "tokens_out": 50,
+      "latency_s": 1.6305990000000747,
+      "diagram_hash": "a870e8bc3dc043368ed2ec6810c1f909380607442e2bc582633bcdf25e0ff5d1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.045454545454545456
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_ad5ede3ab41642ff86d450334856737b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2804,
+  "tokens_out": 712,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Student {\n  +id: String\n  +age: Integer\n}\n\nclass UnspecifiedEntity {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.66551509999954,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        "enrollment"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": -0.15000000000000002,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ],
+        [
+          "enrollment",
+          "student"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollmentservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "student",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ],
+        [
+          "student",
+          "enrollment"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "student",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association"
+        ],
+        [
+          "student",
+          "enrollment",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "student",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "student",
+          "enrollment",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "student",
+          "unspecifiedentity",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "enrollment",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "student",
+          "age"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        "enrollment"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": -0.15000000000000002,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ],
+        [
+          "enrollment",
+          "student"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollmentservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "student",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ],
+        [
+          "student",
+          "enrollment"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "student",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association"
+        ],
+        [
+          "student",
+          "enrollment",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "student",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "student",
+          "enrollment",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "student",
+          "unspecifiedentity",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "enrollment",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "student",
+          "age"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "end_to_end_seconds": 20.673090400000547,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

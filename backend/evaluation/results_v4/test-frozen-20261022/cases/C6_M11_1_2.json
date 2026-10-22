@@ -1,0 +1,524 @@
+{
+  "case_id": "M11_1",
+  "scenario_id": "M11",
+  "srs": "The library lending system records Reader, Loan, LibraryService, and Book; each has an id attribute. Each Reader can have zero or more Loan records, and each Loan belongs to exactly one Reader. Each Loan uses exactly one LibraryService, and each LibraryService serves zero or more Loan records. Each LibraryService manages one or more Book records by composition, and each Book belongs to exactly one LibraryService. Each Reader can reference zero or more Book records, and each Book can be referenced by zero or more Reader records.",
+  "gold": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\n@enduml",
+  "defective": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1839,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1839,
+      "selected_class": "Reader"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml",
+  "output_sha256": "bd37cbac579d24e7553dbb00acc1e880db4d819310416fd6027c39328f3550c4",
+  "input_sha256": "82b9b873baeacd4b518264d3c69254a441f8914b26ca32e00151538869fc7587",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8bc4bb0ae28c8394c1af3c767c942dc028b171ad3e1fad2b6c5977519c1f7da6",
+      "tokens_in": 348,
+      "tokens_out": 54,
+      "latency_s": 2.20019240000056,
+      "diagram_hash": "82b9b873baeacd4b518264d3c69254a441f8914b26ca32e00151538869fc7587",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_78ba680571124aca9d2e256b05d43d9a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing Reader class and its relationships.\",\"Loan class should have a relationship with Reader class.\",\"LibraryService should have a relationship with Loan class indicating it serves zero or more Loan records.\"],\"categories\":[\"UML Structure\",\"Class Relationships\"]}",
+      "critic_errors": [
+        "Missing Reader class and its relationships.",
+        "Loan class should have a relationship with Reader class.",
+        "LibraryService should have a relationship with Loan class indicating it serves zero or more Loan records."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2eb4e6aefac01ac96e89a81d39cc554ccbb245c2614b2ec79d842de6900227b5",
+      "tokens_in": 170,
+      "tokens_out": 89,
+      "latency_s": 1.7621143999995184,
+      "diagram_hash": "f8902c14fe403c8cc38567d6608c53fb2d565df5f8efae017b98129341ef4f37",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_ea696ced66dc4247b2c35638db3d0526",
+      "response_text": "```plantuml\n@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\n\n@enduml\n```",
+      "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\n\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "3bdb1297ea4934589ea2e71b2d140b05baa9933b64e1a3d6c6f1a7e6fec0db6a",
+      "tokens_in": 369,
+      "tokens_out": 48,
+      "latency_s": 1.8146116999996593,
+      "diagram_hash": "f8902c14fe403c8cc38567d6608c53fb2d565df5f8efae017b98129341ef4f37",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_833bea01e1064fc995f391034443dc47",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"LibraryService should have a relationship with Loan indicating that it can serve zero or more Loan records, but this is not explicitly shown in the UML.\"],\"categories\":[\"UML Structure\",\"Relationship Constraints\"]}",
+      "critic_errors": [
+        "LibraryService should have a relationship with Loan indicating that it can serve zero or more Loan records, but this is not explicitly shown in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Constraints"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e33131fa96fe689d71cd8cc871f47792e99a38dbc7a9f598d638db3d12f1a1c8",
+      "tokens_in": 183,
+      "tokens_out": 102,
+      "latency_s": 2.963510800000222,
+      "diagram_hash": "7503be97237433fbe0264ddf15cd519b4db2adf74ef02277c5bf861231cbe7de",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_97a78bf739284b458648a137301372c9",
+      "response_text": "```plantuml\n@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\n\n@enduml\n```",
+      "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\n\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4c065e3676f1c924e9d486b7b28d528174c8aa091020c7381ab8939be16cd79c",
+      "tokens_in": 382,
+      "tokens_out": 77,
+      "latency_s": 1.936547299999802,
+      "diagram_hash": "7503be97237433fbe0264ddf15cd519b4db2adf74ef02277c5bf861231cbe7de",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_ed91fe6b86f14b9a8e719bf5f525c418",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not correctly represent the relationship between Reader and Book. The requirement states that each Reader can reference zero or more Book records, and each Book can be referenced by zero or more Reader records, which implies a many-to-many relationship. However, the UML does not show this relationship.\"],\"categories\":[\"UML Structure\",\"Relationship Representation\"]}",
+      "critic_errors": [
+        "The UML does not correctly represent the relationship between Reader and Book. The requirement states that each Reader can reference zero or more Book records, and each Book can be referenced by zero or more Reader records, which implies a many-to-many relationship. However, the UML does not show this relationship."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Representation"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c79eabc9dc62fa4cf96fe3f723175255629f518e7c83afe68f2f123d7c6a3825",
+      "tokens_in": 225,
+      "tokens_out": 114,
+      "latency_s": 2.649668300000485,
+      "diagram_hash": "bd37cbac579d24e7553dbb00acc1e880db4d819310416fd6027c39328f3550c4",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_49822bfa2f3a4a0fbf46ad2fdb7af2c8",
+      "response_text": "```plantuml\n@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml\n```",
+      "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7ac3e69fc92cc8995547445a9dc721145c39e84b3e6063cbdf8e188c2118f600",
+      "tokens_in": 394,
+      "tokens_out": 12,
+      "latency_s": 3.173809899999469,
+      "diagram_hash": "bd37cbac579d24e7553dbb00acc1e880db4d819310416fd6027c39328f3550c4",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_180ddc5fcbf9471e8d0b41d3e883efff",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2071,
+  "tokens_out": 496,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {LibraryService, Loan}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {LibraryService, Loan}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nLoan \"0..*\" --> \"1\" Reader\nLibraryService \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 19.6768062000001,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan"
+        ],
+        [
+          "loan",
+          "reader"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -1.1102230246251565e-16,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan",
+          "association"
+        ],
+        [
+          "loan",
+          "reader",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -1.1102230246251565e-16,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "loan",
+          "reader",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -1.1102230246251565e-16,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan"
+        ],
+        [
+          "loan",
+          "reader"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -1.1102230246251565e-16,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan",
+          "association"
+        ],
+        [
+          "loan",
+          "reader",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -1.1102230246251565e-16,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "libraryservice",
+          "loan",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "loan",
+          "reader",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -1.1102230246251565e-16,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "end_to_end_seconds": 19.682656699999825,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

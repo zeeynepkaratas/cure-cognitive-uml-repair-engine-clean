@@ -1,0 +1,593 @@
+{
+  "case_id": "M15_2",
+  "scenario_id": "M15",
+  "srs": "The hotel reservations system records Guest, Reservation, ReservationService, and Room; each has an id attribute. Each Guest can have zero or more Reservation records, and each Reservation belongs to exactly one Guest. Each Reservation uses exactly one ReservationService, and each ReservationService serves zero or more Reservation records. Each ReservationService manages one or more Room records by composition, and each Room belongs to exactly one ReservationService. Each Guest can reference zero or more Room records, and each Room can be referenced by zero or more Guest records.",
+  "gold": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n@enduml",
+  "defective": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1880,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1880,
+      "selected_class": "Guest"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1881,
+      "selected_class": "ReservationService",
+      "added_class": "Spacecraft"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n\n@enduml",
+  "output_sha256": "166c3915010d18b1b90006111d098599ebedac24999e7c4de6c0b65a2c28fd48",
+  "input_sha256": "d8f11b15f872bd9d54deef27ba5c3b20938550e815f8bbc50177f1f4d2845cd3",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "61b1e2c2973a0194a69a6740c296212a6d6c7c1bd7fef6b8ff5fedc504bbd039",
+      "tokens_in": 456,
+      "tokens_out": 74,
+      "latency_s": 2.2001971999998204,
+      "diagram_hash": "d8f11b15f872bd9d54deef27ba5c3b20938550e815f8bbc50177f1f4d2845cd3",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5b0bbd38961343aa8435caf8a1ab69b2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "5d46491c98d067470718e13732457b5ccf8ae10d1af9c7da187b86f746a941f5",
+      "tokens_in": 257,
+      "tokens_out": 140,
+      "latency_s": 4.918992300000355,
+      "diagram_hash": "6909aa737673ca775e1089859b325b26a44eaa14b6cb88471b14ffd97576fd83",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_6a723557146148f697ac0191fbfa616e",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"0..*\" OrderItem\n\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"0..*\" OrderItem\n\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1ed1b68524fd0137d3d3670a5e8fcde32816e925c7108b212eb4ad7550836995",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.9585033000003023,
+      "diagram_hash": "6909aa737673ca775e1089859b325b26a44eaa14b6cb88471b14ffd97576fd83",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f96b9fd14c6141a182197ed48c515656",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a1512cae83981f948d37ce277bd35733574f553d6b84188a71bf076e3b62b99a",
+      "tokens_in": 256,
+      "tokens_out": 140,
+      "latency_s": 4.791424600000028,
+      "diagram_hash": "98c70359dc97fedda6f60521fb39f556037e3d6897274bdf5e091589c488676f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_dbda0d87103c46c3a829cb2a504c438a",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\n\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\n\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "11d54412d3ee4156f4e80de31bf91b804024ed354a432792e1de007e45284f8a",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.4539975999996386,
+      "diagram_hash": "98c70359dc97fedda6f60521fb39f556037e3d6897274bdf5e091589c488676f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5fe74f6c0c344d02a5bc451e6fa7756e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "065bf10ca394d461f2294fa9c7349f11502c7060d44afca5b436064596e94e31",
+      "tokens_in": 256,
+      "tokens_out": 151,
+      "latency_s": 4.436953899999935,
+      "diagram_hash": "166c3915010d18b1b90006111d098599ebedac24999e7c4de6c0b65a2c28fd48",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_419e9846042345a48361a6cc0346fa1f",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c0dcb01e43fd2da73fb96876ee7b9d0b75c00392307df0b1fa2b89267a731550",
+      "tokens_in": 509,
+      "tokens_out": 49,
+      "latency_s": 1.434798199999932,
+      "diagram_hash": "166c3915010d18b1b90006111d098599ebedac24999e7c4de6c0b65a2c28fd48",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_be6045a6e9534bb7800df7605ddf0798",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 2"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2730,
+  "tokens_out": 652,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Guest {\n  +id: String\n  +age: Integer\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.224164700000074,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "guest",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "guest",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 21.23104289999992,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

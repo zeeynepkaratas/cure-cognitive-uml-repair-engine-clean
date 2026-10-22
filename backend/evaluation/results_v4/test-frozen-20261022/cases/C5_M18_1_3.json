@@ -1,0 +1,624 @@
+{
+  "case_id": "M18_1",
+  "scenario_id": "M18",
+  "srs": "The invoice payment system records Customer, Invoice, BillingService, and Payment; each has an id attribute. Each Customer can have zero or more Invoice records, and each Invoice belongs to exactly one Customer. Each Invoice uses exactly one BillingService, and each BillingService serves zero or more Invoice records. Each BillingService manages one or more Payment records by composition, and each Payment belongs to exactly one BillingService. Each Customer can reference zero or more Payment records, and each Payment can be referenced by zero or more Customer records.",
+  "gold": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nInvoice \"0..*\" --> \"1\" BillingService\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "defective": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1909,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1909,
+      "selected_class": "BillingService",
+      "original_relation": [
+        "Invoice",
+        "BillingService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\nOrder \"1\" --> \"1..*\" OrderItem : contains\n@enduml",
+  "output_sha256": "9ad9999852e8c8d1fa4b6a7b35d879e69e69e9fd4ec0f546871400705a60b328",
+  "input_sha256": "3414d14e2cb9adf806d88fbd82450e99886ef17cc06251c1fd5041aa3234df60",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "45e2e492c90d1f5b59b5472f100f0e125f449398f47e2605c7fcd585822fcc65",
+      "tokens_in": 459,
+      "tokens_out": 70,
+      "latency_s": 1.7518099999997503,
+      "diagram_hash": "3414d14e2cb9adf806d88fbd82450e99886ef17cc06251c1fd5041aa3234df60",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f2cecc72a4ca436cbfce9fd1a6cba3ac",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği belirtilmemiş.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği belirtilmemiş.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9fa210727dbe54b7a712ed249def1454a55afa9d01a9f642f628b41acb69e975",
+      "tokens_in": 246,
+      "tokens_out": 140,
+      "latency_s": 2.9002368999999817,
+      "diagram_hash": "74906285e7874d06acbee1c7ed9e553cd7cbe657582f7fb451d79af879806c09",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_1aa955b2cd",
+      "request_id": "req_f8bd33df973f404aa0eedf7454d070a6",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d363711308a25bc050f7ec2ad6177b460e4807c4f61beb138c8ab2aee036c36a",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.7111782000001767,
+      "diagram_hash": "74906285e7874d06acbee1c7ed9e553cd7cbe657582f7fb451d79af879806c09",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_4219bf88b08742f48a3e7b45ac19a115",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "6c1574d83aacbacd90340a3cc150354cbd3d95e1032875fc635fad022ae9f522",
+      "tokens_in": 256,
+      "tokens_out": 140,
+      "latency_s": 2.5347840000004,
+      "diagram_hash": "870b1723b9c549f0bf929e3ff592e0ffdc702e0e87620aeab8cb9cf6dc5bf4cc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ad31506360",
+      "request_id": "req_3685ea7bd98849719e93734b86de9032",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4718e5462c0c55133cf05a7776385c2a4dd20253085bacbfe947ff0dcbaca04a",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.459657000000334,
+      "diagram_hash": "870b1723b9c549f0bf929e3ff592e0ffdc702e0e87620aeab8cb9cf6dc5bf4cc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_0ab3d36d43e8424b8c9905704d22bfc0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "79563a2d2479e1890fed291c7520a0fc88e07db9ceac9028bccc1712263e6d6e",
+      "tokens_in": 256,
+      "tokens_out": 154,
+      "latency_s": 2.6739392999998017,
+      "diagram_hash": "9ad9999852e8c8d1fa4b6a7b35d879e69e69e9fd4ec0f546871400705a60b328",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ad31506360",
+      "request_id": "req_c715cddc73704a81a0db9bbdc9ee218a",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\nOrder \"1\" --> \"1..*\" OrderItem : contains\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\nOrder \"1\" --> \"1..*\" OrderItem : contains\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "afc2f56f460e9557e04be88668d9046d2d0c2993dd52b23ae2ca20ec2ed03d9c",
+      "tokens_in": 512,
+      "tokens_out": 45,
+      "latency_s": 1.6639103999996223,
+      "diagram_hash": "9ad9999852e8c8d1fa4b6a7b35d879e69e69e9fd4ec0f546871400705a60b328",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.045454545454545456
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_4926f79cc467476086613f9787e1dd55",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2725,
+  "tokens_out": 647,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Customer {\n  +id: String\n  +age: Integer\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\nOrder \"1\" --> \"1..*\" OrderItem\nOrder \"1\" --> \"1..*\" OrderItem : contains\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 15.856912600000214,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.08333333333333348,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "association"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.08333333333333348,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "customer",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.08333333333333348,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "association"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.08333333333333348,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "customer",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 15.864539100000002,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

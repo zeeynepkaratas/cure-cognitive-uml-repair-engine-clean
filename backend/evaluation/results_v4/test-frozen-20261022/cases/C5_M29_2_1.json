@@ -1,0 +1,588 @@
+{
+  "case_id": "M29_2",
+  "scenario_id": "M29",
+  "srs": "The insurance claims system records PolicyHolder, Claim, ClaimsService, and Policy; each has an id attribute. Each PolicyHolder can have zero or more Claim records, and each Claim belongs to exactly one PolicyHolder. Each Claim uses exactly one ClaimsService, and each ClaimsService serves zero or more Claim records. Each ClaimsService manages one or more Policy records by composition, and each Policy belongs to exactly one ClaimsService. Each PolicyHolder can reference zero or more Policy records, and each Policy can be referenced by zero or more PolicyHolder records.",
+  "gold": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "defective": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "defect_ids": [
+    "D8"
+  ],
+  "seed": 2020,
+  "injections": [
+    {
+      "defect_id": "D8",
+      "seed": 2020,
+      "selected_class": "Claim"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer [1..*]\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1..*\" Order\n@enduml",
+  "output_sha256": "35eb6962e2278b0e70152996712a7f1e57172fb688d90217c1a0b5266c4182f1",
+  "input_sha256": "079fab4ee7722181419473801ac81903b39a1f6da03f2a6913c3e9592279bbc6",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "aec4bd1e2106268414e6d966d0b0b8e6449bd57b36f46fb9ec028e111cef8d10",
+      "tokens_in": 461,
+      "tokens_out": 77,
+      "latency_s": 2.3777712000000975,
+      "diagram_hash": "079fab4ee7722181419473801ac81903b39a1f6da03f2a6913c3e9592279bbc6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_e295fc04516345f194b104d8796d5360",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "73d5eb8d823e8bf27b95c9c7ea54d3c8aedaa770a8ec892121872d7409f14d81",
+      "tokens_in": 249,
+      "tokens_out": 129,
+      "latency_s": 2.9445842000000084,
+      "diagram_hash": "4afee3502fcf9f2f38bf0eb960042318ab87023a3b5d69f99c990e2ed8c0fa61",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_89ea449874",
+      "request_id": "req_9f16613618884208ba637500632f5681",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b36332af17d002a77370d1630ef0e09faf46d8bdbec69da3f389f68ec6c0f831",
+      "tokens_in": 492,
+      "tokens_out": 77,
+      "latency_s": 1.9519058999999288,
+      "diagram_hash": "4afee3502fcf9f2f38bf0eb960042318ab87023a3b5d69f99c990e2ed8c0fa61",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_ac977b6c80b740bfa676fbf741fb404e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "3ddfd64b2f0315ab419809dbbf6ac4eaf3231c8c4b959539f10e679e3e2415b9",
+      "tokens_in": 286,
+      "tokens_out": 136,
+      "latency_s": 3.2251798000002054,
+      "diagram_hash": "33028a2b66271bff595813db0f84e19ae9385acd28051ea685aa2179ff7e4263",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_ba6e2756ed6d449d953a24b006c18bea",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a75a97d3de2a5c7af3a70ad57ef6a6d9be4c4e182e937d1b63866f3653282772",
+      "tokens_in": 499,
+      "tokens_out": 96,
+      "latency_s": 2.4191373999997268,
+      "diagram_hash": "33028a2b66271bff595813db0f84e19ae9385acd28051ea685aa2179ff7e4263",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09090909090909091
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.08695652173913043
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_5b1878da03c449a0b224e461868dc783",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User sınıfı UML'de tanımlanmış ancak age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order sınıfı ile OrderItem arasında bir bağıntı var ancak OrderItem'ın en az bir tane olması gerektiği belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User sınıfı UML'de tanımlanmış ancak age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order sınıfı ile OrderItem arasında bir bağıntı var ancak OrderItem'ın en az bir tane olması gerektiği belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "09be6a3d28ad052dcbfc41262eac7791388873af95e9746282bb7caab83bd12e",
+      "tokens_in": 351,
+      "tokens_out": 152,
+      "latency_s": 3.4889742999998816,
+      "diagram_hash": "35eb6962e2278b0e70152996712a7f1e57172fb688d90217c1a0b5266c4182f1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_20866bc1d1d74100a67cad088a1f533d",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer [1..*]\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1..*\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer [1..*]\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1..*\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "f86c3e62281c156511bfdb56ccba6f2476fd1d29feea9e9cc1a8e84517f9b192",
+      "tokens_in": 515,
+      "tokens_out": 45,
+      "latency_s": 1.5426334000003408,
+      "diagram_hash": "35eb6962e2278b0e70152996712a7f1e57172fb688d90217c1a0b5266c4182f1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09090909090909091
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.08695652173913043
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_51bce687bfa5416ca8a01fece97d263f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age >= 18 constraint.\",\"Order class does not enforce OrderItem.size() > 0 constraint.\"],\"categories\":[\"OCL Compliance\",\"UML Structure\"]}",
+      "critic_errors": [
+        "User class does not enforce age >= 18 constraint.",
+        "Order class does not enforce OrderItem.size() > 0 constraint."
+      ],
+      "critic_categories": [
+        "OCL Compliance",
+        "UML Structure"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2853,
+  "tokens_out": 712,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']",
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass PolicyHolder {\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nclass User {\n  +age: Integer [1..*]\n}\nclass Order {\n  +orderId: String\n}\nclass OrderItem {\n}\n\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1..*\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 2,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.333450999999968,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "policyholder",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderid"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19047619047619058
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "policyholder",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderid"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19047619047619058
+  },
+  "end_to_end_seconds": 21.345233100000314,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

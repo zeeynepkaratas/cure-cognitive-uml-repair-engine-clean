@@ -1,0 +1,606 @@
+{
+  "case_id": "M23_2",
+  "scenario_id": "M23",
+  "srs": "The energy metering system records Resident, Reading, MeteringService, and Meter; each has an id attribute. Each Resident can have zero or more Reading records, and each Reading belongs to exactly one Resident. Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records. Each MeteringService manages one or more Meter records by composition, and each Meter belongs to exactly one MeteringService. Each Resident can reference zero or more Meter records, and each Meter can be referenced by zero or more Resident records.",
+  "gold": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "defective": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1960,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1960,
+      "selected_class": "MeteringService",
+      "original_relation": [
+        "Resident",
+        "Meter",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 18\nend note\n@enduml",
+  "output_sha256": "9b2d6347e58cc1cca1ecbc85b3cd6b81066a1d96f1543cd4b4f1b2af0528a1cd",
+  "input_sha256": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "27995fa37b1516e1fc580d2332052b83c175a22fdebf7f25797043f668f468e4",
+      "tokens_in": 470,
+      "tokens_out": 104,
+      "latency_s": 2.4567800000004354,
+      "diagram_hash": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_91312ea1ffcf4b1e985a717186e31ac7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesi tanımlanmamış, ancak Resident nesnesinin age özelliği yok.\",\"OCL Kuralı 2: Order ve OrderItem nesneleri tanımlanmamış, bu nedenle Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu kontrol edilemiyor.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesi tanımlanmamış, ancak Resident nesnesinin age özelliği yok.",
+        "OCL Kuralı 2: Order ve OrderItem nesneleri tanımlanmamış, bu nedenle Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu kontrol edilemiyor."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "8db133659eb67736d9d265325913399c741a12e6fa54dec09272209fc5959e69",
+      "tokens_in": 287,
+      "tokens_out": 145,
+      "latency_s": 3.7172250999992684,
+      "diagram_hash": "d213c501e473cf2ce538bac2f894d7f217b1c326ed2f520780d6afe5c7aaa7b1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_32e3c9ed2e844fe2ade20e707ec4e136",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "539b7da3b4cd90de27e2459866dca64a06a8bc28de71549082b7d3ed4e537af3",
+      "tokens_in": 509,
+      "tokens_out": 45,
+      "latency_s": 1.4680269000000408,
+      "diagram_hash": "d213c501e473cf2ce538bac2f894d7f217b1c326ed2f520780d6afe5c7aaa7b1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_b4c953d4eceb4a99af05223b05dddf45",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği kontrol edilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a83b256299f20e400d9bb3d3d1872480149d90bbd5d579b213b840313ca82160",
+      "tokens_in": 247,
+      "tokens_out": 195,
+      "latency_s": 6.423218299999462,
+      "diagram_hash": "aa07c96c44a325d7d886432e188020517cc4c27ac230c0b937a251fd2d7c1066",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_61779f312bb64c54af959aaa8655d11c",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 0\nend note\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 0\nend note\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4f18f49a8ef98c1d7fac2a603fb6313aa76f236ade33143f9dde7b9848106ae4",
+      "tokens_in": 559,
+      "tokens_out": 51,
+      "latency_s": 2.3525916999997207,
+      "diagram_hash": "aa07c96c44a325d7d886432e188020517cc4c27ac230c0b937a251fd2d7c1066",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.05714285714285714
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.02857142857142857
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_544b2c010a8844888bc502db7dd4e994",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Resident nesnesinin age özelliği için 18 yaş kısıtlaması yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Resident nesnesinin age özelliği için 18 yaş kısıtlaması yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "14744cc130d43a850fb4762777aed00abd5a8f50f072dc67a741dfa4ff18f280",
+      "tokens_in": 317,
+      "tokens_out": 195,
+      "latency_s": 4.636594500000683,
+      "diagram_hash": "9b2d6347e58cc1cca1ecbc85b3cd6b81066a1d96f1543cd4b4f1b2af0528a1cd",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fbfbfe4157",
+      "request_id": "req_98837fb684644cf0877bb32e86eff7a0",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 18\nend note\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 18\nend note\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "14076ed102a46617ca2071404177a2629033491396c647cd334545a71c153cf7",
+      "tokens_in": 559,
+      "tokens_out": 61,
+      "latency_s": 2.155792200000178,
+      "diagram_hash": "9b2d6347e58cc1cca1ecbc85b3cd6b81066a1d96f1543cd4b4f1b2af0528a1cd",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05714285714285714
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.05555555555555555
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_dae8167533e84b8cae49d77597656d95",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Resident nesnesinin age özelliği için bir kısıtlama belirtilmiş ancak UML'de bu kısıtlama uygulanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Resident nesnesinin age özelliği için bir kısıtlama belirtilmiş ancak UML'de bu kısıtlama uygulanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2948,
+  "tokens_out": 796,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Resident {\n  +id: String\n  +age: Integer\n}\n\nclass Reading {\n  +id: String\n}\n\nclass MeteringService {\n  +id: String\n}\n\nclass Meter {\n  +id: String\n}\n\nclass Order {\n  +id: String\n}\n\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nOrder \"1\" --> \"1..*\" OrderItem\n\n' OCL Kuralı 1: Resident nesnesinin age özelliği kontrol edilmeli\n' age özelliği için bir kısıtlama ekleniyor\nnote right of Resident\n  age >= 18\nend note\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 26.32462029999988,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.08333333333333348,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "resident",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.08333333333333348,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "resident",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 26.331954999999653,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

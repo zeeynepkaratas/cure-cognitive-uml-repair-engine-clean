@@ -1,0 +1,501 @@
+{
+  "case_id": "M16_2",
+  "scenario_id": "M16",
+  "srs": "The equipment maintenance system records Technician, WorkOrder, MaintenanceService, and Machine; each has an id attribute. Each Technician can have zero or more WorkOrder records, and each WorkOrder belongs to exactly one Technician. Each WorkOrder uses exactly one MaintenanceService, and each MaintenanceService serves zero or more WorkOrder records. Each MaintenanceService manages one or more Machine records by composition, and each Machine belongs to exactly one MaintenanceService. Each Technician can reference zero or more Machine records, and each Machine can be referenced by zero or more Technician records.",
+  "gold": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\n@enduml",
+  "defective": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nclass MusicPlaylist {}\n@enduml",
+  "defect_ids": [
+    "D2"
+  ],
+  "seed": 1890,
+  "injections": [
+    {
+      "defect_id": "D2",
+      "seed": 1890,
+      "selected_class": "Machine",
+      "added_class": "MusicPlaylist"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nclass MusicPlaylist {}\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer [1..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"1..*\" OrderItem // En az bir OrderItem bağlantısı eklendi\n@enduml",
+  "output_sha256": "600d047026436351086602f3c81766fc8676e3b85dda6f5bfd38e26c4edd66b9",
+  "input_sha256": "9bc70da15c7b199143149c3ba0a8722433a27e8ce7a13c87ff90c5d4905945f2",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a2258c56ef8cf14e0165c142e98ed73d14bf96c13394e84910bcf4361fbb6174",
+      "tokens_in": 473,
+      "tokens_out": 95,
+      "latency_s": 2.016611400000329,
+      "diagram_hash": "9bc70da15c7b199143149c3ba0a8722433a27e8ce7a13c87ff90c5d4905945f2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d5b32febbe24410dbc539e23992f05e9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesi tanımlanmamış, ancak age özelliği gereksinimlerde belirtilmemiş.\",\"OCL Kuralı 2: Order nesnesi tanımlanmamış, ancak OrderItem ile ilgili bir ilişki gereksinimlerde belirtilmemiş.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesi tanımlanmamış, ancak age özelliği gereksinimlerde belirtilmemiş.",
+        "OCL Kuralı 2: Order nesnesi tanımlanmamış, ancak OrderItem ile ilgili bir ilişki gereksinimlerde belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "14f23cb282c6f16447ddcdc435846ba3addc44cba8cea1167982a5fd05bee98b",
+      "tokens_in": 279,
+      "tokens_out": 137,
+      "latency_s": 3.097167900000386,
+      "diagram_hash": "399413a0300ebcc60b48c96229f164e81f147e2aa593df468fd02ee8bde78817",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_9aa6d1cc6ba14826987459d6af52382b",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6b1864562483d447c591938b25aa81729b8a26c0fe7bdea0b33cb5b3e4685d38",
+      "tokens_in": 500,
+      "tokens_out": 79,
+      "latency_s": 2.204628800000137,
+      "diagram_hash": "399413a0300ebcc60b48c96229f164e81f147e2aa593df468fd02ee8bde78817",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_8025640246bd4044817f7b874b3f61d5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "fd2b5fd6e309ba38521348e135628d5deddda7d946a4e9f924e7622e32e85361",
+      "tokens_in": 307,
+      "tokens_out": 149,
+      "latency_s": 4.566979100000026,
+      "diagram_hash": "59cdefbacb109eef3610703be8b5076bf3d798686f21e38c92561f0eb3b20257",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_51c7244c019a466e8de8aa3aa059c25c",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1ed9e3ef3069ca31dc4f02cf1969046869214706700387f636c07a755bec9e4c",
+      "tokens_in": 512,
+      "tokens_out": 80,
+      "latency_s": 1.8804527999996026,
+      "diagram_hash": "59cdefbacb109eef3610703be8b5076bf3d798686f21e38c92561f0eb3b20257",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_7cac025dbeda45cf86f6cd6593cec250",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4c2733946ca4621dd0087b1812ad209878a05ddb296234bc34e14d555c820b85",
+      "tokens_in": 315,
+      "tokens_out": 173,
+      "latency_s": 3.875052699999742,
+      "diagram_hash": "600d047026436351086602f3c81766fc8676e3b85dda6f5bfd38e26c4edd66b9",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_ed7d2f61d4c4439d89cc9b6ee9a24d7e",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer [1..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"1..*\" OrderItem // En az bir OrderItem bağlantısı eklendi\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass User {\n  +age: Integer [1..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nOrder \"1\" --> \"1..*\" OrderItem // En az bir OrderItem bağlantısı eklendi\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "503fa4cb54a4fae79b37e4c8f06dbd65ebdeee55f9b6bd72b2eebba0c36159fa",
+      "tokens_in": 536,
+      "tokens_out": 88,
+      "latency_s": 1.9465057000002162,
+      "diagram_hash": "600d047026436351086602f3c81766fc8676e3b85dda6f5bfd38e26c4edd66b9",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.07142857142857142
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.06896551724137931
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_11d36f40c8634b7f9cbe96a775de904d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması UML'de belirtilmemiş.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı UML'de belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması UML'de belirtilmemiş.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı UML'de belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2922,
+  "tokens_out": 801,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\nclass MusicPlaylist {}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 1,
+  "elapsed_seconds": 23.196600599999783,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.16161616161616166,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "musicplaylist"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 23.20948770000041,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

@@ -1,0 +1,598 @@
+{
+  "case_id": "M21_1",
+  "scenario_id": "M21",
+  "srs": "The document review system records Reviewer, Review, ReviewService, and Document; each has an id attribute. Each Reviewer can have zero or more Review records, and each Review belongs to exactly one Reviewer. Each Review uses exactly one ReviewService, and each ReviewService serves zero or more Review records. Each ReviewService manages one or more Document records by composition, and each Document belongs to exactly one ReviewService. Each Reviewer can reference zero or more Document records, and each Document can be referenced by zero or more Reviewer records.",
+  "gold": "@startuml\nclass Reviewer {\n  +id: String\n}\nclass Review {\n  +id: String\n}\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewer \"1\" --> \"0..*\" Review\nReview \"0..*\" --> \"1\" ReviewService\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "defective": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1939,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1939,
+      "selected_class": "Review"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\n\nclass Order {\n  +OrderItem: List<OrderItem [1..*] // Order must have one or more OrderItems\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nOrder \"1\" *-- \"1..*\" OrderItem // Order has one or more OrderItems\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "output_sha256": "a3802e86a77f498680fbe045c038b5e1b9d29d95909f3be3d0283c3353c2fa01",
+  "input_sha256": "06e9464444bfa2cce502b74460dbd85fb6e9bce2bb5d206932f951596ef7927f",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "90dc03a9c92746cf447070807a9f9a55570215a15229e20d8c7715020ed00e40",
+      "tokens_in": 426,
+      "tokens_out": 85,
+      "latency_s": 2.197671900000387,
+      "diagram_hash": "06e9464444bfa2cce502b74460dbd85fb6e9bce2bb5d206932f951596ef7927f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6b8a4723da40499d951f7681f7a3edb7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "aa34561cd97184e6892ef71f84e5febdf30797ec7681214097102cbe1cdcfcb6",
+      "tokens_in": 215,
+      "tokens_out": 87,
+      "latency_s": 2.4559386000000814,
+      "diagram_hash": "54fadc3b42adcbc370abd2f8966cd8a63ec04a37cbdd678707dcd12602e6412e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_af34a331aa47491b952cb9d7798a14e0",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e4baf14190d15b353cf9ffec29fdc774ea04c753f3761cb1d5927b493cd414bd",
+      "tokens_in": 445,
+      "tokens_out": 84,
+      "latency_s": 1.9429691000004823,
+      "diagram_hash": "54fadc3b42adcbc370abd2f8966cd8a63ec04a37cbdd678707dcd12602e6412e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6d6ba5c40f7f4a2198e722e52a86fda2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"OCL Kuralı 1\",\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 1",
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c16116647836acc0e7c2e58f87b9756b58fd22e777497d22e0ca66ba89962c51",
+      "tokens_in": 251,
+      "tokens_out": 123,
+      "latency_s": 2.6926252000002933,
+      "diagram_hash": "3d05996c4993ae055caa605077b5fd4445d6e8f41c9dcd4fcdfe5400b3713c68",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8421a6e076",
+      "request_id": "req_52caf148e3bb492fb765dbc031845e50",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nOrder \"1\" *-- \"1..*\" OrderItem // Order has one or more OrderItems\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nOrder \"1\" *-- \"1..*\" OrderItem // Order has one or more OrderItems\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e0f82a99770dacf0fd6cbe77fb626cb259d26fd703fda3af699d7545b8ebae13",
+      "tokens_in": 481,
+      "tokens_out": 45,
+      "latency_s": 2.4102904999999737,
+      "diagram_hash": "3d05996c4993ae055caa605077b5fd4445d6e8f41c9dcd4fcdfe5400b3713c68",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.14285714285714285
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.13793103448275862
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_8739e6572cec45ed91bd21fdff950aa9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age >= 18 constraint.\",\"Order class does not enforce OrderItem.size() > 0 constraint.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age >= 18 constraint.",
+        "Order class does not enforce OrderItem.size() > 0 constraint."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "eb849182ba5df54395ad12be9e5457a4df264090592d3d21f82af33aca5a74f8",
+      "tokens_in": 214,
+      "tokens_out": 146,
+      "latency_s": 5.656546899999739,
+      "diagram_hash": "a3802e86a77f498680fbe045c038b5e1b9d29d95909f3be3d0283c3353c2fa01",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_76a68235b7c64b768b5af6f55f757ca9",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\n\nclass Order {\n  +OrderItem: List<OrderItem [1..*] // Order must have one or more OrderItems\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nOrder \"1\" *-- \"1..*\" OrderItem // Order has one or more OrderItems\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\n\nclass Order {\n  +OrderItem: List<OrderItem [1..*] // Order must have one or more OrderItems\n}\n\nclass OrderItem {\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nOrder \"1\" *-- \"1..*\" OrderItem // Order has one or more OrderItems\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5ad938df5bf5c2168aca2e99e8ca628d1dd453758eff750ca3a99dd3eb0ccf31",
+      "tokens_in": 504,
+      "tokens_out": 99,
+      "latency_s": 2.024276099999952,
+      "diagram_hash": "a3802e86a77f498680fbe045c038b5e1b9d29d95909f3be3d0283c3353c2fa01",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.16666666666666666
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.125
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f24c1e7ef954473498eb2e1705df63a4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için belirtilen kısıtlama UML'de doğru bir şekilde tanımlanmamış.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için belirtilen kısıtlama UML'de doğru bir şekilde tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için belirtilen kısıtlama UML'de doğru bir şekilde tanımlanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için belirtilen kısıtlama UML'de doğru bir şekilde tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2536,
+  "tokens_out": 669,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.758857800000442,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 2,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        "review"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2571428571428571,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewer"
+        ],
+        [
+          "review",
+          "reviewservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice"
+        ],
+        [
+          "reviewer",
+          "review"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association"
+        ],
+        [
+          "reviewer",
+          "review",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reviewer",
+          "review",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "review",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19047619047619058
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 3,
+    "output_relationship_count": 2,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        "review"
+      ],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewer"
+        ],
+        [
+          "review",
+          "reviewservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice"
+        ],
+        [
+          "reviewer",
+          "review"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association"
+        ],
+        [
+          "reviewer",
+          "review",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 2,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reviewer",
+          "review",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "review",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 21.764611700000387,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

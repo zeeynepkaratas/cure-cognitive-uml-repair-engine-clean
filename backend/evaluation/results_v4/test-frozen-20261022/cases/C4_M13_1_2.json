@@ -1,0 +1,411 @@
+{
+  "case_id": "M13_1",
+  "scenario_id": "M13",
+  "srs": "The parcel tracking system records Sender, Parcel, TrackingService, and TrackingEvent; each has an id attribute. Each Sender can have zero or more Parcel records, and each Parcel belongs to exactly one Sender. Each Parcel uses exactly one TrackingService, and each TrackingService serves zero or more Parcel records. Each TrackingService manages one or more TrackingEvent records by composition, and each TrackingEvent belongs to exactly one TrackingService. Each Sender can reference zero or more TrackingEvent records, and each TrackingEvent can be referenced by zero or more Sender records.",
+  "gold": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nSender \"0..*\" --> \"0..*\" TrackingEvent\n@enduml",
+  "defective": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1859,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1859,
+      "selected_class": "TrackingService",
+      "original_relation": [
+        "Sender",
+        "TrackingEvent",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"0..*\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"1..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml",
+  "condition": "C4",
+  "condition_name": "healer_only_compiler_feedback",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"1\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"0..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml",
+  "output_sha256": "b07872b3de3f460c7f9576ece7e0d3ce30305701ee7d2c76ee2cd8dd855bba72",
+  "input_sha256": "b1a2eb2f95bca82753893fba8c00f97276725135b555ba9ac9dbfe0c8554437c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": null,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4872452f0a4c2aca172759b4a97b59e129fe008a6d60b66f4627346a608dad51",
+      "tokens_in": 698,
+      "tokens_out": 103,
+      "latency_s": 2.6735453000001144,
+      "diagram_hash": "b07872b3de3f460c7f9576ece7e0d3ce30305701ee7d2c76ee2cd8dd855bba72",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_f07f5ab3c06f4222a2f31e01b3273553",
+      "response_text": "```plantuml\n@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"1\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"0..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"1\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"0..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml"
+    }
+  ],
+  "llm_call_count": 1,
+  "tokens_in": 698,
+  "tokens_out": 103,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Parcel, Sender, TrackingEvent, TrackingService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Parcel, Sender, TrackingEvent, TrackingService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Parcel, Sender, TrackingEvent, TrackingService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Parcel, Sender, TrackingEvent, TrackingService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Sender {\n  +id: String\n}\nclass Parcel {\n  +id: String\n}\nclass TrackingService {\n  +id: String\n}\nclass TrackingEvent {\n  +id: String\n}\nSender \"1\" --> \"0..*\" Parcel\nParcel \"1\" --> \"1\" TrackingService\nTrackingService \"1\" *-- \"0..*\" TrackingEvent\nTrackingEvent \"0..*\" --> \"0..*\" Sender\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 2.6769893000000593,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "sender",
+          "trackingevent"
+        ]
+      ],
+      "spurious": [
+        [
+          "trackingevent",
+          "sender"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "trackingevent",
+          "sender",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "parcel",
+          "trackingservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "trackingservice",
+          "trackingevent",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "parcel",
+          "trackingservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "trackingevent",
+          "sender",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "trackingservice",
+          "trackingevent",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "sender",
+          "trackingevent"
+        ]
+      ],
+      "spurious": [
+        [
+          "trackingevent",
+          "sender"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "sender",
+          "trackingevent",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "trackingevent",
+          "sender",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "parcel",
+          "trackingservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "sender",
+          "trackingevent",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "trackingservice",
+          "trackingevent",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "parcel",
+          "trackingservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "trackingevent",
+          "sender",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "trackingservice",
+          "trackingevent",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 2.6814362999994046,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

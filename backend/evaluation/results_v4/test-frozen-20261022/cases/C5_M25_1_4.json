@@ -1,0 +1,502 @@
+{
+  "case_id": "M25_1",
+  "scenario_id": "M25",
+  "srs": "The warehouse stock system records Operator, StockEntry, InventoryService, and Bin; each has an id attribute. Each Operator can have zero or more StockEntry records, and each StockEntry belongs to exactly one Operator. Each StockEntry uses exactly one InventoryService, and each InventoryService serves zero or more StockEntry records. Each InventoryService manages one or more Bin records by composition, and each Bin belongs to exactly one InventoryService. Each Operator can reference zero or more Bin records, and each Bin can be referenced by zero or more Operator records.",
+  "gold": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml",
+  "defective": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nclass Operator {}\n@enduml",
+  "defect_ids": [
+    "D9"
+  ],
+  "seed": 1979,
+  "injections": [
+    {
+      "defect_id": "D9",
+      "seed": 1979,
+      "selected_class": "Operator"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nclass Operator {}\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nOrder \"1\" --> \"1..*\" OrderItem // Bağlantı eklendi\n@enduml",
+  "output_sha256": "6228d86d6c80e35eb788de9a6842d45a1125a94dd057f619dbc0190f29528d4e",
+  "input_sha256": "6a77447f1221fc68a2b9ce04ab1295c3a6b80cae3953698fcf16bca3c3341790",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b6a3248e29b9d2b09168e8f5b8d9307b2db4e659149783dbbc9b576cc1a1499e",
+      "tokens_in": 470,
+      "tokens_out": 77,
+      "latency_s": 2.0243976000001567,
+      "diagram_hash": "6a77447f1221fc68a2b9ce04ab1295c3a6b80cae3953698fcf16bca3c3341790",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c94966d12fcd4e5fbc0c48af051dcb89",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a0a252d25915b60dd914244b643d8a68a7bdc76bedde16de93b309c30f0da35c",
+      "tokens_in": 246,
+      "tokens_out": 123,
+      "latency_s": 2.4754343000004155,
+      "diagram_hash": "915156000b7b4209c09a5e5071338cc0c0b3a527c35f7ff28bc6192f71a07050",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_cc0450709c4c46759a25eff2a067f5d5",
+      "response_text": "```plantuml\n@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "cadcf9803fa07b0452e582b04764db082a40ca2c1456db96c678ff29cc28f2e0",
+      "tokens_in": 486,
+      "tokens_out": 75,
+      "latency_s": 1.8902932000000874,
+      "diagram_hash": "915156000b7b4209c09a5e5071338cc0c0b3a527c35f7ff28bc6192f71a07050",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5e3129241e344e9ab85b0ea41bf1ea55",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4098eb4c588a9adcb8eb0f3ef84d484852cae3f022923b109817f69322dc5a39",
+      "tokens_in": 278,
+      "tokens_out": 168,
+      "latency_s": 2.934416699999929,
+      "diagram_hash": "455a78d1a5163690c8dcd7e6bbf0ef4fc49642f7d66ba5ea8602586bb42d0a96",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_f1863e6cda6d4c479e7b3a437a312e1a",
+      "response_text": "```plantuml\n@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer [0..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nOrder \"1\" --> \"1..*\" OrderItem // Bağlantı eklendi\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer [0..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nOrder \"1\" --> \"1..*\" OrderItem // Bağlantı eklendi\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "019ad9a1739cee687bd3741fd487e3ef911b562c4a7cf1fbe845917888ae3230",
+      "tokens_in": 531,
+      "tokens_out": 83,
+      "latency_s": 1.7010730000001786,
+      "diagram_hash": "455a78d1a5163690c8dcd7e6bbf0ef4fc49642f7d66ba5ea8602586bb42d0a96",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.08
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.07692307692307693
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1bd9bc4236c3430ab8f69576c37515b8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması uygulanmamış.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması uygulanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "54a5de29f0ded76682daa35b679067e52ec42f1815ba02441720cc9005548f28",
+      "tokens_in": 348,
+      "tokens_out": 168,
+      "latency_s": 3.429709500000172,
+      "diagram_hash": "6228d86d6c80e35eb788de9a6842d45a1125a94dd057f619dbc0190f29528d4e",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bdfeb08e5b",
+      "request_id": "req_a2e817490f9b488e852d2ba243076faa",
+      "response_text": "```plantuml\n@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nOrder \"1\" --> \"1..*\" OrderItem // Bağlantı eklendi\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Kısıtlama eklendi\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nOrder \"1\" --> \"1..*\" OrderItem // Bağlantı eklendi\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "86ab093fed6ba77d6c7cca5e2f072f7f164979e114dfa04bd3d209cb8183a8cb",
+      "tokens_in": 531,
+      "tokens_out": 102,
+      "latency_s": 1.9994803999998112,
+      "diagram_hash": "6228d86d6c80e35eb788de9a6842d45a1125a94dd057f619dbc0190f29528d4e",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.12
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.07407407407407407
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6bf8043a311846239cb0d6985563b850",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması doğru bir şekilde uygulanmamış.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş ancak UML'de bu bağıntının zorunlu olduğu açıkça belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için 18 yaş kısıtlaması doğru bir şekilde uygulanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş ancak UML'de bu bağıntının zorunlu olduğu açıkça belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2890,
+  "tokens_out": 796,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['Operator']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['Operator', 'Operator']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Operator {\n  +id: String\n}\nclass StockEntry {\n  +id: String\n}\nclass InventoryService {\n  +id: String\n}\nclass Bin {\n  +id: String\n}\nOperator \"1\" --> \"0..*\" StockEntry\nStockEntry \"0..*\" --> \"1\" InventoryService\nInventoryService \"1\" *-- \"1..*\" Bin\nOperator \"0..*\" --> \"0..*\" Bin\nclass Operator {}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": false,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 18.818196100000023,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 1,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 18.824920899999597,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

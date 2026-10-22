@@ -1,0 +1,476 @@
+{
+  "case_id": "M19_1",
+  "scenario_id": "M19",
+  "srs": "The museum tickets system records Visitor, Ticket, TicketService, and Exhibition; each has an id attribute. Each Visitor can have zero or more Ticket records, and each Ticket belongs to exactly one Visitor. Each Ticket uses exactly one TicketService, and each TicketService serves zero or more Ticket records. Each TicketService manages one or more Exhibition records by composition, and each Exhibition belongs to exactly one TicketService. Each Visitor can reference zero or more Exhibition records, and each Exhibition can be referenced by zero or more Visitor records.",
+  "gold": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defective": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1919,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1919,
+      "selected_class": "TicketService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"0..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "output_sha256": "e031c6aa7805672b7de7b7b7125a2fd7922161897280e081da6bbcce65aa245a",
+  "input_sha256": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6846f59bc8eafff3a8020a21665d89b43c4bb042096a637501b21e0e10fe68d8",
+      "tokens_in": 384,
+      "tokens_out": 98,
+      "latency_s": 2.3931876000001466,
+      "diagram_hash": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_667aa436a92b45ea97cc0995dc539855",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The class 'Ticket' should reference 'TicketService' instead of 'UnspecifiedEntity'.\",\"The relationship between 'Ticket' and 'TicketService' is missing.\",\"The composition relationship between 'TicketService' and 'Exhibition' is incorrectly defined with 'UnspecifiedEntity'.\",\"The multiplicity of 'Exhibition' in relation to 'TicketService' is not correctly represented.\"],\"categories\":[\"UML Structure\",\"Class Relationships\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The class 'Ticket' should reference 'TicketService' instead of 'UnspecifiedEntity'.",
+        "The relationship between 'Ticket' and 'TicketService' is missing.",
+        "The composition relationship between 'TicketService' and 'Exhibition' is incorrectly defined with 'UnspecifiedEntity'.",
+        "The multiplicity of 'Exhibition' in relation to 'TicketService' is not correctly represented."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f263c83a30dd18f1e67689e9315657544d753c862c63eb1156a472f0d9a2dd1e",
+      "tokens_in": 248,
+      "tokens_out": 101,
+      "latency_s": 2.925236000000041,
+      "diagram_hash": "5dd910e165044fc7ae08f2d09d0748e67f6febee4321bc21bf3b5b9c128ed9a9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_e8603c5c3b3144f3ab9dab7a8aec1f78",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4a3b9224ab8fc8dce4412c52a1f6b8b36714ee6da1bde862ab215e0e7232ea46",
+      "tokens_in": 381,
+      "tokens_out": 55,
+      "latency_s": 1.8539756999998644,
+      "diagram_hash": "5dd910e165044fc7ae08f2d09d0748e67f6febee4321bc21bf3b5b9c128ed9a9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8421a6e076",
+      "request_id": "req_478b9515813a4aa8ad0c864109a9385b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Ticket and TicketService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Ticket uses exactly one TicketService.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Ticket and TicketService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Ticket uses exactly one TicketService."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "dafca8bc483757e847016218add8346d2e248389cb048803ddb73db40c8a6415",
+      "tokens_in": 205,
+      "tokens_out": 100,
+      "latency_s": 2.7036588000000847,
+      "diagram_hash": "8bf4f92e3c3a2ac1a441463de9313c8e3460dfcaf6045cbd0139894293ffc52a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_5c78fb6e8e4f4d6fa52451143804b6f3",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "696dc008fc9a00037c869a7cec4196d6f393c63bc2a1a25b2e95ca7921164d07",
+      "tokens_in": 380,
+      "tokens_out": 54,
+      "latency_s": 1.5560442000000876,
+      "diagram_hash": "8bf4f92e3c3a2ac1a441463de9313c8e3460dfcaf6045cbd0139894293ffc52a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6f7778a9480a46bda86178117774c36b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between TicketService and Exhibition is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to allow for zero exhibitions.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between TicketService and Exhibition is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to allow for zero exhibitions."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c8e8c369db0ba00fa729d973b24d8638e19c245e468ab187f80eb1a55fa3ac86",
+      "tokens_in": 203,
+      "tokens_out": 100,
+      "latency_s": 2.6254993000002287,
+      "diagram_hash": "e031c6aa7805672b7de7b7b7125a2fd7922161897280e081da6bbcce65aa245a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_433af40ea0ee428fbd0605aafd3e654b",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"0..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"0..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0770ba8628c321a066c42adabc913c3d372c6759b92ce0765c3da463259620bf",
+      "tokens_in": 380,
+      "tokens_out": 12,
+      "latency_s": 1.5765913999998702,
+      "diagram_hash": "e031c6aa7805672b7de7b7b7125a2fd7922161897280e081da6bbcce65aa245a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_053062a05b6b47558e6fda0191acce48",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2181,
+  "tokens_out": 520,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"1\" --> \"1\" TicketService\nTicketService \"1\" *-- \"0..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.865301700000146,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "end_to_end_seconds": 17.868485299999975,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

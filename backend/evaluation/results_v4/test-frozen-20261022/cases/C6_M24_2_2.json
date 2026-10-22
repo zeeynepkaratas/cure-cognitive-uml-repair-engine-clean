@@ -1,0 +1,359 @@
+{
+  "case_id": "M24_2",
+  "scenario_id": "M24",
+  "srs": "The help desk system records Requester, SupportTicket, HelpDeskService, and Resolution; each has an id attribute. Each Requester can have zero or more SupportTicket records, and each SupportTicket belongs to exactly one Requester. Each SupportTicket uses exactly one HelpDeskService, and each HelpDeskService serves zero or more SupportTicket records. Each HelpDeskService manages one or more Resolution records by composition, and each Resolution belongs to exactly one HelpDeskService. Each Requester can reference zero or more Resolution records, and each Resolution can be referenced by zero or more Requester records.",
+  "gold": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "defective": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "defect_ids": [
+    "D8"
+  ],
+  "seed": 1970,
+  "injections": [
+    {
+      "defect_id": "D8",
+      "seed": 1970,
+      "selected_class": "SupportTicket"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"0..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "output_sha256": "f1e8ac3bcc2799276ea7642994abdded11c75073b146d93e70346f9d0c6d34f3",
+  "input_sha256": "bb7fb68ef5ed7cf44b477ca37de20d293b4febcdb25524c87ddf54cf0db9add1",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "284d3a9dfc7ea75d060d7f7ef29c520504b29f4b197cf4b916f579bc437a4332",
+      "tokens_in": 397,
+      "tokens_out": 72,
+      "latency_s": 2.2058196999996653,
+      "diagram_hash": "bb7fb68ef5ed7cf44b477ca37de20d293b4febcdb25524c87ddf54cf0db9add1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_e8d0bf335d4b41c98c25758dd45e3819",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The multiplicity from SupportTicket to HelpDeskService is incorrect. It should be '1' instead of '0..*'.\",\"The multiplicity from HelpDeskService to SupportTicket is incorrect. It should be '0..*' instead of '1'.\"],\"categories\":[\"Multiplicity Errors\",\"Association Errors\"]}",
+      "critic_errors": [
+        "The multiplicity from SupportTicket to HelpDeskService is incorrect. It should be '1' instead of '0..*'.",
+        "The multiplicity from HelpDeskService to SupportTicket is incorrect. It should be '0..*' instead of '1'."
+      ],
+      "critic_categories": [
+        "Multiplicity Errors",
+        "Association Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "996a5272a14ea73908a3d4fde7532535f3bf992fc0c4ea1662027ed807585d3b",
+      "tokens_in": 222,
+      "tokens_out": 102,
+      "latency_s": 2.6474137000004703,
+      "diagram_hash": "f1e8ac3bcc2799276ea7642994abdded11c75073b146d93e70346f9d0c6d34f3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_6746e48653d140549479975ea0fb9549",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"0..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"0..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "29abbbb206867767bc73d29acfc3cf32896c4bc5ad15249a2cdbe746840dd716",
+      "tokens_in": 397,
+      "tokens_out": 12,
+      "latency_s": 1.3429304000001139,
+      "diagram_hash": "f1e8ac3bcc2799276ea7642994abdded11c75073b146d93e70346f9d0c6d34f3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8fcf15e17a364b52a288a878019e3623",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 1016,
+  "tokens_out": 186,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"0..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 7.339591300000393,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 7.350354600000173,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

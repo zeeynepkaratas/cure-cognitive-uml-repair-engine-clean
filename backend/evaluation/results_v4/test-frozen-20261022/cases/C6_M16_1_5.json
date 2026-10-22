@@ -1,0 +1,547 @@
+{
+  "case_id": "M16_1",
+  "scenario_id": "M16",
+  "srs": "The equipment maintenance system records Technician, WorkOrder, MaintenanceService, and Machine; each has an id attribute. Each Technician can have zero or more WorkOrder records, and each WorkOrder belongs to exactly one Technician. Each WorkOrder uses exactly one MaintenanceService, and each MaintenanceService serves zero or more WorkOrder records. Each MaintenanceService manages one or more Machine records by composition, and each Machine belongs to exactly one MaintenanceService. Each Technician can reference zero or more Machine records, and each Machine can be referenced by zero or more Technician records.",
+  "gold": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nWorkOrder \"0..*\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *-- \"1..*\" Machine\nTechnician \"0..*\" --> \"0..*\" Machine\n@enduml",
+  "defective": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\n\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"0..*\" --> \"0..*\" Machine\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1889,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1889,
+      "selected_class": "MaintenanceService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\n\nclass Machine {\n  +id: String\n}\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"0..*\" --> \"0..*\" Machine\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" --> \"1..*\" Machine\n@enduml",
+  "output_sha256": "ccd098d6ad4ea4b84c61c42cf5f708a10cb4581d8589f7f4d972b8d3c90d1f54",
+  "input_sha256": "49e6c132fbaa85bcdbac8c71a2b515b4f8c9caaaa713253b410be38744e16b5c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c78882a4f600bc9508aa22c79910ac249aeac04c1386eb360d975c8b285308f3",
+      "tokens_in": 354,
+      "tokens_out": 55,
+      "latency_s": 1.7256515999997646,
+      "diagram_hash": "49e6c132fbaa85bcdbac8c71a2b515b4f8c9caaaa713253b410be38744e16b5c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_fc187c7a32ec46b68de71de3bf40bb80",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing MaintenanceService class and its relationships.\",\"The relationship between WorkOrder and MaintenanceService is not defined.\",\"The composition relationship between MaintenanceService and Machine is not represented.\"],\"categories\":[\"UML Structure\",\"Class Relationships\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "Missing MaintenanceService class and its relationships.",
+        "The relationship between WorkOrder and MaintenanceService is not defined.",
+        "The composition relationship between MaintenanceService and Machine is not represented."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "99f7ab3d1f897d52f269cccb5a9b5665914d5367634553d8e17f23c77753563d",
+      "tokens_in": 168,
+      "tokens_out": 105,
+      "latency_s": 2.284811699999409,
+      "diagram_hash": "8743dbfd5fecd8d3b8e7d7d0d1ab8aa6158acb23eaad9fc1d8852e83c2518964",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_a1a4ec54096b4b97b6edb551c1b4e30c",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"0..*\" --> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *--> \"0..*\" Machine\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"0..*\" --> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *--> \"0..*\" Machine\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d074077b62c7baf6ad45f3299267e11dedcabf3e1699ea14567af4a3de0076d4",
+      "tokens_in": 390,
+      "tokens_out": 44,
+      "latency_s": 1.3862920999999915,
+      "diagram_hash": "8743dbfd5fecd8d3b8e7d7d0d1ab8aa6158acb23eaad9fc1d8852e83c2518964",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8b622ee6c80b49b69f56af45197f50b2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Technician and Machine is not correctly represented as it should be a composition relationship due to the context of the requirement.\"],\"categories\":[\"UML Structure\",\"Relationship Representation\"]}",
+      "critic_errors": [
+        "The relationship between Technician and Machine is not correctly represented as it should be a composition relationship due to the context of the requirement."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Representation"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "0cdf93a6254dc0c84b4ddd9d48b1cb6e8e64a4beeef02edff55c63f8eafde9d3",
+      "tokens_in": 195,
+      "tokens_out": 105,
+      "latency_s": 2.5791449999996985,
+      "diagram_hash": "3fbdcaf7e0e8721863cfb8c61be2d7a0b5f626744f6bdd9229be4c152053630d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6548d98151",
+      "request_id": "req_3d0134686bf54fc8bcca22c75c80e68c",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *--> \"0..*\" Machine\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" *--> \"0..*\" Machine\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "834c673a1b03354f918f979e85fe2e2d189bcbd85ed38f2adc1d3b8bf867324e",
+      "tokens_in": 390,
+      "tokens_out": 60,
+      "latency_s": 1.766624399999273,
+      "diagram_hash": "3fbdcaf7e0e8721863cfb8c61be2d7a0b5f626744f6bdd9229be4c152053630d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_3c832f52cd64457489a9f0a03ca798c5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between MaintenanceService and Machine is incorrectly defined as '1 *--> 0..*'. It should be '1 --> 1..*' to indicate that each MaintenanceService manages one or more Machines.\"],\"categories\":[\"UML Relationship Error\"]}",
+      "critic_errors": [
+        "The relationship between MaintenanceService and Machine is incorrectly defined as '1 *--> 0..*'. It should be '1 --> 1..*' to indicate that each MaintenanceService manages one or more Machines."
+      ],
+      "critic_categories": [
+        "UML Relationship Error"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9e9442462ce5f84179c6424a9f44bee546496e59c3cc9bcc4efb796b1b3537e7",
+      "tokens_in": 213,
+      "tokens_out": 104,
+      "latency_s": 2.205119399999603,
+      "diagram_hash": "ccd098d6ad4ea4b84c61c42cf5f708a10cb4581d8589f7f4d972b8d3c90d1f54",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6548d98151",
+      "request_id": "req_3701d691b6c9465281face5167aae5c9",
+      "response_text": "```plantuml\n@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" --> \"1..*\" Machine\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" --> \"1..*\" Machine\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e3be3d7ba450b692cc0a40a9643055a8e79161af45b0ee96157a1b3b2f4ff3cc",
+      "tokens_in": 389,
+      "tokens_out": 60,
+      "latency_s": 1.9382439000000886,
+      "diagram_hash": "ccd098d6ad4ea4b84c61c42cf5f708a10cb4581d8589f7f4d972b8d3c90d1f54",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_96a4bfe49fb44bd6b4f124cd387d582d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between MaintenanceService and Machine is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' to allow for zero or more Machines.\"],\"categories\":[\"UML Structure\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The relationship between MaintenanceService and Machine is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' to allow for zero or more Machines."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Multiplicity"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2099,
+  "tokens_out": 533,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Technician {\n  +id: String\n}\nclass WorkOrder {\n  +id: String\n}\nclass Machine {\n  +id: String\n}\nclass MaintenanceService {\n  +id: String\n}\n\nTechnician \"1\" --> \"0..*\" WorkOrder\nTechnician \"1\" *--> \"0..*\" Machine\nWorkOrder \"1\" --> \"1\" MaintenanceService\nMaintenanceService \"1\" --> \"1..*\" Machine\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 16.116148899999644,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "machine",
+          "technician"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.19047619047619047,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "technician",
+          "machine"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.19047619047619047,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "maintenanceservice",
+          "machine",
+          "composition"
+        ],
+        [
+          "technician",
+          "machine",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "maintenanceservice",
+          "machine",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09523809523809512,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.25,
+      "f1": 0.28571428571428575,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "maintenanceservice",
+          "machine",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "technician",
+          "machine",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "workorder",
+          "maintenanceservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "maintenanceservice",
+          "machine",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "workorder",
+          "maintenanceservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3809523809523809,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "machine",
+          "technician"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.19047619047619047,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "technician",
+          "machine"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.19047619047619047,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "maintenanceservice",
+          "machine",
+          "composition"
+        ],
+        [
+          "technician",
+          "machine",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "maintenanceservice",
+          "machine",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09523809523809512,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.25,
+      "f1": 0.28571428571428575,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "maintenanceservice",
+          "machine",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "technician",
+          "machine",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "workorder",
+          "maintenanceservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "maintenanceservice",
+          "machine",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "workorder",
+          "maintenanceservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3809523809523809,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "end_to_end_seconds": 16.12130419999994,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

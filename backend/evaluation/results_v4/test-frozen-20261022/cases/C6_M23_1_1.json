@@ -1,0 +1,502 @@
+{
+  "case_id": "M23_1",
+  "scenario_id": "M23",
+  "srs": "The energy metering system records Resident, Reading, MeteringService, and Meter; each has an id attribute. Each Resident can have zero or more Reading records, and each Reading belongs to exactly one Resident. Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records. Each MeteringService manages one or more Meter records by composition, and each Meter belongs to exactly one MeteringService. Each Resident can reference zero or more Meter records, and each Meter can be referenced by zero or more Resident records.",
+  "gold": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "defective": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"0..*\" Resident\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1959,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1959,
+      "selected_class": "Resident",
+      "original_relation": [
+        "Resident",
+        "Reading",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"0..*\" Resident\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"0..*\" --> \"1\" MeteringService\nReading \"1\" --> \"1\" Resident\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "output_sha256": "7bd140f849eed5f1f3719914b7b9e13f4e7bb3345e54362938ce1f9d7bc584e3",
+  "input_sha256": "6c775d2ac1154e812f83572de3f4070b3dc5fc39ed727e6c7ea6a705db14aa32",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8f8114a10fe5f274d978df6cdcbcb2a6e15ebb5fa514b6d3978ad9805c1e0998",
+      "tokens_in": 390,
+      "tokens_out": 48,
+      "latency_s": 2.3490647999997236,
+      "diagram_hash": "6c775d2ac1154e812f83572de3f4070b3dc5fc39ed727e6c7ea6a705db14aa32",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_99a3b6b8f57a455b98f1ee0a96ad5f1f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Reading and MeteringService is incorrectly defined as '0..*' to '1'. It should be '1' to '1'.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Reading and MeteringService is incorrectly defined as '0..*' to '1'. It should be '1' to '1'."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "96e3294263c649edd7d45c028f5500fb26069b4f703804d2fda830b03a036a02",
+      "tokens_in": 201,
+      "tokens_out": 103,
+      "latency_s": 3.496024899999611,
+      "diagram_hash": "0dd9407fd008b364e2124017790d1cf9ad511489da62778a582a5eb22e465a3a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e0851bd988",
+      "request_id": "req_0ffe5eb1abe74eda95f2bde6e23f24ab",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"0..*\" Resident\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"0..*\" Resident\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4539108e3155dca3fdc54486d192e691130167b40860a79e26a303c2fe9cb5c8",
+      "tokens_in": 389,
+      "tokens_out": 99,
+      "latency_s": 2.6143425000000207,
+      "diagram_hash": "0dd9407fd008b364e2124017790d1cf9ad511489da62778a582a5eb22e465a3a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_198466752373417ab94bcb70849ee1c8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Resident and Reading is correct, but the multiplicity on the Resident side should be '1' instead of '0..*' since each Reading belongs to exactly one Resident.\",\"The association between MeteringService and Reading is correct, but the multiplicity on the Reading side should be '1' instead of '0..*' since each Reading uses exactly one MeteringService.\"],\"categories\":[\"UML Association Errors\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The association between Resident and Reading is correct, but the multiplicity on the Resident side should be '1' instead of '0..*' since each Reading belongs to exactly one Resident.",
+        "The association between MeteringService and Reading is correct, but the multiplicity on the Reading side should be '1' instead of '0..*' since each Reading uses exactly one MeteringService."
+      ],
+      "critic_categories": [
+        "UML Association Errors",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "91dde5a6b07a43b96ce58a8606374b726e718f974828397bc1a644d99dfb6004",
+      "tokens_in": 248,
+      "tokens_out": 102,
+      "latency_s": 2.2708489999995436,
+      "diagram_hash": "4d9bff1acaa967f5e292d3561750321a7d247cc873e37bd59dc86ed56bb0e885",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e0851bd988",
+      "request_id": "req_73590ed197974fcabcc6cedf77fc7968",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"1\" Resident\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"1\" --> \"1\" Resident\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b1e5b0de864c08d2b36cd39b8001dd7627937544d1099605060a6ff2efed7078",
+      "tokens_in": 388,
+      "tokens_out": 44,
+      "latency_s": 1.3076805999999124,
+      "diagram_hash": "4d9bff1acaa967f5e292d3561750321a7d247cc873e37bd59dc86ed56bb0e885",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_ae9aedcef3d34f2281f0dda200166acf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Reading and MeteringService is not correctly defined as it should allow for zero or more Readings for each MeteringService.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Reading and MeteringService is not correctly defined as it should allow for zero or more Readings for each MeteringService."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "fb7264ce2374ab2b4bd44178555eb8786710138192fbf04c777979f9d2b2cf93",
+      "tokens_in": 195,
+      "tokens_out": 103,
+      "latency_s": 2.7278463000002375,
+      "diagram_hash": "7bd140f849eed5f1f3719914b7b9e13f4e7bb3345e54362938ce1f9d7bc584e3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_71fee889d4",
+      "request_id": "req_8665f954bfe343c68600433a422afb45",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"0..*\" --> \"1\" MeteringService\nReading \"1\" --> \"1\" Resident\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"0..*\" --> \"1\" MeteringService\nReading \"1\" --> \"1\" Resident\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "783ade484bf1f96c0136ba2aca33c35a1b124138f5d728491418c9671b362b52",
+      "tokens_in": 389,
+      "tokens_out": 55,
+      "latency_s": 1.4742161000003762,
+      "diagram_hash": "7bd140f849eed5f1f3719914b7b9e13f4e7bb3345e54362938ce1f9d7bc584e3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_880e644b7fd843a3a2b9f309fcd06427",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Resident and Meter is not correctly represented as it should allow for zero or more Meter references from each Resident, but the UML does not specify the multiplicity correctly.\"],\"categories\":[\"UML Structure\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Resident and Meter is not correctly represented as it should allow for zero or more Meter references from each Resident, but the UML does not specify the multiplicity correctly."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Multiplicity"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2200,
+  "tokens_out": 554,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nReading \"0..*\" --> \"1\" MeteringService\nReading \"1\" --> \"1\" Resident\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 16.274208499999986,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resident",
+          "reading",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "reading",
+          "resident",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 16.2800643999999,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

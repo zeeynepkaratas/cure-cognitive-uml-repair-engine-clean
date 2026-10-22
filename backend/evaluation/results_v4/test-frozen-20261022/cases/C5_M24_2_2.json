@@ -1,0 +1,526 @@
+{
+  "case_id": "M24_2",
+  "scenario_id": "M24",
+  "srs": "The help desk system records Requester, SupportTicket, HelpDeskService, and Resolution; each has an id attribute. Each Requester can have zero or more SupportTicket records, and each SupportTicket belongs to exactly one Requester. Each SupportTicket uses exactly one HelpDeskService, and each HelpDeskService serves zero or more SupportTicket records. Each HelpDeskService manages one or more Resolution records by composition, and each Resolution belongs to exactly one HelpDeskService. Each Requester can reference zero or more Resolution records, and each Resolution can be referenced by zero or more Requester records.",
+  "gold": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "defective": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "defect_ids": [
+    "D8"
+  ],
+  "seed": 1970,
+  "injections": [
+    {
+      "defect_id": "D8",
+      "seed": 1970,
+      "selected_class": "SupportTicket"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n  +age: Integer [0..120] // Age constraint added\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"1\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nSupportTicket \"1\" --> \"1..*\" Resolution // Ensured at least one Resolution is linked\n@enduml",
+  "output_sha256": "fb6754ccd778ac22f83162797ae5b56699ef64ab1f0b521cae2ff8340ce26ccb",
+  "input_sha256": "bb7fb68ef5ed7cf44b477ca37de20d293b4febcdb25524c87ddf54cf0db9add1",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2ab052dd67eaf4028be4db4de4b0aacc718cb83305ebd1d28e4944070b6e6ed7",
+      "tokens_in": 475,
+      "tokens_out": 76,
+      "latency_s": 2.1980499000001146,
+      "diagram_hash": "bb7fb68ef5ed7cf44b477ca37de20d293b4febcdb25524c87ddf54cf0db9add1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_e1e002c0db2d4d5f9ba0965037a8299b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunsuzlukları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunsuzlukları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9ae6d5f61fe706a6b8a9c259d018b24483d3ceac2a07888c4bac8ca0ceef271f",
+      "tokens_in": 241,
+      "tokens_out": 114,
+      "latency_s": 3.066856800000096,
+      "diagram_hash": "8434a3950a5a9bbfbebe1ec5378be36d76da1211cf769748ab70f73a3fd9ca16",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_13e7cec34aba41708ab7c3c568c69f14",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n  +age: Integer\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n  +age: Integer\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "596ff6669b359dd2992e8b10cc0d0d0e08e2a17cdde14451be6ed16909e3460d",
+      "tokens_in": 487,
+      "tokens_out": 87,
+      "latency_s": 1.7676654000006238,
+      "diagram_hash": "8434a3950a5a9bbfbebe1ec5378be36d76da1211cf769748ab70f73a3fd9ca16",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d7b888b587714a6fa92867f0b5a662e7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğuna dair bir ilişki tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğuna dair bir ilişki tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "64b9e5a742a97d900066e29dda397159894dfe550fd96410b75cc4c324c7e879",
+      "tokens_in": 295,
+      "tokens_out": 113,
+      "latency_s": 2.5747514999993655,
+      "diagram_hash": "2fb912450f3efa56fd046ae90029665385bcb1e90d678455b0c3afa93dc25e13",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b46ea19598",
+      "request_id": "req_41cd34edfae9435392307de901ad8ed6",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n  +age: Integer\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"1\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nSupportTicket \"1\" --> \"0..*\" Resolution\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n  +age: Integer\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"1\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nSupportTicket \"1\" --> \"0..*\" Resolution\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8187875e8e125c96fdc5c8a72e2a42c9f042744511f087d549a01abf5068c0a8",
+      "tokens_in": 486,
+      "tokens_out": 77,
+      "latency_s": 1.9532939000000624,
+      "diagram_hash": "2fb912450f3efa56fd046ae90029665385bcb1e90d678455b0c3afa93dc25e13",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_33369d52927347b49f80879c30df6112",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c42c4d56a48441335e9b381a909cc97b6eaf3ca2dfa8a4466ac481346d0cfa70",
+      "tokens_in": 270,
+      "tokens_out": 131,
+      "latency_s": 3.2874370999998064,
+      "diagram_hash": "fb6754ccd778ac22f83162797ae5b56699ef64ab1f0b521cae2ff8340ce26ccb",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_bce9ba02953d4f4099fac0dc35b5797b",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n  +age: Integer [0..120] // Age constraint added\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"1\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nSupportTicket \"1\" --> \"1..*\" Resolution // Ensured at least one Resolution is linked\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n  +age: Integer [0..120] // Age constraint added\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"1\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nSupportTicket \"1\" --> \"1..*\" Resolution // Ensured at least one Resolution is linked\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d08bc68363a826f11278632601f90f1466a7111cacfdc071d9e746dab5978204",
+      "tokens_in": 504,
+      "tokens_out": 77,
+      "latency_s": 1.8000491000002512,
+      "diagram_hash": "fb6754ccd778ac22f83162797ae5b56699ef64ab1f0b521cae2ff8340ce26ccb",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.11538461538461539
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1111111111111111
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_24fae22fdd204653b1f7db40d3a911a5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2758,
+  "tokens_out": 675,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Requester {\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.149425099999462,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": -0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": -0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "resolution",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": -0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 0.5,
+      "f1": 0.5714285714285715,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "resolution",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "supportticket",
+          "helpdeskservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "supportticket",
+          "helpdeskservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.4285714285714285,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "requester",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": 0.031746031746031855
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "requester",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 20.155884600000718,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

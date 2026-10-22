@@ -1,0 +1,477 @@
+{
+  "case_id": "M29_1",
+  "scenario_id": "M29",
+  "srs": "The insurance claims system records PolicyHolder, Claim, ClaimsService, and Policy; each has an id attribute. Each PolicyHolder can have zero or more Claim records, and each Claim belongs to exactly one PolicyHolder. Each Claim uses exactly one ClaimsService, and each ClaimsService serves zero or more Claim records. Each ClaimsService manages one or more Policy records by composition, and each Policy belongs to exactly one ClaimsService. Each PolicyHolder can reference zero or more Policy records, and each Policy can be referenced by zero or more PolicyHolder records.",
+  "gold": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "defective": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 2019,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 2019,
+      "selected_class": "Claim"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"1..*\" Policy\n@enduml",
+  "output_sha256": "81693b8240f434ce9331033a3374b3121ed746ea68fa83c8705ac6d7b2e9b953",
+  "input_sha256": "34beaf91468ec0c894151c15253194803d3a8a66491253165a0adfc1e9f224b2",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4b65edaf9a003c2d7749bd1fb1f4703a2a74cbc0f906dbe3df177060a1e00021",
+      "tokens_in": 395,
+      "tokens_out": 76,
+      "latency_s": 2.1714405999996416,
+      "diagram_hash": "34beaf91468ec0c894151c15253194803d3a8a66491253165a0adfc1e9f224b2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_508ac9015bca42688c210220d4543eb4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"UnspecifiedEntity is not defined in the requirements and does not correspond to any entity mentioned in the requirements.\",\"The relationship between PolicyHolder and UnspecifiedEntity is incorrect; it should be between PolicyHolder and Claim instead.\",\"ClaimsService should have a relationship with Claim, not UnspecifiedEntity.\"],\"categories\":[\"UML Structure\",\"Entity Relationships\"]}",
+      "critic_errors": [
+        "UnspecifiedEntity is not defined in the requirements and does not correspond to any entity mentioned in the requirements.",
+        "The relationship between PolicyHolder and UnspecifiedEntity is incorrect; it should be between PolicyHolder and Claim instead.",
+        "ClaimsService should have a relationship with Claim, not UnspecifiedEntity."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Entity Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "3b87d090b049314a16a404e74d17ce3ebd373c8cbfa15f4fa2c267ef4041b7d9",
+      "tokens_in": 234,
+      "tokens_out": 104,
+      "latency_s": 2.6879711999999927,
+      "diagram_hash": "88f153489c29defde6116411c0704f1aacfc817f5b05f3b38a9bcf212c96cf13",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_71fee889d4",
+      "request_id": "req_ebc278df6f24455f8a03919125f9154a",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"0..*\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e249b9f6b02f4e3c9be86d1874c5d22b624ea8dce0224836d40d716ba2d46601",
+      "tokens_in": 389,
+      "tokens_out": 54,
+      "latency_s": 1.2276323000000957,
+      "diagram_hash": "88f153489c29defde6116411c0704f1aacfc817f5b05f3b38a9bcf212c96cf13",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_3d463b30d84c4dacb72639cce8d428a1",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Claim and ClaimsService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Claim uses exactly one ClaimsService.\"],\"categories\":[\"Association Errors\"]}",
+      "critic_errors": [
+        "The association between Claim and ClaimsService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Claim uses exactly one ClaimsService."
+      ],
+      "critic_categories": [
+        "Association Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "6c5709ad54cb002a53bfe974a48e1ea89b5afe1e0acde96679106784815d6f0f",
+      "tokens_in": 208,
+      "tokens_out": 103,
+      "latency_s": 2.7033814000001257,
+      "diagram_hash": "4e6659e49182a0a642ddbaa7df533f7faeecdc9f98e54928d40823a9ad15d094",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_131c962e840241e48bcd3cb5aeadacbb",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"0..*\" Policy\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6ae1de31e5c6f5279830fd1f3d6370d528911ae9c2a1a45ffeeaa03b3e710540",
+      "tokens_in": 388,
+      "tokens_out": 77,
+      "latency_s": 1.7077242000000297,
+      "diagram_hash": "4e6659e49182a0a642ddbaa7df533f7faeecdc9f98e54928d40823a9ad15d094",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_75db3c16cb974a569441784870f7e6db",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between PolicyHolder and Policy is incorrectly defined as '0..* --> 0..*'. It should be '0..* --> 1..*' to indicate that each Policy can be referenced by zero or more PolicyHolder records, but each PolicyHolder can reference zero or more Policies.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between PolicyHolder and Policy is incorrectly defined as '0..* --> 0..*'. It should be '0..* --> 1..*' to indicate that each Policy can be referenced by zero or more PolicyHolder records, but each PolicyHolder can reference zero or more Policies."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "10579d50afe52c2bf6825bb18fdb51cbee1aafd5f339e471e67efb6317dbdcef",
+      "tokens_in": 229,
+      "tokens_out": 103,
+      "latency_s": 2.2090037000002667,
+      "diagram_hash": "81693b8240f434ce9331033a3374b3121ed746ea68fa83c8705ac6d7b2e9b953",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_5fb6d17f16804847b35719b534501387",
+      "response_text": "```plantuml\n@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"1..*\" Policy\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"1..*\" Policy\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a2a8c170e4163e5d4e23123ccbc03308a64f0e742197e4acc1d9aef4ddcb8891",
+      "tokens_in": 388,
+      "tokens_out": 77,
+      "latency_s": 1.7202391000000716,
+      "diagram_hash": "81693b8240f434ce9331033a3374b3121ed746ea68fa83c8705ac6d7b2e9b953",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5094994286b34fc8b0818c64cb221971",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between PolicyHolder and Policy is incorrectly defined as '0..* --> 1..*'. It should be '0..* --> 0..*' to reflect that each PolicyHolder can reference zero or more Policy records, and each Policy can be referenced by zero or more PolicyHolder records.\"],\"categories\":[\"Association Errors\"]}",
+      "critic_errors": [
+        "The association between PolicyHolder and Policy is incorrectly defined as '0..* --> 1..*'. It should be '0..* --> 0..*' to reflect that each PolicyHolder can reference zero or more Policy records, and each Policy can be referenced by zero or more PolicyHolder records."
+      ],
+      "critic_categories": [
+        "Association Errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2231,
+  "tokens_out": 594,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass PolicyHolder {\n  +id: String\n}\nclass Claim {\n  +id: String\n}\nclass ClaimsService {\n  +id: String\n}\nclass Policy {\n  +id: String\n}\nPolicyHolder \"1\" --> \"0..*\" Claim\nClaim \"1\" --> \"1\" ClaimsService\nClaimsService \"1\" *-- \"1..*\" Policy\nPolicyHolder \"0..*\" --> \"1..*\" Policy\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 14.470341599999756,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "claim",
+          "claimsservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "policyholder",
+          "policy",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "claim",
+          "claimsservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "policyholder",
+          "policy",
+          "association",
+          "0..*",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "claim",
+          "claimsservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "policyholder",
+          "policy",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "claim",
+          "claimsservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "policyholder",
+          "policy",
+          "association",
+          "0..*",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "end_to_end_seconds": 14.478206600000249,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

@@ -1,0 +1,331 @@
+{
+  "case_id": "S42",
+  "dataset": "shared",
+  "srs": "The OrderService creates orders through OrderRepository.",
+  "input_plantuml": "@startuml\nclass OrderService {}\nclass OrderRepository {}\nclass OrderRepository {}\nOrderService --> OrderRepository",
+  "gold": null,
+  "defect_ids": [
+    "mixed_missing_end_duplicate_relation"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Order {\n    +OrderItem[] orderItems\n\n    +Order(OrderItem[] orderItems) {\n        if (orderItems.length == 0) {\n            throw new IllegalArgumentException(\"An Order must have at least one OrderItem.\")\n        }\n        this.orderItems = orderItems\n    }\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml",
+  "output_sha256": "fef3879a9e548182190b8ebe71462326b03300d923f0fc93a3fa979923060289",
+  "input_sha256": "3424134f463fefc0397588d98986a85fc58a423f2d63d223cc313466e29bcd7a",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d4e966d887fafade4acfe68f6729039b60e672af41a060b9aadba69e029cfd2e",
+      "tokens_in": 290,
+      "tokens_out": 26,
+      "latency_s": 1.621877499999755,
+      "diagram_hash": "3424134f463fefc0397588d98986a85fc58a423f2d63d223cc313466e29bcd7a",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_3da6568052ba48bbae51e5c635cbd774",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OrderRepository class is duplicated in the UML diagram.\"],\"categories\":[\"UML Structure\"]}",
+      "critic_errors": [
+        "OrderRepository class is duplicated in the UML diagram."
+      ],
+      "critic_categories": [
+        "UML Structure"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7904198fd8bc292abb6f0ac7215f7ba4e1d972c9415c7b8995a490271c843bcd",
+      "tokens_in": 102,
+      "tokens_out": 26,
+      "latency_s": 1.4686668999997892,
+      "diagram_hash": "7261a83c62f3c48cabc7716fb1b6c4fd9abfdf6d0f5b67c85348633ef7330251",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_b868509e64e84a9684b59a4fdff8dbce",
+      "response_text": "```plantuml\n@startuml\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ea8bdf683f93ac717761be2500238b9cbd3a7d2b6be0956d0ef520b1f941bebe",
+      "tokens_in": 289,
+      "tokens_out": 74,
+      "latency_s": 1.5450847000001886,
+      "diagram_hash": "7261a83c62f3c48cabc7716fb1b6c4fd9abfdf6d0f5b67c85348633ef7330251",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_98e4ed30fda64d48a7145c79f12a42aa",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı belirtilmemiş.\"],\"categories\":[\"UML Kısıtlamaları\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Kısıtlamaları",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f0b1427a8e8cf7b73da83c8572c933abd3b79858c2d1b111cec66bcde72933fd",
+      "tokens_in": 176,
+      "tokens_out": 43,
+      "latency_s": 1.4625449000000117,
+      "diagram_hash": "c4993ef75f04851d40bb9b4c94a0647fc68b5f37d4f5ea05e70387170892af05",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_f7b2e46bc5174a08ad6929440055a5e5",
+      "response_text": "```plantuml\n@startuml\nclass Order {\n    +OrderItem[] orderItems\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Order {\n    +OrderItem[] orderItems\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2da1c1f44966ab8ee9e6d55574f8b4a29cf501b26feed9ef4ccf758b57617134",
+      "tokens_in": 306,
+      "tokens_out": 36,
+      "latency_s": 1.3403957999998966,
+      "diagram_hash": "c4993ef75f04851d40bb9b4c94a0647fc68b5f37d4f5ea05e70387170892af05",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.14285714285714285
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_4947378775214da1acb79c1541d5196d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Order class does not enforce that an Order must have at least one OrderItem.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "Order class does not enforce that an Order must have at least one OrderItem."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "83cf237ac805b502d3580f4e8eca5efce00d4b3c76d920c7d58a017775460196",
+      "tokens_in": 124,
+      "tokens_out": 93,
+      "latency_s": 2.4161260000000766,
+      "diagram_hash": "fef3879a9e548182190b8ebe71462326b03300d923f0fc93a3fa979923060289",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_71fee889d4",
+      "request_id": "req_70f8f992c03e4e25b2d14c40eb77d18e",
+      "response_text": "```plantuml\n@startuml\nclass Order {\n    +OrderItem[] orderItems\n\n    +Order(OrderItem[] orderItems) {\n        if (orderItems.length == 0) {\n            throw new IllegalArgumentException(\"An Order must have at least one OrderItem.\")\n        }\n        this.orderItems = orderItems\n    }\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Order {\n    +OrderItem[] orderItems\n\n    +Order(OrderItem[] orderItems) {\n        if (orderItems.length == 0) {\n            throw new IllegalArgumentException(\"An Order must have at least one OrderItem.\")\n        }\n        this.orderItems = orderItems\n    }\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b3fcb38e1f5e381ba9a14c8a9796bc5743f4cfff3f6b4291affb9f2a3b464e78",
+      "tokens_in": 356,
+      "tokens_out": 12,
+      "latency_s": 0.9657071999999971,
+      "diagram_hash": "fef3879a9e548182190b8ebe71462326b03300d923f0fc93a3fa979923060289",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.3181818181818182
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.12
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_542d3d1c1ebd48fe93f5cb96222d2b30",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1643,
+  "tokens_out": 310,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik",
+      "Tekrar eden sinif ismi: ['OrderRepository']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['OrderRepository', 'OrderRepository']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Order {\n    +OrderItem[] orderItems\n\n    +Order(OrderItem[] orderItems) {\n        if (orderItems.length == 0) {\n            throw new IllegalArgumentException(\"An Order must have at least one OrderItem.\")\n        }\n        this.orderItems = orderItems\n    }\n}\n\nclass OrderService {}\nclass OrderRepository {}\nOrderService --> OrderRepository\nOrder --> OrderItem\n@enduml",
+  "compiler_valid_if_reverted": false,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.196516199999678,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 13.19658120000031,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

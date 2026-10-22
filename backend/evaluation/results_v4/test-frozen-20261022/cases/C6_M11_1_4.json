@@ -1,0 +1,349 @@
+{
+  "case_id": "M11_1",
+  "scenario_id": "M11",
+  "srs": "The library lending system records Reader, Loan, LibraryService, and Book; each has an id attribute. Each Reader can have zero or more Loan records, and each Loan belongs to exactly one Reader. Each Loan uses exactly one LibraryService, and each LibraryService serves zero or more Loan records. Each LibraryService manages one or more Book records by composition, and each Book belongs to exactly one LibraryService. Each Reader can reference zero or more Book records, and each Book can be referenced by zero or more Reader records.",
+  "gold": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\n@enduml",
+  "defective": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1839,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1839,
+      "selected_class": "Reader"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 4,
+  "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml",
+  "output_sha256": "e4193a761ae19d4616b4ca1bd9b6f277c65dff90d59b76e3339451f2d8529a30",
+  "input_sha256": "82b9b873baeacd4b518264d3c69254a441f8914b26ca32e00151538869fc7587",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8bc4bb0ae28c8394c1af3c767c942dc028b171ad3e1fad2b6c5977519c1f7da6",
+      "tokens_in": 348,
+      "tokens_out": 35,
+      "latency_s": 1.3951673000001392,
+      "diagram_hash": "82b9b873baeacd4b518264d3c69254a441f8914b26ca32e00151538869fc7587",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_984cf90c2d8f4e9ca233c126b384bf03",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing Reader class definition.\",\"Missing associations for Reader to Loan and Reader to Book.\"],\"categories\":[\"UML Structure\",\"Class Relationships\"]}",
+      "critic_errors": [
+        "Missing Reader class definition.",
+        "Missing associations for Reader to Loan and Reader to Book."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f0182d63285056bff2be3a226471ac81a627ca396f61ac506bd2f670dbe8bd3a",
+      "tokens_in": 150,
+      "tokens_out": 102,
+      "latency_s": 1.7162232999999105,
+      "diagram_hash": "e4193a761ae19d4616b4ca1bd9b6f277c65dff90d59b76e3339451f2d8529a30",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_b070f4c5adf54cae91cffb9789541713",
+      "response_text": "```plantuml\n@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml\n```",
+      "output_plantuml": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2903dc780df1d560d8c013158ffbfec911c7ceb903d4e97f4dd2f1f3a0cb6b14",
+      "tokens_in": 382,
+      "tokens_out": 12,
+      "latency_s": 1.0253530999998475,
+      "diagram_hash": "e4193a761ae19d4616b4ca1bd9b6f277c65dff90d59b76e3339451f2d8529a30",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_3ae2c6d248a64005859916cb0f05f4a1",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 880,
+  "tokens_out": 149,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\n\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nclass Reader {\n  +id: String\n}\n\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Loan\nReader \"0..*\" --> \"0..*\" Book\n\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 4.1526395999999295,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.33333333333333337,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.33333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.08333333333333337,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.33333333333333337,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.33333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "reader",
+          "loan",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.08333333333333337,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "end_to_end_seconds": 4.160175799999706,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

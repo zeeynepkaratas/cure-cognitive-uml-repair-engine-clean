@@ -1,0 +1,634 @@
+{
+  "case_id": "M22_1",
+  "scenario_id": "M22",
+  "srs": "The farm irrigation system records Farmer, WateringPlan, IrrigationService, and Field; each has an id attribute. Each Farmer can have zero or more WateringPlan records, and each WateringPlan belongs to exactly one Farmer. Each WateringPlan uses exactly one IrrigationService, and each IrrigationService serves zero or more WateringPlan records. Each IrrigationService manages one or more Field records by composition, and each Field belongs to exactly one IrrigationService. Each Farmer can reference zero or more Field records, and each Field can be referenced by zero or more Farmer records.",
+  "gold": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nIrrigationService \"1\" *-- \"1..*\" Field\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "defective": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "defect_ids": [
+    "D3"
+  ],
+  "seed": 1949,
+  "injections": [
+    {
+      "defect_id": "D3",
+      "seed": 1949,
+      "selected_class": "Farmer",
+      "original_relation": [
+        "IrrigationService",
+        "Field",
+        "composition",
+        "1",
+        "1..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "8dbe4b492a50e6c96942ea0c8449cced7e464bd04dbb47192dc854247f796409",
+  "input_sha256": "924a467fd2c5dc1f13d6d9c6c08c90f90c7144b9fb20a8de0e881a908f0b69eb",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d2a6b3c3a8fdccac609b07edd9621ffa12f09f326feae6357eec1a00956f33dd",
+      "tokens_in": 471,
+      "tokens_out": 74,
+      "latency_s": 1.7089514999997846,
+      "diagram_hash": "924a467fd2c5dc1f13d6d9c6c08c90f90c7144b9fb20a8de0e881a908f0b69eb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_53792b3a64a2446cbb225ea03c9b5ddc",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL İhlalleri\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL İhlalleri"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "0d839ea1eb81a7b4a7952f3197e070525914ba6af5e3318352b13e109288bc91",
+      "tokens_in": 249,
+      "tokens_out": 137,
+      "latency_s": 3.2338944999992236,
+      "diagram_hash": "7ae217d73ad6d15932fcca7c702fdc4a63229f2dfe6b327a86f809e672856dbf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_964095835c98448c94f61df65894acf9",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "22030c895863786bcc7541ab79ebd56942260504a9a0e19f580ed034cf678d81",
+      "tokens_in": 510,
+      "tokens_out": 38,
+      "latency_s": 1.145275099999708,
+      "diagram_hash": "7ae217d73ad6d15932fcca7c702fdc4a63229f2dfe6b327a86f809e672856dbf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_b923b6921c1a4bc7958782d9736f61aa",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e8ec100dcffa380d997e6ba8e42d1cb3c6f4b9ca2245e0c6530a82f8f70e6c0b",
+      "tokens_in": 240,
+      "tokens_out": 137,
+      "latency_s": 2.697201299999506,
+      "diagram_hash": "59dc4dfde842d1dac2cdef28e319bbbd66491e56e6af3bc5d067351d798f5326",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6548d98151",
+      "request_id": "req_72771665bacc4f828ecaf408fba5aff6",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ad41bd1ae46225f5f6e6bc494934cf3263b1e38c353a8aa5d02a51b0df466940",
+      "tokens_in": 510,
+      "tokens_out": 50,
+      "latency_s": 1.180489100000159,
+      "diagram_hash": "59dc4dfde842d1dac2cdef28e319bbbd66491e56e6af3bc5d067351d798f5326",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_dd53c15f1a3b4de48f529dc9bd59b64b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "328b22d2850aed8538487fcab1ba921fd39b4a9d8d2431409c409ff9c77ecf74",
+      "tokens_in": 254,
+      "tokens_out": 148,
+      "latency_s": 2.822344399999565,
+      "diagram_hash": "8dbe4b492a50e6c96942ea0c8449cced7e464bd04dbb47192dc854247f796409",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6548d98151",
+      "request_id": "req_e4b13d456b5c445982c9bf3a9dcdf29c",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "fefbeef02b06bf276e4735cd72837c086be45115bcfcfa26628d602fdc6b8f33",
+      "tokens_in": 521,
+      "tokens_out": 71,
+      "latency_s": 1.608766000000287,
+      "diagram_hash": "8dbe4b492a50e6c96942ea0c8449cced7e464bd04dbb47192dc854247f796409",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1be7d2229e6646dcb5a1360e9598083a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki doğru tanımlanmamış.\"],\"categories\":[\"UML İlişki Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki doğru tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML İlişki Hataları"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2755,
+  "tokens_out": 655,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Farmer {\n  +id: String\n  +age: Integer\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.93847900000037,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "field",
+          "irrigationservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1071428571428571,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19047619047619058,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19047619047619058,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19047619047619058,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "farmer",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "field",
+          "irrigationservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1071428571428571,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19047619047619058,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19047619047619058,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "irrigationservice",
+          "field",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19047619047619058,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "farmer",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 17.950902499999756,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

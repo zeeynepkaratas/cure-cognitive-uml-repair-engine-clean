@@ -1,0 +1,531 @@
+{
+  "case_id": "M18_1",
+  "scenario_id": "M18",
+  "srs": "The invoice payment system records Customer, Invoice, BillingService, and Payment; each has an id attribute. Each Customer can have zero or more Invoice records, and each Invoice belongs to exactly one Customer. Each Invoice uses exactly one BillingService, and each BillingService serves zero or more Invoice records. Each BillingService manages one or more Payment records by composition, and each Payment belongs to exactly one BillingService. Each Customer can reference zero or more Payment records, and each Payment can be referenced by zero or more Customer records.",
+  "gold": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nInvoice \"0..*\" --> \"1\" BillingService\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "defective": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1909,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1909,
+      "selected_class": "BillingService",
+      "original_relation": [
+        "Invoice",
+        "BillingService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"0..*\" --> \"1\" Invoice\nBillingService \"1\" *-- \"1..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment : makes\n@enduml",
+  "output_sha256": "6d661770b310cc2fcf52123f7232c435e64b0bbb0e47f4765123770a044580f3",
+  "input_sha256": "3414d14e2cb9adf806d88fbd82450e99886ef17cc06251c1fd5041aa3234df60",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2e2e6ccbaa6995f8774672416e3d17eae49b8f820641e704921aef11de55a55a",
+      "tokens_in": 381,
+      "tokens_out": 125,
+      "latency_s": 3.1813730999992913,
+      "diagram_hash": "3414d14e2cb9adf806d88fbd82450e99886ef17cc06251c1fd5041aa3234df60",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1604960593684af8ac0f4c4444310fae",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between BillingService and Invoice is incorrectly defined as '0..* --> 1'. It should be '1 --> 0..*'.\",\"The association between BillingService and Payment is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*'.\",\"The association between Customer and Payment is incorrectly defined as '0..* --> 0..*'. It should be '0..* --> 0..*' but needs clarification on the multiplicity.\"],\"categories\":[\"UML Association Errors\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The association between BillingService and Invoice is incorrectly defined as '0..* --> 1'. It should be '1 --> 0..*'.",
+        "The association between BillingService and Payment is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*'.",
+        "The association between Customer and Payment is incorrectly defined as '0..* --> 0..*'. It should be '0..* --> 0..*' but needs clarification on the multiplicity."
+      ],
+      "critic_categories": [
+        "UML Association Errors",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9fe994414b4978a622510a2c9ee4e8a038d5e29a7ba4d0b73a70980f5c2c879f",
+      "tokens_in": 273,
+      "tokens_out": 101,
+      "latency_s": 3.2402373000004445,
+      "diagram_hash": "976a98e32385b77dda9961d250018b8050596e316bbe90228a813a02fcef886d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_1659b1b07ed249cc9ef5103ea0945035",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d2c62e4b9b020b12a107f10d4a05f49dced556eb5e563ab0b2d00c7209be4d67",
+      "tokens_in": 381,
+      "tokens_out": 48,
+      "latency_s": 1.4238808000000063,
+      "diagram_hash": "976a98e32385b77dda9961d250018b8050596e316bbe90228a813a02fcef886d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_392f4f0bc27045019f1567c1993d88af",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Invoice and BillingService is not correctly represented as it should be a composition relationship, indicating that each Invoice uses exactly one BillingService.\"],\"categories\":[\"UML Structure\",\"Relationship Integrity\"]}",
+      "critic_errors": [
+        "The relationship between Invoice and BillingService is not correctly represented as it should be a composition relationship, indicating that each Invoice uses exactly one BillingService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Integrity"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "de14853d646f7defb9ceeb55f91606cb8ff7e8297fcf0c5db68ca0924cb45bfb",
+      "tokens_in": 195,
+      "tokens_out": 102,
+      "latency_s": 2.8145237999997335,
+      "diagram_hash": "3cf19815ec1148088c380b91c2a5fb9545e81452bf03e992e6018840f6a36780",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_22c3b6df7f4e47c38c92e36afe1d2c68",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dcee864717594b42f8e78b3635fa07996264a4f00eb17180c170330ed55d2628",
+      "tokens_in": 382,
+      "tokens_out": 50,
+      "latency_s": 1.8168437000003905,
+      "diagram_hash": "3cf19815ec1148088c380b91c2a5fb9545e81452bf03e992e6018840f6a36780",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_e72a08df3e1f442581282c106ebda325",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Customer and Payment is incorrectly defined as '0..*' instead of '0..*' with a clear indication of the referencing relationship.\"],\"categories\":[\"UML Structure\",\"Relationship Definitions\"]}",
+      "critic_errors": [
+        "The relationship between Customer and Payment is incorrectly defined as '0..*' instead of '0..*' with a clear indication of the referencing relationship."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Definitions"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9c168330edb4b5da1e3d49d7a744f8e1ed1b9b9fd24f0a1ebdbcaee1bed5a699",
+      "tokens_in": 198,
+      "tokens_out": 104,
+      "latency_s": 2.826822699999866,
+      "diagram_hash": "6d661770b310cc2fcf52123f7232c435e64b0bbb0e47f4765123770a044580f3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_7e1a3670fbc24636a82e412d51155ca0",
+      "response_text": "```plantuml\n@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment : makes\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment : makes\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "170a3602156e32ccb6ee56d115892f4982a3c27b70f7ca0d5223d06c6137f25d",
+      "tokens_in": 384,
+      "tokens_out": 50,
+      "latency_s": 1.6863197999991826,
+      "diagram_hash": "6d661770b310cc2fcf52123f7232c435e64b0bbb0e47f4765123770a044580f3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_69002a8e87d1457a89231764e1d1ed83",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Customer and Payment is incorrectly defined. It should be a composition relationship from BillingService to Payment, not a direct association from Customer to Payment.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Customer and Payment is incorrectly defined. It should be a composition relationship from BillingService to Payment, not a direct association from Customer to Payment."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2194,
+  "tokens_out": 580,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Customer {\n  +id: String\n}\nclass Invoice {\n  +id: String\n}\nclass BillingService {\n  +id: String\n}\nclass Payment {\n  +id: String\n}\nCustomer \"1\" --> \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Invoice\nBillingService \"1\" *-- \"0..*\" Payment\nCustomer \"0..*\" --> \"0..*\" Payment : makes\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 19.049276399999144,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "invoice",
+          "billingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "billingservice",
+          "payment",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "invoice",
+          "billingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "billingservice",
+          "payment",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "invoice",
+          "billingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "invoice",
+          "billingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "billingservice",
+          "payment",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "invoice",
+          "billingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "billingservice",
+          "invoice",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "billingservice",
+          "payment",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 19.055277500000557,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

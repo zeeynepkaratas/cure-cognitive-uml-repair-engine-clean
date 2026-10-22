@@ -1,0 +1,745 @@
+{
+  "case_id": "M24_1",
+  "scenario_id": "M24",
+  "srs": "The help desk system records Requester, SupportTicket, HelpDeskService, and Resolution; each has an id attribute. Each Requester can have zero or more SupportTicket records, and each SupportTicket belongs to exactly one Requester. Each SupportTicket uses exactly one HelpDeskService, and each HelpDeskService serves zero or more SupportTicket records. Each HelpDeskService manages one or more Resolution records by composition, and each Resolution belongs to exactly one HelpDeskService. Each Requester can reference zero or more Resolution records, and each Resolution can be referenced by zero or more Requester records.",
+  "gold": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass Resolution {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" Resolution\nRequester \"0..*\" --> \"0..*\" Resolution\n@enduml",
+  "defective": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1969,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1969,
+      "selected_class": "Resolution"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml",
+  "output_sha256": "639cd974d36ed0e14b0361cf9006febf320f2f0a26e5f4c1e814c6b5c1e8d5a7",
+  "input_sha256": "54a5bdfd0ffdb52c818aeed610e50f79239015685598044e43ec7c6184c58f99",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "00c3a98410260fb1165492c7b5f22fbf9eb0705dc62b6e7220cd6dcb58959eda",
+      "tokens_in": 487,
+      "tokens_out": 74,
+      "latency_s": 1.9959862000000612,
+      "diagram_hash": "54a5bdfd0ffdb52c818aeed610e50f79239015685598044e43ec7c6184c58f99",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_406e6b56ec8443c8af4b04e4bc1d478e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e01a5b27a167c06460ba5166308f7a9a24d542314ab04abcf42b06e5b2b8dc4c",
+      "tokens_in": 273,
+      "tokens_out": 145,
+      "latency_s": 2.833468400000129,
+      "diagram_hash": "49bbeff950ad72fbefcbc1ea53e04056ba793d173a62c9d9cb6390e7a5ec2baf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_a2f2ee44750f4a6aa35d4bc886dde4f4",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1ee645b5db3fdcaab570a7adf5d263e3cec26936bd95dc301a697e5100b23594",
+      "tokens_in": 518,
+      "tokens_out": 73,
+      "latency_s": 1.9125085000000581,
+      "diagram_hash": "49bbeff950ad72fbefcbc1ea53e04056ba793d173a62c9d9cb6390e7a5ec2baf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1f7968a9c78045ce9d4d07890298f30a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir tanım yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için bir tanım yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir tanım yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem ile olan bağıntısı için bir tanım yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f79a4517034dee6883a65c7618064fa03dd36f27ba211296488cdb8971f8e2c2",
+      "tokens_in": 303,
+      "tokens_out": 157,
+      "latency_s": 3.137550899999951,
+      "diagram_hash": "1d1733b9b4f2986c51219b298977e72ecee4aa4a9b3c63bce83a74a92cadacab",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_402fb8a3d9",
+      "request_id": "req_fa735f302de145f5add7712dd46e2109",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "37a1b14b08f37f15aec375b0de46d1325d61dd364305a52ad95a978437ca7b49",
+      "tokens_in": 530,
+      "tokens_out": 90,
+      "latency_s": 1.9650434999998652,
+      "diagram_hash": "1d1733b9b4f2986c51219b298977e72ecee4aa4a9b3c63bce83a74a92cadacab",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_20be683a67874323a9e5c17f790cf581",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı belirtilmiş ancak OrderItem nesnesinin en az bir tane olması gerektiği kuralı UML'de açıkça belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı belirtilmiş ancak OrderItem nesnesinin en az bir tane olması gerektiği kuralı UML'de açıkça belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "54684e272b1d10720a87a76e1d26ded7fbf0c2144da4abe3711b36937d0bf17a",
+      "tokens_in": 353,
+      "tokens_out": 157,
+      "latency_s": 3.0307562999996662,
+      "diagram_hash": "639cd974d36ed0e14b0361cf9006febf320f2f0a26e5f4c1e814c6b5c1e8d5a7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_402fb8a3d9",
+      "request_id": "req_fe533380d23949958a27ae05c536117f",
+      "response_text": "```plantuml\n@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d599721c97448de4b37a6697d64bd3eee26aa28b1219a084da0e795102453742",
+      "tokens_in": 530,
+      "tokens_out": 88,
+      "latency_s": 1.9832052000001568,
+      "diagram_hash": "639cd974d36ed0e14b0361cf9006febf320f2f0a26e5f4c1e814c6b5c1e8d5a7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1172e5b5682248ddb14518522ac26c73",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"OCL Kuralı İhlali\",\"UML Yapı İhlali\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "OCL Kuralı İhlali",
+        "UML Yapı İhlali"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2994,
+  "tokens_out": 784,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Requester {\n  +id: String\n}\nclass SupportTicket {\n  +id: String\n}\nclass HelpDeskService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRequester \"1\" --> \"0..*\" SupportTicket\nSupportTicket \"0..*\" --> \"1\" HelpDeskService\nHelpDeskService \"1\" *-- \"1..*\" UnspecifiedEntity\nRequester \"0..*\" --> \"0..*\" UnspecifiedEntity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.3131900999997,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        "resolution"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.20454545454545459,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution"
+        ],
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "requester",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution"
+        ],
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "requester",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.055555555555555525,
+    "reference_rel_typed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition"
+        ],
+        [
+          "requester",
+          "resolution",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity",
+          "composition"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "requester",
+          "unspecifiedentity",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.055555555555555525,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "requester",
+          "resolution",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "requester",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.055555555555555525,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resolution",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        "resolution"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.20454545454545459,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution"
+        ],
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "requester",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution"
+        ],
+        [
+          "requester",
+          "resolution"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "requester",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.055555555555555525,
+    "reference_rel_typed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition"
+        ],
+        [
+          "requester",
+          "resolution",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity",
+          "composition"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "requester",
+          "unspecifiedentity",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.055555555555555525,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "helpdeskservice",
+          "resolution",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "requester",
+          "resolution",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "helpdeskservice",
+          "unspecifiedentity",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "requester",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.055555555555555525,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resolution",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "end_to_end_seconds": 20.328530499999943,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

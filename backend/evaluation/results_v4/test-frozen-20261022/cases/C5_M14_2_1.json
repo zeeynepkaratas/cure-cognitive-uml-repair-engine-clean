@@ -1,0 +1,519 @@
+{
+  "case_id": "M14_2",
+  "scenario_id": "M14",
+  "srs": "The course enrollment system records Student, Enrollment, EnrollmentService, and Course; each has an id attribute. Each Student can have zero or more Enrollment records, and each Enrollment belongs to exactly one Student. Each Enrollment uses exactly one EnrollmentService, and each EnrollmentService serves zero or more Enrollment records. Each EnrollmentService manages one or more Course records by composition, and each Course belongs to exactly one EnrollmentService. Each Student can reference zero or more Course records, and each Course can be referenced by zero or more Student records.",
+  "gold": "@startuml\nclass Student {\n  +id: String\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defective": "@startuml\nclass Student {\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defect_ids": [
+    "D8"
+  ],
+  "seed": 1870,
+  "injections": [
+    {
+      "defect_id": "D8",
+      "seed": 1870,
+      "selected_class": "EnrollmentService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Student {\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Student {\n  +age: Integer [18..120] // age must be between 18 and 120\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService // Enrollment must have at least one EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "output_sha256": "b83dd018f5dbe5527e358b67fc28eac853a5028c5c3b7f5c2af62b31b2cedb82",
+  "input_sha256": "9d8c7f49d80625299a7bbd9705bcf3316516cdf88707e00a4e2fa7574f3d46ae",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "3a3625404792ec9851dcf79b89de211a3aa68de64ab9e62af398d100fdb940bc",
+      "tokens_in": 453,
+      "tokens_out": 77,
+      "latency_s": 1.7213575999999193,
+      "diagram_hash": "9d8c7f49d80625299a7bbd9705bcf3316516cdf88707e00a4e2fa7574f3d46ae",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a882076ba6ef48c08449cfb900494b9f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b40ffe78a8f73bf8ee6d1ac311b831299b00c10945205817bc27f4825957b49d",
+      "tokens_in": 234,
+      "tokens_out": 101,
+      "latency_s": 2.2770863999999165,
+      "diagram_hash": "7322c182aeb2747a727d0b88bec2deb87896bd45d77206af615f5fe9829e4a6a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_b797eccc89674c49aaaeadd619fb3c32",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +age: Integer\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +age: Integer\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "00921d487b70f688c9bd7165bd2e3be6c2ddba613d1d384afdb0a2ae764ca821",
+      "tokens_in": 459,
+      "tokens_out": 77,
+      "latency_s": 2.281579999999849,
+      "diagram_hash": "7322c182aeb2747a727d0b88bec2deb87896bd45d77206af615f5fe9829e4a6a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_2b1b118902ae4df4bb459d15eb8409de",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "5c7a28c19d4038caf1c3de347eded64dfe907ad3f5ffdde08f74a41882cfc5fb",
+      "tokens_in": 258,
+      "tokens_out": 124,
+      "latency_s": 2.9400602000000617,
+      "diagram_hash": "5a422ab83f8bf33fd461de3258e283f7b01a76d23a5b1f765b928c5f2a7cc1da",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_84cff24d4a9e4c64938c31dfb639f0dd",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +age: Integer [1..120] // age must be between 1 and 120\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService // Enrollment must have at least one EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +age: Integer [1..120] // age must be between 1 and 120\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService // Enrollment must have at least one EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d31ca4a8077de32636a08d7c1f1d8e90a5d02fee43120bbf32d6125d0e718098",
+      "tokens_in": 482,
+      "tokens_out": 51,
+      "latency_s": 1.6435996999998679,
+      "diagram_hash": "5a422ab83f8bf33fd461de3258e283f7b01a76d23a5b1f765b928c5f2a7cc1da",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.20833333333333334
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.15384615384615385
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f7d82309861a482983ecde7d0cae6847",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "52de25499478e285be5a4289082e93078a872734140d7835fb47176f81f7e1b6",
+      "tokens_in": 247,
+      "tokens_out": 124,
+      "latency_s": 2.702142200000253,
+      "diagram_hash": "b83dd018f5dbe5527e358b67fc28eac853a5028c5c3b7f5c2af62b31b2cedb82",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_bb46a85bec164b4ca85d16d48b8a7bc3",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +age: Integer [18..120] // age must be between 18 and 120\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService // Enrollment must have at least one EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +age: Integer [18..120] // age must be between 18 and 120\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService // Enrollment must have at least one EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "558cc3e4f24a6410654324ecc75d7494f761e5a5c513c791d9fe858c7ac05723",
+      "tokens_in": 482,
+      "tokens_out": 77,
+      "latency_s": 1.9071949999997742,
+      "diagram_hash": "b83dd018f5dbe5527e358b67fc28eac853a5028c5c3b7f5c2af62b31b2cedb82",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.25
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.14814814814814814
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_ce0aefc2f09e44beb2d81661aa259f09",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2615,
+  "tokens_out": 631,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Student {\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 18.74030920000041,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": -0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": -0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": -0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": -0.1428571428571429,
+    "reference_attribute": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "student",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "student",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.1071428571428571
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "student",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 18.74703939999972,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

@@ -1,0 +1,499 @@
+{
+  "case_id": "P08",
+  "dataset": "pure",
+  "srs": "If the System allows users to make unauthorised attempts to access cases, it must log these in the audit trail.",
+  "input_plantuml": "@startuml\nclass System {}\nclass User {}\nclass Case {}\nclass AccessAttempt {}\nclass AccessAttempt {}\nclass AuditTrail {}\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\n@enduml",
+  "gold": "@startuml\nclass System {}\nclass User {}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\n@enduml",
+  "defect_ids": [
+    "duplicate_class"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass System {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be 18 or older\")\n        }\n    }\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\nOrder --> OrderItem\n\nUser : + setAge(age: int)\nUser : + getAge(): int\n@enduml",
+  "output_sha256": "2d0c2593c89b6dcf10cbb0527e2e2a7191231462755958a55924f41e7c68c340",
+  "input_sha256": "6b9aa2e8e460e64f86f1e35b2fb8dadc153368c6c54c233492e2a49e722cdac3",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b57b51a32862ab41c86bd3235b130b399b06570e1e5d89425d9301cc56c97b09",
+      "tokens_in": 337,
+      "tokens_out": 76,
+      "latency_s": 2.215171900000314,
+      "diagram_hash": "6b9aa2e8e460e64f86f1e35b2fb8dadc153368c6c54c233492e2a49e722cdac3",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.07142857142857142
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_923372413c204027958733fbe8efec74",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1559ba6f91ea1b82f4c7b462ae93b5bf18ff0a364c4e54f3b98712ebf60336c9",
+      "tokens_in": 223,
+      "tokens_out": 62,
+      "latency_s": 1.688634500000262,
+      "diagram_hash": "d4dc34bf730a501aaa45fc311cca55e2a9d6ed5dece76e4058da799699a822d8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_402fb8a3d9",
+      "request_id": "req_a0d845aec45044beb98f923b69eb0050",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass User {\n    - age: int\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass User {\n    - age: int\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c4243fd80bfc00ed286108014492f144b292111095220b85c53ccf7c30e8f561",
+      "tokens_in": 340,
+      "tokens_out": 45,
+      "latency_s": 1.715420599999561,
+      "diagram_hash": "d4dc34bf730a501aaa45fc311cca55e2a9d6ed5dece76e4058da799699a822d8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.13333333333333333
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d605c84c185d47b38e5639ad62afd0cb",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age constraint (age >= 18)\",\"Order class is not present to validate OrderItem constraint\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age constraint (age >= 18)",
+        "Order class is not present to validate OrderItem constraint"
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "17c919282ee71289d5b84178216f5fa2ae77908de42f7c93c4e1d6632cc89fb3",
+      "tokens_in": 152,
+      "tokens_out": 110,
+      "latency_s": 3.0382209000008515,
+      "diagram_hash": "93f9b3039f9b72c1314f35b2c53381d01a2d9fb309fc40667d730df7d1a743d7",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_d829347d486242b0a633d2e2b755a3ee",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be 18 or older\")\n        }\n    }\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be 18 or older\")\n        }\n    }\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b37f18053786a7836330947caf03c4c106fa3ad52441514c0a651bf61085fc40",
+      "tokens_in": 388,
+      "tokens_out": 48,
+      "latency_s": 1.7209420999997747,
+      "diagram_hash": "93f9b3039f9b72c1314f35b2c53381d01a2d9fb309fc40667d730df7d1a743d7",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.21739130434782608
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.11538461538461539
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_23ca703132104a959a896a0f3be215ef",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7568f88ab7983dab2288b19377bb53517d381178e9f04960b83af3267d88b0ba",
+      "tokens_in": 223,
+      "tokens_out": 127,
+      "latency_s": 3.441531099999338,
+      "diagram_hash": "2d0c2593c89b6dcf10cbb0527e2e2a7191231462755958a55924f41e7c68c340",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_4566890756254ee9af006409978ae682",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be 18 or older\")\n        }\n    }\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\nOrder --> OrderItem\n\nUser : + setAge(age: int)\nUser : + getAge(): int\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be 18 or older\")\n        }\n    }\n}\nclass Case {}\nclass AccessAttempt {}\nclass AuditTrail {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\nOrder --> OrderItem\n\nUser : + setAge(age: int)\nUser : + getAge(): int\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "805bf2c3667baa051fb653823db40391f6bedac5b9df3d2d4555e953c31cfe2c",
+      "tokens_in": 405,
+      "tokens_out": 49,
+      "latency_s": 2.1337869999997565,
+      "diagram_hash": "2d0c2593c89b6dcf10cbb0527e2e2a7191231462755958a55924f41e7c68c340",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.2
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.10714285714285714
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c2d6f66be2884c8394b049934a15008d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz.\"],\"categories\":[\"OCL Kuralı İhlali\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz."
+      ],
+      "critic_categories": [
+        "OCL Kuralı İhlali"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2068,
+  "tokens_out": 517,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['AccessAttempt']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['AccessAttempt', 'AccessAttempt']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass System {}\nclass User {}\nclass Case {}\nclass AccessAttempt {}\nclass AccessAttempt {}\nclass AuditTrail {}\nSystem --> AccessAttempt\nAccessAttempt --> User\nAccessAttempt --> Case\nSystem --> AuditTrail\nAuditTrail --> AccessAttempt\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": false,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 18.278393099999448,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 5,
+    "reference_relationship_count": 5,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.7142857142857143,
+      "recall": 1.0,
+      "f1": 0.8333333333333333,
+      "reference_count": 5,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.16666666666666674,
+    "reference_rel_undirected": {
+      "precision": 0.8333333333333334,
+      "recall": 1.0,
+      "f1": 0.9090909090909091,
+      "reference_count": 5,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.09090909090909094,
+    "reference_rel_directed": {
+      "precision": 0.8333333333333334,
+      "recall": 1.0,
+      "f1": 0.9090909090909091,
+      "reference_count": 5,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09090909090909094,
+    "reference_rel_typed": {
+      "precision": 0.8333333333333334,
+      "recall": 1.0,
+      "f1": 0.9090909090909091,
+      "reference_count": 5,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09090909090909094,
+    "reference_rel_multiplicity": {
+      "precision": 0.8333333333333334,
+      "recall": 1.0,
+      "f1": 0.9090909090909091,
+      "reference_count": 5,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "",
+          ""
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09090909090909094,
+    "reference_attribute": {
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "reference_count": 0,
+      "predicted_count": 1,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "age"
+        ]
+      ],
+      "status": "not_applicable"
+    }
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 5,
+    "reference_relationship_count": 5,
+    "output_class_count": 6,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 1,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 5,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 5,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 5,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 5,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 5,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "reference_count": 0,
+      "predicted_count": 0,
+      "missing": [],
+      "spurious": [],
+      "status": "not_applicable"
+    }
+  },
+  "end_to_end_seconds": 18.284799799999746,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

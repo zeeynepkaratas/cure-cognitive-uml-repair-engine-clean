@@ -1,0 +1,624 @@
+{
+  "case_id": "M12_2",
+  "scenario_id": "M12",
+  "srs": "The clinic booking system records Patient, Appointment, BookingService, and Clinician; each has an id attribute. Each Patient can have zero or more Appointment records, and each Appointment belongs to exactly one Patient. Each Appointment uses exactly one BookingService, and each BookingService serves zero or more Appointment records. Each BookingService manages one or more Clinician records by composition, and each Clinician belongs to exactly one BookingService. Each Patient can reference zero or more Clinician records, and each Clinician can be referenced by zero or more Patient records.",
+  "gold": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defective": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1850,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1850,
+      "selected_class": "Patient",
+      "original_relation": [
+        "Appointment",
+        "BookingService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must be associated with at least one Order\n@enduml",
+  "output_sha256": "9e6f76f6a65e279ce21334789958cff7bf79f1ac2d3de55e8a05ccd41b8753cb",
+  "input_sha256": "cdcee8d7db70ac2fed1926f104c78b779b65029b81d6bb7a22bc34019bdfd8a2",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "57f47c1c9870de58176d34fb864de98144ec436c0825d929e8bd548c8ce18332",
+      "tokens_in": 467,
+      "tokens_out": 78,
+      "latency_s": 2.02207959999987,
+      "diagram_hash": "cdcee8d7db70ac2fed1926f104c78b779b65029b81d6bb7a22bc34019bdfd8a2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_3382a51576194232912e7b993df8e242",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "ab952acf1189aaf10523cda00f070b17541d6c23ddaf7a58af3dbbefd568b5b8",
+      "tokens_in": 237,
+      "tokens_out": 135,
+      "latency_s": 2.6277185000003556,
+      "diagram_hash": "b01668fb007c022fb626fdec0c59ede851f558772d7611cb91b2d24d8702f234",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b11ef98e16",
+      "request_id": "req_404601778b1d471aa325fb9c303b39ea",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c380f925774f7731ee79f3a1d1da17a4592515984873b02520630d80cc49649e",
+      "tokens_in": 498,
+      "tokens_out": 85,
+      "latency_s": 2.098450899999989,
+      "diagram_hash": "b01668fb007c022fb626fdec0c59ede851f558772d7611cb91b2d24d8702f234",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f5b2c575efee42eabb1dd36b9c7ce0f9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\",\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Kural İhlalleri\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.",
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Kural İhlalleri"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7d5086fc3052337b4662c3bc02c75edff8a24865b735ef3c6b5e1212f23d558d",
+      "tokens_in": 287,
+      "tokens_out": 153,
+      "latency_s": 2.9469920999999886,
+      "diagram_hash": "1ae48a22a49b59e0a8e8678de97dfb15e8b480c8f7bf77ce5ed5c545964039b0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_a4a60d8b5f0f443b9ddc8f397af31d44",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "acb5152ec410de32426f8c03a33db120342a87736bebbe1dff538cadede99f48",
+      "tokens_in": 516,
+      "tokens_out": 91,
+      "latency_s": 1.994894800000111,
+      "diagram_hash": "1ae48a22a49b59e0a8e8678de97dfb15e8b480c8f7bf77ce5ed5c545964039b0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_651ada7b5bf849f6883b060fadcf94ec",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"OCL Kuralı 1\",\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 1",
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "111e3a4addf7e4ab2a223f6419cdf3be3f0f501b01859cc69b8259152d1d5b63",
+      "tokens_in": 327,
+      "tokens_out": 184,
+      "latency_s": 4.17669369999976,
+      "diagram_hash": "9e6f76f6a65e279ce21334789958cff7bf79f1ac2d3de55e8a05ccd41b8753cb",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_d26acefa954c44d8ab9d48828b3edac4",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must be associated with at least one Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nclass User {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must be associated with at least one Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e21c7b90b89868fd25b908188f69041745f6b5966d0e981efa07b17fea286ddb",
+      "tokens_in": 547,
+      "tokens_out": 107,
+      "latency_s": 2.2560072999999647,
+      "diagram_hash": "9e6f76f6a65e279ce21334789958cff7bf79f1ac2d3de55e8a05ccd41b8753cb",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.2222222222222222
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.21428571428571427
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8eb58541384a461ca6b9669b738eaf1e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama belirtilmiş ancak UML'de bu kısıtlama uygulanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş ancak UML'de bu bağıntı doğru şekilde tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama belirtilmiş ancak UML'de bu kısıtlama uygulanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş ancak UML'de bu bağıntı doğru şekilde tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2879,
+  "tokens_out": 833,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.64819579999994,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.08333333333333348,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ],
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.08333333333333348,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.08333333333333348,
+    "reference_attribute": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 8,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.33333333333333337
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 21.66015219999963,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

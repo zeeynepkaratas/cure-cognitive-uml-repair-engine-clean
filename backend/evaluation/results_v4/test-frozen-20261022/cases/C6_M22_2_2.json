@@ -1,0 +1,580 @@
+{
+  "case_id": "M22_2",
+  "scenario_id": "M22",
+  "srs": "The farm irrigation system records Farmer, WateringPlan, IrrigationService, and Field; each has an id attribute. Each Farmer can have zero or more WateringPlan records, and each WateringPlan belongs to exactly one Farmer. Each WateringPlan uses exactly one IrrigationService, and each IrrigationService serves zero or more WateringPlan records. Each IrrigationService manages one or more Field records by composition, and each Field belongs to exactly one IrrigationService. Each Farmer can reference zero or more Field records, and each Field can be referenced by zero or more Farmer records.",
+  "gold": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" IrrigationService\nIrrigationService \"1\" *-- \"1..*\" Field\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "defective": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1950,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1950,
+      "selected_class": "WateringPlan",
+      "original_relation": [
+        "WateringPlan",
+        "IrrigationService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"1\" *-- \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml",
+  "output_sha256": "97eee7489147fd1d4ca79637d15fe95a942b7ca5dc9ec79c6aad1a38773aa022",
+  "input_sha256": "fbb8e901ea192ace9571d158fb58e0787b96f157875c9ea3d950445c203a4410",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "fcc610c791f82fc8bb26761071a5d1d02506a5a41dc9c1572ca5c1d65a7c2f86",
+      "tokens_in": 406,
+      "tokens_out": 73,
+      "latency_s": 1.8696313000000373,
+      "diagram_hash": "fbb8e901ea192ace9571d158fb58e0787b96f157875c9ea3d950445c203a4410",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_07a3f1195d7d429abed06f64aeb00147",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"WateringPlan should have a composition relationship with IrrigationService, but it is not defined in the UML.\",\"The multiplicity from WateringPlan to IrrigationService is missing, which should be '1' as each WateringPlan uses exactly one IrrigationService.\"],\"categories\":[\"UML Structure\",\"Relationship Definitions\"]}",
+      "critic_errors": [
+        "WateringPlan should have a composition relationship with IrrigationService, but it is not defined in the UML.",
+        "The multiplicity from WateringPlan to IrrigationService is missing, which should be '1' as each WateringPlan uses exactly one IrrigationService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Definitions"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "625c463c35f0b1ee5e764a327551b24e001bc7e5b8c87310210c5068d4e18cf7",
+      "tokens_in": 231,
+      "tokens_out": 125,
+      "latency_s": 3.1876963999998225,
+      "diagram_hash": "b6b7be44af6f9751f1a09b8c1fc2d342bed51b61000846d903f36c53e16f3c39",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_4728946886d942f99fbfd36408f79c4e",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"0..*\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "292b7768970e78487726d89ac3412c003f2da60ef719a6c685e19d97458477b7",
+      "tokens_in": 420,
+      "tokens_out": 117,
+      "latency_s": 3.088975399999981,
+      "diagram_hash": "b6b7be44af6f9751f1a09b8c1fc2d342bed51b61000846d903f36c53e16f3c39",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_176eb11f33214620afdd8339df1463d4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between WateringPlan and Farmer is incorrectly defined as '0..*' to '1'. It should be '1' to '0..*' to reflect that each WateringPlan belongs to exactly one Farmer.\",\"The association between Farmer and Field is incorrectly defined as '0..*' to '0..*'. It should be '0..*' to '0..*' but with a clear indication that a Field belongs to exactly one IrrigationService.\"],\"categories\":[\"UML Association Errors\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The association between WateringPlan and Farmer is incorrectly defined as '0..*' to '1'. It should be '1' to '0..*' to reflect that each WateringPlan belongs to exactly one Farmer.",
+        "The association between Farmer and Field is incorrectly defined as '0..*' to '0..*'. It should be '0..*' to '0..*' but with a clear indication that a Field belongs to exactly one IrrigationService."
+      ],
+      "critic_categories": [
+        "UML Association Errors",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c1d15438f0bc38cc2e895e18d28833cc49a00a252c24544928ffcbceb353c3ef",
+      "tokens_in": 288,
+      "tokens_out": 136,
+      "latency_s": 3.581548500000281,
+      "diagram_hash": "381ea3fe1e33246a2e33f8266bc72c32c813edcddf2a039af91472db7d4a2881",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_375e9ca64a2546708e5babe615421204",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"0..*\" --> \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c90034d507474012209b4c87077d07e3fdc595d0278da583da173765de911c59",
+      "tokens_in": 431,
+      "tokens_out": 56,
+      "latency_s": 2.2437211999999818,
+      "diagram_hash": "381ea3fe1e33246a2e33f8266bc72c32c813edcddf2a039af91472db7d4a2881",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_afb8b5b9f4dc4bd887de4223a2a778d4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Farmer and Field is incorrectly defined. It should be a composition relationship from Farmer to Field, as each Field belongs to exactly one IrrigationService, which is managed by a Farmer.\"],\"categories\":[\"UML Relationship Errors\"]}",
+      "critic_errors": [
+        "The relationship between Farmer and Field is incorrectly defined. It should be a composition relationship from Farmer to Field, as each Field belongs to exactly one IrrigationService, which is managed by a Farmer."
+      ],
+      "critic_categories": [
+        "UML Relationship Errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f50741717ff54c5f50ad09452e63fee16c9122703e4edef3d6846440fbbec236",
+      "tokens_in": 240,
+      "tokens_out": 136,
+      "latency_s": 3.73031200000014,
+      "diagram_hash": "97eee7489147fd1d4ca79637d15fe95a942b7ca5dc9ec79c6aad1a38773aa022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_1e5ad617a72d4c35928d602b65899712",
+      "response_text": "```plantuml\n@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"1\" *-- \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"1\" *-- \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "30b686c1cc53e91ab1f72121f92cdd6d10dbcb6960d9c1ef4483de9ebad899a9",
+      "tokens_in": 431,
+      "tokens_out": 74,
+      "latency_s": 2.288526699999693,
+      "diagram_hash": "97eee7489147fd1d4ca79637d15fe95a942b7ca5dc9ec79c6aad1a38773aa022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_80f6ccb742fe43cfbe4c0b3b8ed5b581",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Farmer and Field is incorrectly defined as composition (1 *-- 0..*), which implies that Fields cannot exist independently of Farmers. This contradicts the requirement that each Field belongs to exactly one IrrigationService and can be referenced by zero or more Farmers.\"],\"categories\":[\"UML Structure\",\"Relationship Definitions\"]}",
+      "critic_errors": [
+        "The relationship between Farmer and Field is incorrectly defined as composition (1 *-- 0..*), which implies that Fields cannot exist independently of Farmers. This contradicts the requirement that each Field belongs to exactly one IrrigationService and can be referenced by zero or more Farmers."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Definitions"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2447,
+  "tokens_out": 717,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Farmer, WateringPlan}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Farmer, WateringPlan}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Farmer, WateringPlan}', 'SCC: {Field, IrrigationService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Farmer, WateringPlan}', 'SCC: {Field, IrrigationService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Farmer {\n  +id: String\n}\nclass WateringPlan {\n  +id: String\n}\nclass IrrigationService {\n  +id: String\n}\nclass Field {\n  +id: String\n}\nFarmer \"1\" --> \"0..*\" WateringPlan\nWateringPlan \"1\" --> \"1\" Farmer\nIrrigationService \"1\" *-- \"1..*\" Field\nWateringPlan \"1\" --> \"1\" IrrigationService\nFarmer \"1\" *-- \"0..*\" Field\nField \"1\" --> \"1\" IrrigationService\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 1,
+  "elapsed_seconds": 23.12940010000011,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "field",
+          "irrigationservice"
+        ],
+        [
+          "wateringplan",
+          "farmer"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.050000000000000044,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "farmer",
+          "field",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "farmer",
+          "field",
+          "composition"
+        ],
+        [
+          "field",
+          "irrigationservice",
+          "association"
+        ],
+        [
+          "wateringplan",
+          "farmer",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "farmer",
+          "field",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "wateringplan",
+          "irrigationservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "farmer",
+          "field",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "field",
+          "irrigationservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "wateringplan",
+          "farmer",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "wateringplan",
+          "irrigationservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.35,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "field",
+          "irrigationservice"
+        ],
+        [
+          "wateringplan",
+          "farmer"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.050000000000000044,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "farmer",
+          "field",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "farmer",
+          "field",
+          "composition"
+        ],
+        [
+          "field",
+          "irrigationservice",
+          "association"
+        ],
+        [
+          "wateringplan",
+          "farmer",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "farmer",
+          "field",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "wateringplan",
+          "irrigationservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "farmer",
+          "field",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "field",
+          "irrigationservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "wateringplan",
+          "farmer",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "wateringplan",
+          "irrigationservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.35,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 23.136914900000193,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

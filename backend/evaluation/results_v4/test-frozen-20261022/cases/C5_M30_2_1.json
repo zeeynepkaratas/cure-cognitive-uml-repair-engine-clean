@@ -1,0 +1,596 @@
+{
+  "case_id": "M30_2",
+  "scenario_id": "M30",
+  "srs": "The volunteer scheduling system records Volunteer, Shift, SchedulingService, and Activity; each has an id attribute. Each Volunteer can have zero or more Shift records, and each Shift belongs to exactly one Volunteer. Each Shift uses exactly one SchedulingService, and each SchedulingService serves zero or more Shift records. Each SchedulingService manages one or more Activity records by composition, and each Activity belongs to exactly one SchedulingService. Each Volunteer can reference zero or more Activity records, and each Activity can be referenced by zero or more Volunteer records.",
+  "gold": "@startuml\nclass Volunteer {\n  +id: String\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\n@enduml",
+  "defective": "@startuml\nclass Volunteer {\n  +id: String\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 2030,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 2030,
+      "selected_class": "SchedulingService"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 2031,
+      "selected_class": "Shift",
+      "added_class": "Spacecraft"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Volunteer {\n  +id: String\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\n",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "ab5903bc713304db334521c9391d21f07408b03e5310fd827f9af38e25befbdb",
+  "input_sha256": "9875d5bab37208a61b976d48663190a47288c1fa2853839c58f7a30e5ce9041f",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "97ce275b14decf031a104ea3a211da51632fad51bdef77d087007d0016492461",
+      "tokens_in": 456,
+      "tokens_out": 74,
+      "latency_s": 1.9626317000002018,
+      "diagram_hash": "9875d5bab37208a61b976d48663190a47288c1fa2853839c58f7a30e5ce9041f",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_aeabff19c6eb43f0acc5d4d10536a4d3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c16da736bbafb7fbb2c9381a1cb9210bf078049d742afcf618a3a66baa66a68e",
+      "tokens_in": 245,
+      "tokens_out": 140,
+      "latency_s": 3.244047000000137,
+      "diagram_hash": "6c685aee39517e5c7b9b6ab1817aa39c026806fab7ed2c7c8050e2dbcccc3540",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_465d6a0752",
+      "request_id": "req_bee912359f354244b0d9b690c0dfeda5",
+      "response_text": "```plantuml\n@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d5dd7d1a4962d4634748fa3808d5eb777de7eb4b1e52db9f3262e90f7a0848c4",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.2906635999997889,
+      "diagram_hash": "6c685aee39517e5c7b9b6ab1817aa39c026806fab7ed2c7c8050e2dbcccc3540",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6a8439e8be834067b6ce1bc0a6f9113c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "af627ee89c76ed54ba2df8db942970cb24c5a3aa8a23cfb4b7e3795c6188f8b9",
+      "tokens_in": 256,
+      "tokens_out": 140,
+      "latency_s": 3.0341658000006646,
+      "diagram_hash": "1abfa807886d4da0b838198afd2fa8d53f4ff4bbf9a24be499dcad71ee5f176e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_71fee889d4",
+      "request_id": "req_413c1a98dbc842c8876e43a0a64863bf",
+      "response_text": "```plantuml\n@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "fb09729a2513b2e2231c19b604c0f5c1bd7e8cfe7d36fcb09cfa2c48d802d796",
+      "tokens_in": 498,
+      "tokens_out": 49,
+      "latency_s": 1.5493053000000145,
+      "diagram_hash": "1abfa807886d4da0b838198afd2fa8d53f4ff4bbf9a24be499dcad71ee5f176e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_e6f0f736deb24bd6b759389c1d9fc3d4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "06d69e053253d2acd28d5e5a87f2d4b1d860a80535c68ff636368a20deec04a8",
+      "tokens_in": 256,
+      "tokens_out": 151,
+      "latency_s": 3.18633090000003,
+      "diagram_hash": "ab5903bc713304db334521c9391d21f07408b03e5310fd827f9af38e25befbdb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_71fee889d4",
+      "request_id": "req_af915f3d8b7d47b9acdba83324dc3873",
+      "response_text": "```plantuml\n@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "efd228f3c0ebba94b5bc4646a206761b6b6d73103843fdfa2e24614b95f90dbb",
+      "tokens_in": 509,
+      "tokens_out": 90,
+      "latency_s": 1.7145619000002625,
+      "diagram_hash": "ab5903bc713304db334521c9391d21f07408b03e5310fd827f9af38e25befbdb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5cda2975d0894d6d95a0a89594e2832c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki 1..* olarak tanımlanmış, bu da Order nesnesinin en az bir OrderItem'a sahip olmasını sağlamıyor.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki 1..* olarak tanımlanmış, bu da Order nesnesinin en az bir OrderItem'a sahip olmasını sağlamıyor."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2718,
+  "tokens_out": 693,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Volunteer {\n  +id: String\n  +age: Integer\n}\nclass Shift {\n  +id: String\n}\nclass SchedulingService {\n  +id: String\n}\nclass Activity {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nVolunteer \"1\" --> \"0..*\" Shift\nShift \"0..*\" --> \"1\" SchedulingService\nSchedulingService \"1\" *-- \"1..*\" Activity\nVolunteer \"0..*\" --> \"0..*\" Activity\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 19.189348200000495,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "volunteer",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "volunteer",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 19.196515900000122,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

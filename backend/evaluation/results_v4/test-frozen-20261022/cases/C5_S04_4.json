@@ -1,0 +1,266 @@
+{
+  "case_id": "S04",
+  "dataset": "shared",
+  "srs": "The NotificationService sends user notifications.",
+  "input_plantuml": "@startuml\n@enduml",
+  "gold": null,
+  "defect_ids": [
+    "empty_diagram"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new Exception(\"Age must be at least 18\")\n        }\n    }\n}\n\nclass Order {\n    + Order() {\n        if (orderItems.isEmpty()) {\n            throw new Exception(\"Order must contain at least one OrderItem\")\n        }\n    }\n}\n\nclass OrderItem {\n}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml",
+  "output_sha256": "5a9f81cff4c343b06e40d37d62e37dff861b4ea400bfe0183311eb9e2446f9ae",
+  "input_sha256": "bc3067db95c1df5ebcc575eff5ea35c53e323526fad9946c4e623b4b6203e09e",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 2,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "76fd7d5f11357ff57c160abc07c54b8548dee1ddd1e0600da67085758aa506da",
+      "tokens_in": 273,
+      "tokens_out": 69,
+      "latency_s": 2.2300277000003916,
+      "diagram_hash": "bc3067db95c1df5ebcc575eff5ea35c53e323526fad9946c4e623b4b6203e09e",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f4fc07d4271b41e2b250032a82290294",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b9d67f5838a3c2d35554120ec060709b5484e5d14915650e6c0dbd49d7df6ef1",
+      "tokens_in": 169,
+      "tokens_out": 58,
+      "latency_s": 1.9175279000000955,
+      "diagram_hash": "e74979f765269be3b624158dd9d46d3f7d4bf8abdd19cb5bb2defd71fe782f71",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_87d6b828cda64a1fa6fc288572b1e7be",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"0..*\" OrderItem : contains >\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"0..*\" OrderItem : contains >\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "33cab52ff036e291fa991f1c4fd790c0649ada49b86a1920a21b92f36c8ab89a",
+      "tokens_in": 319,
+      "tokens_out": 46,
+      "latency_s": 1.5522963000003074,
+      "diagram_hash": "e74979f765269be3b624158dd9d46d3f7d4bf8abdd19cb5bb2defd71fe782f71",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.11764705882352941
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1111111111111111
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9bb69395228241778e7ba350f5659794",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce the age constraint (age >= 18)\",\"Order class does not ensure at least one OrderItem exists\"],\"categories\":[\"UML Constraints\",\"Business Logic\"]}",
+      "critic_errors": [
+        "User class does not enforce the age constraint (age >= 18)",
+        "Order class does not ensure at least one OrderItem exists"
+      ],
+      "critic_categories": [
+        "UML Constraints",
+        "Business Logic"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "63547be77fece5705a0cde5e4b9be39f7a294ee74be522cfaa6896cc23977477",
+      "tokens_in": 150,
+      "tokens_out": 124,
+      "latency_s": 3.1175901999995403,
+      "diagram_hash": "5a9f81cff4c343b06e40d37d62e37dff861b4ea400bfe0183311eb9e2446f9ae",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_4c55ec580f",
+      "request_id": "req_72b4cf695f434003b0e9e4663b645e8c",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new Exception(\"Age must be at least 18\")\n        }\n    }\n}\n\nclass Order {\n    + Order() {\n        if (orderItems.isEmpty()) {\n            throw new Exception(\"Order must contain at least one OrderItem\")\n        }\n    }\n}\n\nclass OrderItem {\n}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new Exception(\"Age must be at least 18\")\n        }\n    }\n}\n\nclass Order {\n    + Order() {\n        if (orderItems.isEmpty()) {\n            throw new Exception(\"Order must contain at least one OrderItem\")\n        }\n    }\n}\n\nclass OrderItem {\n}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "478ba2422e4a518697901a0771679e51bf68e745a4a43fa2472a14256a3b35a3",
+      "tokens_in": 385,
+      "tokens_out": 12,
+      "latency_s": 1.0064360000005763,
+      "diagram_hash": "5a9f81cff4c343b06e40d37d62e37dff861b4ea400bfe0183311eb9e2446f9ae",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.28
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.2692307692307692
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_636abfd3736f41dd99d9970bd829dc8e",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 5,
+  "tokens_in": 1296,
+  "tokens_out": 309,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Hic sinif tanimlanmamis",
+      "Hic sinif tanimlanmamis"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "IHLAL",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": false,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 11.062075800000457,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 11.062131600000612,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

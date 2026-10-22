@@ -1,0 +1,680 @@
+{
+  "case_id": "M19_1",
+  "scenario_id": "M19",
+  "srs": "The museum tickets system records Visitor, Ticket, TicketService, and Exhibition; each has an id attribute. Each Visitor can have zero or more Ticket records, and each Ticket belongs to exactly one Visitor. Each Ticket uses exactly one TicketService, and each TicketService serves zero or more Ticket records. Each TicketService manages one or more Exhibition records by composition, and each Exhibition belongs to exactly one TicketService. Each Visitor can reference zero or more Exhibition records, and each Exhibition can be referenced by zero or more Visitor records.",
+  "gold": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defective": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1919,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1919,
+      "selected_class": "TicketService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [18..120] // Age constraint updated to enforce minimum age of 18\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "output_sha256": "4ac00706d18445a3d0abab1810348d5c270217de5e9e829cd0ad80ab8d670553",
+  "input_sha256": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "86f00cc02f6f2b970abfc4a42b67efb85ab4e33d4191f0517ea269fe234c7bb6",
+      "tokens_in": 462,
+      "tokens_out": 82,
+      "latency_s": 3.7017376000003424,
+      "diagram_hash": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_28bdc106dc7b443686c8e43654811def",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Visitor nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Visitor nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "51d229178684df44dad2801d35d7782310cac29b8fe22883b9ea1c8695992e7b",
+      "tokens_in": 251,
+      "tokens_out": 110,
+      "latency_s": 2.480589400000099,
+      "diagram_hash": "6f082ef0e86d2221e4ee7fe97ae09e8f8343adba40167f5ec0f77da8766f9281",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_60ef61d00a4047628c25f03b07556c95",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0f44980225fe31f5fa3e94c4ea42a3f3294730d5b6a0c4788c4109d71445f83f",
+      "tokens_in": 468,
+      "tokens_out": 77,
+      "latency_s": 1.9836011999996117,
+      "diagram_hash": "6f082ef0e86d2221e4ee7fe97ae09e8f8343adba40167f5ec0f77da8766f9281",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_2c0d6582aea248599ee3d76b784382ae",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "3097677a65ee8e69b4e95f7fd92b678ded420bd36b6bda7c36a68a5bec1e000d",
+      "tokens_in": 267,
+      "tokens_out": 119,
+      "latency_s": 3.081645999999637,
+      "diagram_hash": "e2a616691e5942c1bfea6c5928cb6ada76b0c3628bb25514ea8db5c3e25edbd7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_995cf94d36864b79868cb6955a1d6865",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [1..120] // Age constraint added\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2fb77b3f613adea65b9f03eac8a98356dad8af6b9d3ac1bf5608112a3caaf1c6",
+      "tokens_in": 477,
+      "tokens_out": 79,
+      "latency_s": 2.9979878000003737,
+      "diagram_hash": "e2a616691e5942c1bfea6c5928cb6ada76b0c3628bb25514ea8db5c3e25edbd7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.045454545454545456
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_0149234488834ef2a7adebaf547fcd82",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: Visitor nesnesinin age özelliği için 18 yaş kısıtlaması uygulanmamış.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: Visitor nesnesinin age özelliği için 18 yaş kısıtlaması uygulanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "512466fd3c299553bf69c2a8524d52e208701256e86f428dab96fe7c07860e6a",
+      "tokens_in": 285,
+      "tokens_out": 126,
+      "latency_s": 2.6627846999999747,
+      "diagram_hash": "4ac00706d18445a3d0abab1810348d5c270217de5e9e829cd0ad80ab8d670553",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_03d05814e0df453995a44903825df8ea",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [18..120] // Age constraint updated to enforce minimum age of 18\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [18..120] // Age constraint updated to enforce minimum age of 18\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a4866c30c51c2844d8cc2bd1e6db8f9bd219b6b3d2ed1c951787cd2bf60c2f59",
+      "tokens_in": 484,
+      "tokens_out": 59,
+      "latency_s": 1.6563596000005418,
+      "diagram_hash": "4ac00706d18445a3d0abab1810348d5c270217de5e9e829cd0ad80ab8d670553",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.07692307692307693
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8a98cb973af24eb7974dedfa50a05bf5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için gerekli olan 18 yaş sınırı, UML'de doğru bir şekilde uygulanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için gerekli olan 18 yaş sınırı, UML'de doğru bir şekilde uygulanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2694,
+  "tokens_out": 652,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer [18..120] // Age constraint updated to enforce minimum age of 18\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.731379000000743,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        "ticketservice"
+      ],
+      "spurious": [
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "exhibition",
+          "ticketservice"
+        ],
+        [
+          "ticket",
+          "ticketservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "exhibition",
+          "unspecifiedentity"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice"
+        ],
+        [
+          "ticketservice",
+          "exhibition"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "ticketservice",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "visitor",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.08333333333333348
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        "ticketservice"
+      ],
+      "spurious": [
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "exhibition",
+          "ticketservice"
+        ],
+        [
+          "ticket",
+          "ticketservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "exhibition",
+          "unspecifiedentity"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice"
+        ],
+        [
+          "ticketservice",
+          "exhibition"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "ticketservice",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "visitor",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.08333333333333348
+  },
+  "end_to_end_seconds": 20.737891099999615,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

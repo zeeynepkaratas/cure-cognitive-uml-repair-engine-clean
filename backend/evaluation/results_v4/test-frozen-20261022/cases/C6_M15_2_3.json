@@ -1,0 +1,517 @@
+{
+  "case_id": "M15_2",
+  "scenario_id": "M15",
+  "srs": "The hotel reservations system records Guest, Reservation, ReservationService, and Room; each has an id attribute. Each Guest can have zero or more Reservation records, and each Reservation belongs to exactly one Guest. Each Reservation uses exactly one ReservationService, and each ReservationService serves zero or more Reservation records. Each ReservationService manages one or more Room records by composition, and each Room belongs to exactly one ReservationService. Each Guest can reference zero or more Room records, and each Room can be referenced by zero or more Guest records.",
+  "gold": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n@enduml",
+  "defective": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1880,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1880,
+      "selected_class": "Guest"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1881,
+      "selected_class": "ReservationService",
+      "added_class": "Spacecraft"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"0..*\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"0..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml",
+  "output_sha256": "5259244918653a6cd2b713b30916940b425376d94a799c9490f269fba1122ee5",
+  "input_sha256": "d8f11b15f872bd9d54deef27ba5c3b20938550e815f8bbc50177f1f4d2845cd3",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7d488fb9c4c2b2ac7545be635f067c637ef4449605ca73288d771f648ee5a126",
+      "tokens_in": 378,
+      "tokens_out": 53,
+      "latency_s": 1.7961161999996875,
+      "diagram_hash": "d8f11b15f872bd9d54deef27ba5c3b20938550e815f8bbc50177f1f4d2845cd3",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_27c39585fc724f8eaa0dbd6f00540d94",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The multiplicity from Reservation to ReservationService is incorrect. It should be '1' instead of '0..*'. Each Reservation must belong to exactly one ReservationService.\"],\"categories\":[\"UML Structure\",\"Multiplicity Constraints\"]}",
+      "critic_errors": [
+        "The multiplicity from Reservation to ReservationService is incorrect. It should be '1' instead of '0..*'. Each Reservation must belong to exactly one ReservationService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Constraints"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1cbad8ecfd4aef872f8cfedb401912fba94536a04667839a07d2ada3f4c68c63",
+      "tokens_in": 197,
+      "tokens_out": 100,
+      "latency_s": 3.1469388999998955,
+      "diagram_hash": "0458a6c9b78923441c5b5ccbb2d0691d218f32a4693f9f69cfb12593565f83d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_ae7ab50386104c718797164a18398c36",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"0..*\" --> \"0..*\" Room\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "70f2947855fc43e0968c337be20e7f8bea65d3d3061cec65ee226451791de029",
+      "tokens_in": 380,
+      "tokens_out": 63,
+      "latency_s": 1.6747049999999035,
+      "diagram_hash": "0458a6c9b78923441c5b5ccbb2d0691d218f32a4693f9f69cfb12593565f83d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f84d11d4eb2b4d8b84542e2dfa32e948",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The multiplicity from ReservationService to Room is incorrect. It should be '1..*' instead of '1..*'.\",\"The relationship between Guest and Room is not clearly defined in terms of ownership or reference.\"],\"categories\":[\"UML Structure\",\"Multiplicity Constraints\"]}",
+      "critic_errors": [
+        "The multiplicity from ReservationService to Room is incorrect. It should be '1..*' instead of '1..*'.",
+        "The relationship between Guest and Room is not clearly defined in terms of ownership or reference."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Constraints"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "8cb1f6afa5838b0b3b901cc77b3a32dd7de943a46a9a8d990b85811639c4b8f4",
+      "tokens_in": 210,
+      "tokens_out": 99,
+      "latency_s": 2.463240600000063,
+      "diagram_hash": "b2e306094a253d0acd6b480fde1c484d9fd4de7bbd81f7c5db0a308ecb968f96",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_8180fbd340d94afe9a9612bd2e5be773",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"1..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4ffa0a587eb31fd94632979b52ec29965ef8d65495a77c0f048258b14558de57",
+      "tokens_in": 379,
+      "tokens_out": 48,
+      "latency_s": 1.4996836999998777,
+      "diagram_hash": "b2e306094a253d0acd6b480fde1c484d9fd4de7bbd81f7c5db0a308ecb968f96",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8421a6e076",
+      "request_id": "req_22e48bbd8a4645ef8a98cdba0445a6b8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The multiplicity of the association between ReservationService and Room is incorrect. It should allow for zero or more Rooms, not just one or more.\"],\"categories\":[\"UML Structure\",\"Multiplicity Constraints\"]}",
+      "critic_errors": [
+        "The multiplicity of the association between ReservationService and Room is incorrect. It should allow for zero or more Rooms, not just one or more."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Constraints"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "ae8e69d43bdcf9c1caa0866858191db828bd3f56b40111ec324f7f05c10ac364",
+      "tokens_in": 193,
+      "tokens_out": 99,
+      "latency_s": 2.66874689999986,
+      "diagram_hash": "5259244918653a6cd2b713b30916940b425376d94a799c9490f269fba1122ee5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_7061c34cfe6a46bca0a4b2cabc4db65b",
+      "response_text": "```plantuml\n@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"0..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"0..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c3517cd27d3dc83f3e1bf382ed5ba5556e03a47d2caf228f64d377037cc77014",
+      "tokens_in": 379,
+      "tokens_out": 12,
+      "latency_s": 0.7917445000002772,
+      "diagram_hash": "5259244918653a6cd2b713b30916940b425376d94a799c9490f269fba1122ee5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8421a6e076",
+      "request_id": "req_0bfd060026dc4f098ee3b79cf26152d6",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2116,
+  "tokens_out": 474,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Guest {\n  +id: String\n}\nclass Reservation {\n  +id: String\n}\nclass ReservationService {\n  +id: String\n}\nclass Room {\n  +id: String\n}\nGuest \"1\" --> \"0..*\" Reservation\nReservation \"1\" --> \"1\" ReservationService\nReservationService \"1\" *-- \"0..*\" Room\nGuest \"1\" --> \"0..*\" Room\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 16.084387600000355,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "guest",
+          "room",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "reservation",
+          "reservationservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reservationservice",
+          "room",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "guest",
+          "room",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "reservation",
+          "reservationservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "reservationservice",
+          "room",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "guest",
+          "room",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "reservation",
+          "reservationservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reservationservice",
+          "room",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "guest",
+          "room",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "reservation",
+          "reservationservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "reservationservice",
+          "room",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 16.09068709999974,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

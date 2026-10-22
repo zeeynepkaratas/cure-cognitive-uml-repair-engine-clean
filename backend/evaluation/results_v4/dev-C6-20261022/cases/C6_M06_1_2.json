@@ -1,0 +1,348 @@
+{
+  "case_id": "M06_1",
+  "scenario_id": "M06",
+  "srs": "The court liaison system records Constable, PoliceStation, Court, and CourtInteraction; each has an id attribute. Each Constable can have zero or more PoliceStation records, and each PoliceStation belongs to exactly one Constable. Each PoliceStation uses exactly one Court, and each Court serves zero or more PoliceStation records. Each Court manages one or more CourtInteraction records by composition, and each CourtInteraction belongs to exactly one Court. Each Constable can reference zero or more CourtInteraction records, and each CourtInteraction can be referenced by zero or more Constable records.",
+  "gold": "@startuml\nclass Constable {\n  +id: String\n}\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nConstable \"1\" --> \"0..*\" PoliceStation\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\nConstable \"0..*\" --> \"0..*\" CourtInteraction\n@enduml",
+  "defective": "@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1789,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1789,
+      "selected_class": "Constable"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nclass Constable {\n  +id: String\n}\n\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\nConstable \"1\" --> \"0..*\" PoliceStation\nConstable \"1\" --> \"0..*\" CourtInteraction\n\n@enduml",
+  "output_sha256": "ce7e6a523fcab8fc93e0d70161a79142393cbc45d88fa3aeda78f85d7005c15f",
+  "input_sha256": "682ae9ff33244620a3138f8158bc8398591310ac0fbe0481eacdf3dcfb7963c0",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b5b4d029f137d04bdb6047db0e8a6176d7867a493d54100371aef937a5e0110a",
+      "tokens_in": 359,
+      "tokens_out": 55,
+      "latency_s": 1.2861696000036318,
+      "diagram_hash": "682ae9ff33244620a3138f8158bc8398591310ac0fbe0481eacdf3dcfb7963c0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_38c04553ad7e47b7bea9e2a477e53faf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Constable class is missing from the UML diagram.\",\"Relationship between Constable and PoliceStation is not represented correctly.\",\"Relationship between Constable and CourtInteraction is not represented in the UML.\"],\"categories\":[\"UML Structure\",\"Class Relationships\"]}",
+      "critic_errors": [
+        "Constable class is missing from the UML diagram.",
+        "Relationship between Constable and PoliceStation is not represented correctly.",
+        "Relationship between Constable and CourtInteraction is not represented in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b84c1dfb4aeb77ef13bc64a59981abd4575f594eba71334ef2658575eb650d58",
+      "tokens_in": 172,
+      "tokens_out": 106,
+      "latency_s": 2.1198646999982884,
+      "diagram_hash": "ce7e6a523fcab8fc93e0d70161a79142393cbc45d88fa3aeda78f85d7005c15f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_07d47c81e6",
+      "request_id": "req_841bd4547f554471b5a3f4a690715a2d",
+      "response_text": "```plantuml\n@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nclass Constable {\n  +id: String\n}\n\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\nConstable \"1\" --> \"0..*\" PoliceStation\nConstable \"1\" --> \"0..*\" CourtInteraction\n\n@enduml\n```",
+      "output_plantuml": "@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nclass Constable {\n  +id: String\n}\n\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\nConstable \"1\" --> \"0..*\" PoliceStation\nConstable \"1\" --> \"0..*\" CourtInteraction\n\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2c42d753489332c47d2b2cd2aaa989244e922992b07a6d1ecc13477de73ff67b",
+      "tokens_in": 396,
+      "tokens_out": 12,
+      "latency_s": 0.9299786000046879,
+      "diagram_hash": "ce7e6a523fcab8fc93e0d70161a79142393cbc45d88fa3aeda78f85d7005c15f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_f246abca897849c88fdf5b1857013dcc",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 927,
+  "tokens_out": 173,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\n\nclass PoliceStation {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass CourtInteraction {\n  +id: String\n}\nclass Constable {\n  +id: String\n}\n\nPoliceStation \"0..*\" --> \"1\" Court\nCourt \"1\" *-- \"1..*\" CourtInteraction\nConstable \"1\" --> \"0..*\" PoliceStation\nConstable \"1\" --> \"0..*\" CourtInteraction\n\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 5.403413099993486,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.33333333333333337,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.33333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "constable",
+          "courtinteraction",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "constable",
+          "courtinteraction",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.08333333333333337,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.33333333333333337,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.33333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "constable",
+          "courtinteraction",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "constable",
+          "courtinteraction",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.08333333333333337,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  }
+}

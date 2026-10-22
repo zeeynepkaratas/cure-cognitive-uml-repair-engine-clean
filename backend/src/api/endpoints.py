@@ -505,6 +505,8 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
     elapsed = time.perf_counter() - started
     success = (
         state["agent_status"] == "ok"
+        and state["terminated_by"] == "accepted"
+        and not state["regression"]
         and final_compile["project_valid"]
         and final_compile["compiler_valid"] is True
     )
@@ -513,6 +515,7 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
         "project_valid": final_compile["project_valid"],
         "compiler_valid": final_compile["compiler_valid"],
         "critic_valid": state["critic_valid"],
+        "repair_accepted": success,
         "agent_status": state["agent_status"],
         "agent_error": state["agent_error"],
         "terminated_by": state["terminated_by"],

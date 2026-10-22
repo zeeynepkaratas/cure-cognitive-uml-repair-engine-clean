@@ -1,0 +1,544 @@
+{
+  "case_id": "M01_1",
+  "scenario_id": "M01",
+  "srs": "The complaint registration system records Citizen, Complaint, RegistrationDesk, and PoliceOfficer; each has an id attribute. Each Citizen can have zero or more Complaint records, and each Complaint belongs to exactly one Citizen. Each Complaint uses exactly one RegistrationDesk, and each RegistrationDesk serves zero or more Complaint records. Each RegistrationDesk manages one or more PoliceOfficer records by composition, and each PoliceOfficer belongs to exactly one RegistrationDesk. Each Citizen can reference zero or more PoliceOfficer records, and each PoliceOfficer can be referenced by zero or more Citizen records.",
+  "gold": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "defective": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1739,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1739,
+      "selected_class": "Complaint"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" *-- \"1\" RegistrationDesk\n@enduml",
+  "output_sha256": "e9119b212613b86db0f97d701c2962aa6f5d6f40127348e2d267eaa76bbfbbd1",
+  "input_sha256": "f1f987b2af411d2521fd9c0a512c1aa4abc53c88dd0aa6811efa56fb5153b7d5",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "50713ea2eb101791a33a69c8eb888b9d0908cd6a4c49fbc325304a58180ff498",
+      "tokens_in": 356,
+      "tokens_out": 117,
+      "latency_s": 1.9187699000030989,
+      "diagram_hash": "f1f987b2af411d2521fd9c0a512c1aa4abc53c88dd0aa6811efa56fb5153b7d5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5b11eb0752a34917838eddea98596ebb",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not include the Complaint class, which is essential for the complaint registration system as per the requirement.\",\"The relationship between Complaint and Citizen is not represented in the UML diagram, violating the requirement that each Complaint belongs to exactly one Citizen.\",\"The relationship between Complaint and RegistrationDesk is missing, which is necessary since each Complaint uses exactly one RegistrationDesk.\",\"The UML does not show the relationship between RegistrationDesk and Complaint, which states that each RegistrationDesk serves zero or more Complaint records.\"],\"categories\":[\"Missing Class\",\"Missing Relationships\",\"Incorrect Associations\"]}",
+      "critic_errors": [
+        "The UML does not include the Complaint class, which is essential for the complaint registration system as per the requirement.",
+        "The relationship between Complaint and Citizen is not represented in the UML diagram, violating the requirement that each Complaint belongs to exactly one Citizen.",
+        "The relationship between Complaint and RegistrationDesk is missing, which is necessary since each Complaint uses exactly one RegistrationDesk.",
+        "The UML does not show the relationship between RegistrationDesk and Complaint, which states that each RegistrationDesk serves zero or more Complaint records."
+      ],
+      "critic_categories": [
+        "Missing Class",
+        "Missing Relationships",
+        "Incorrect Associations"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b85073b85a33744112566ca734638da80e42dbd5d6b6be92b37d6ea590722b7c",
+      "tokens_in": 235,
+      "tokens_out": 115,
+      "latency_s": 2.0952218000020366,
+      "diagram_hash": "e5544bbc0cddf17af772c6e3738391557bb08edbd1c0e271cc1d486f285fa209",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ea66447ca3",
+      "request_id": "req_ff8c5296335549d8b62ea853057e436c",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1\" --> \"1\" RegistrationDesk\nRegistrationDesk \"0..*\" <-- \"1..*\" Complaint\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1\" --> \"1\" RegistrationDesk\nRegistrationDesk \"0..*\" <-- \"1..*\" Complaint\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "68f2c831aed6079ad0720a3a59db5c02cdbe7ea793d826078cf0498cfc51e911",
+      "tokens_in": 400,
+      "tokens_out": 50,
+      "latency_s": 1.144964599996456,
+      "diagram_hash": "e5544bbc0cddf17af772c6e3738391557bb08edbd1c0e271cc1d486f285fa209",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_f05e17e116b54a3f905071c2b3510b9b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between RegistrationDesk and Complaint is incorrectly represented. It should be a one-to-many relationship from RegistrationDesk to Complaint, not the other way around.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between RegistrationDesk and Complaint is incorrectly represented. It should be a one-to-many relationship from RegistrationDesk to Complaint, not the other way around."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "6c13aacdbace2b76d36eb22910b236b6c7b317f689a29d5fbd5daec2eec2ed92",
+      "tokens_in": 211,
+      "tokens_out": 116,
+      "latency_s": 1.5258035000006203,
+      "diagram_hash": "ad128e63eec8f34ece4ccb8359d80833aaaa2c44f611bc69936f7aff8aaf66cd",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_d29d048bb10144ed9429eb332cc94b54",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"0..*\" <-- \"1..*\" Complaint\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"0..*\" <-- \"1..*\" Complaint\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e459e8fa43311af1e08cbe020ec77170446cdace9714df4dcf47d7817c4b737b",
+      "tokens_in": 401,
+      "tokens_out": 41,
+      "latency_s": 1.0276447999931406,
+      "diagram_hash": "ad128e63eec8f34ece4ccb8359d80833aaaa2c44f611bc69936f7aff8aaf66cd",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_393b83a8523d442d8ce13bfd2e84a803",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between RegistrationDesk and Complaint is incorrectly represented. It should be a composition relationship, not an aggregation.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The association between RegistrationDesk and Complaint is incorrectly represented. It should be a composition relationship, not an aggregation."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4708588b0d712eae056ab357faeea41e74de5e515eb2c8917526bd83f72ac9ee",
+      "tokens_in": 203,
+      "tokens_out": 104,
+      "latency_s": 1.4896911999967415,
+      "diagram_hash": "e9119b212613b86db0f97d701c2962aa6f5d6f40127348e2d267eaa76bbfbbd1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_b4052430e38e49558deae78c82d84ca4",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" *-- \"1\" RegistrationDesk\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" *-- \"1\" RegistrationDesk\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5891326dbc78b1316df3be6eb3baf1247e4723c53b490b8de17f3d9d24f807d1",
+      "tokens_in": 389,
+      "tokens_out": 89,
+      "latency_s": 1.5178234999912092,
+      "diagram_hash": "e9119b212613b86db0f97d701c2962aa6f5d6f40127348e2d267eaa76bbfbbd1",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_d10f0d83b21f4363af9bc825bad00c24",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Complaint and RegistrationDesk is incorrectly defined as '1..*' instead of '1' to indicate that each Complaint uses exactly one RegistrationDesk.\",\"The relationship between RegistrationDesk and PoliceOfficer is defined as '1' to '1..*', which is correct, but the multiplicity should be clarified in terms of the composition relationship.\"],\"categories\":[\"UML Structure\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The relationship between Complaint and RegistrationDesk is incorrectly defined as '1..*' instead of '1' to indicate that each Complaint uses exactly one RegistrationDesk.",
+        "The relationship between RegistrationDesk and PoliceOfficer is defined as '1' to '1..*', which is correct, but the multiplicity should be clarified in terms of the composition relationship."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2195,
+  "tokens_out": 632,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Citizen {\n  +id: String\n}\n\nclass RegistrationDesk {\n  +id: String\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass Complaint {\n  +id: String\n}\n\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nComplaint \"1\" --> \"1\" Citizen\nComplaint \"1..*\" *-- \"1\" RegistrationDesk\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.557081599996309,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.08333333333333337,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.16666666666666663,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition",
+          "1..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.16666666666666663,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.08333333333333337,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.16666666666666663,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "complaint",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "citizen",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition",
+          "1..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.16666666666666663,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  }
+}

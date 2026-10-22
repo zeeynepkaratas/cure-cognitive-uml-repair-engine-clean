@@ -1,0 +1,682 @@
+{
+  "case_id": "M02_1",
+  "scenario_id": "M02",
+  "srs": "The police intake system records Complainant, IntakeForm, RegistrationModule, and PoliceUnit; each has an id attribute. Each Complainant can have zero or more IntakeForm records, and each IntakeForm belongs to exactly one Complainant. Each IntakeForm uses exactly one RegistrationModule, and each RegistrationModule serves zero or more IntakeForm records. Each RegistrationModule manages one or more PoliceUnit records by composition, and each PoliceUnit belongs to exactly one RegistrationModule. Each Complainant can reference zero or more PoliceUnit records, and each PoliceUnit can be referenced by zero or more Complainant records.",
+  "gold": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "defective": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" PoliceUnit\n@enduml",
+  "defect_ids": [
+    "D3"
+  ],
+  "seed": 1749,
+  "injections": [
+    {
+      "defect_id": "D3",
+      "seed": 1749,
+      "selected_class": "IntakeForm",
+      "original_relation": [
+        "Complainant",
+        "PoliceUnit",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" PoliceUnit\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\nIntakeForm \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "output_sha256": "95242d74b26cf7a7d88a70fb3ea9ecec46f4a19b6a89ec015eca69cdf27a1010",
+  "input_sha256": "1ae92a3223bac8c4dd4be594cbc37e723014b9e2fe6ff0b48cc2d04c76dfb5d9",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bcc5680d7917494ad019990706796e3610a7ecd9f0cd4dccc1a86b7d16d15771",
+      "tokens_in": 615,
+      "tokens_out": 78,
+      "latency_s": 1.3207590999954846,
+      "diagram_hash": "1ae92a3223bac8c4dd4be594cbc37e723014b9e2fe6ff0b48cc2d04c76dfb5d9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_20329fcc684948df82280e7cbb37e202",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"RegistrationModule should have a multiplicity of \\\"0..*\\\" for PoliceUnit instead of \\\"1..*\\\" to reflect that it can manage zero or more PoliceUnit records.\",\"Complainant should have a relationship with PoliceUnit to reflect that it can reference zero or more PoliceUnit records.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "RegistrationModule should have a multiplicity of \"0..*\" for PoliceUnit instead of \"1..*\" to reflect that it can manage zero or more PoliceUnit records.",
+        "Complainant should have a relationship with PoliceUnit to reflect that it can reference zero or more PoliceUnit records."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "821e43152f7a492167774bca2a6670489e6388af26584bc338c8c54749039fc6",
+      "tokens_in": 534,
+      "tokens_out": 115,
+      "latency_s": 1.498749600010342,
+      "diagram_hash": "18f46d4938896589ca9e967c26f675b9b30942285cdc65e86e449cca2d9cffc5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b1d2088886",
+      "request_id": "req_6017c77551d84387a3ec3d48426b5964",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"0..*\" *-- \"1..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"0..*\" *-- \"1..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "83a6cc82670fe4366ec81a600254ad348fa59e5603e2561e2612ff07b8d9d1ea",
+      "tokens_in": 631,
+      "tokens_out": 93,
+      "latency_s": 1.677550100008375,
+      "diagram_hash": "18f46d4938896589ca9e967c26f675b9b30942285cdc65e86e449cca2d9cffc5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_7c724120edc84ddab22d59513a4a85d1",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"RegistrationModule to PoliceUnit relationship is incorrectly defined as '0..* *-- 1..*' instead of '1 *-- 0..*' to reflect composition correctly.\",\"IntakeForm to RegistrationModule relationship should be '1' to '1' instead of '0..*' to '1' as each IntakeForm uses exactly one RegistrationModule.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "RegistrationModule to PoliceUnit relationship is incorrectly defined as '0..* *-- 1..*' instead of '1 *-- 0..*' to reflect composition correctly.",
+        "IntakeForm to RegistrationModule relationship should be '1' to '1' instead of '0..*' to '1' as each IntakeForm uses exactly one RegistrationModule."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "add3a85b8b7458b51e8184974f89f494528162511b30989c6f2512ace277c274",
+      "tokens_in": 565,
+      "tokens_out": 113,
+      "latency_s": 1.6029152999981306,
+      "diagram_hash": "4b7cf9a4b12fb6760ab48f81eaebd07af988edaabee86e4599a2a7ecef6ef936",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b1d2088886",
+      "request_id": "req_38646ba30a9b4ecebe4c5bebe4132c4f",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2c8984e51cb1b79bad53eab36a94321f54d9ef6204d40f8aa7086d517d4bf8e0",
+      "tokens_in": 629,
+      "tokens_out": 62,
+      "latency_s": 1.3707333999918774,
+      "diagram_hash": "4b7cf9a4b12fb6760ab48f81eaebd07af988edaabee86e4599a2a7ecef6ef936",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_e4c16cdef19d4c2290ca534d3eb976db",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing associations between IntakeForm and PoliceUnit as per requirements.\",\"Missing multiplicity on the association between Complainant and PoliceUnit; it should reflect that each Complainant can reference zero or more PoliceUnit records.\"],\"categories\":[\"modeling errors\",\"association errors\"]}",
+      "critic_errors": [
+        "Missing associations between IntakeForm and PoliceUnit as per requirements.",
+        "Missing multiplicity on the association between Complainant and PoliceUnit; it should reflect that each Complainant can reference zero or more PoliceUnit records."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "association errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "0a4a0ebe437d50c1e1e41b61bbcc5c890779b1957f58780f04e4a4fe00de88c7",
+      "tokens_in": 532,
+      "tokens_out": 128,
+      "latency_s": 1.6492265000124462,
+      "diagram_hash": "95242d74b26cf7a7d88a70fb3ea9ecec46f4a19b6a89ec015eca69cdf27a1010",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b1d2088886",
+      "request_id": "req_cc6a95e427bb4b288c21a56be2212209",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\nIntakeForm \"0..*\" --> \"0..*\" PoliceUnit\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\nIntakeForm \"0..*\" --> \"0..*\" PoliceUnit\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "aa8da05ec35eb7564e2827ab87654aadc69ad997295a5b5bac43f60a5f5dfbf3",
+      "tokens_in": 644,
+      "tokens_out": 53,
+      "latency_s": 1.2266821000084747,
+      "diagram_hash": "95242d74b26cf7a7d88a70fb3ea9ecec46f4a19b6a89ec015eca69cdf27a1010",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_b06e8a6ac1ca4b10a8a43a6ddd80a845",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing associations between Complainant and PoliceUnit are not correctly represented as per requirements.\",\"IntakeForm to PoliceUnit relationship is not specified correctly according to requirements.\"],\"categories\":[\"modeling\",\"associations\",\"class relationships\"]}",
+      "critic_errors": [
+        "Missing associations between Complainant and PoliceUnit are not correctly represented as per requirements.",
+        "IntakeForm to PoliceUnit relationship is not specified correctly according to requirements."
+      ],
+      "critic_categories": [
+        "modeling",
+        "associations",
+        "class relationships"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 4150,
+  "tokens_out": 642,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\nIntakeForm \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 10.37094849999994,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.031746031746031855,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.031746031746031855,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.031746031746031855,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.4126984126984126,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.031746031746031855,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.031746031746031855,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.031746031746031855,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "intakeform",
+          "policeunit",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.4126984126984126,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

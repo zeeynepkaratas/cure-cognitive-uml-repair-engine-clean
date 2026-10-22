@@ -171,7 +171,7 @@ const RepairPage = ({ data, onNavigate }) => {
       clearInterval(phaseRef.current);
       setActivePhase(PHASES.length - 1);
       setResult(res);
-      setStatus(res.compiler_valid === true && res.project_valid === true && res.agent_status === 'ok' ? 'success' : 'failed');
+      setStatus(res.repair_accepted === true ? 'success' : 'failed');
     } catch (err) {
       clearInterval(phaseRef.current);
       setError(typeof err === 'string' ? err : 'Onarım sırasında beklenmedik bir hata oluştu.');

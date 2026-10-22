@@ -1,0 +1,561 @@
+{
+  "case_id": "M03_2",
+  "scenario_id": "M03",
+  "srs": "The investigation assignment system records Complaint, Investigation, Investigator, and Evidence; each has an id attribute. Each Complaint can have zero or more Investigation records, and each Investigation belongs to exactly one Complaint. Each Investigation uses exactly one Investigator, and each Investigator serves zero or more Investigation records. Each Investigator manages one or more Evidence records by composition, and each Evidence belongs to exactly one Investigator. Each Complaint can reference zero or more Evidence records, and each Evidence can be referenced by zero or more Complaint records.",
+  "gold": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "defective": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1760,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1760,
+      "selected_class": "Investigation",
+      "original_relation": [
+        "Complaint",
+        "Investigation",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\nOrder \"1\" --> \"0..*\" OrderItem // Order has multiple OrderItems\n@enduml",
+  "output_sha256": "40b9dcc84685c9518df82d60fad763368dc431c3efca98eb978ca48cab46c47a",
+  "input_sha256": "b39b52242f07186f4814f4040f5ada87ab0a6558277d6927d27cf2df540dc99c",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5bd24ac9b4fa8991ed171a506ea4403a073fb2a88b50c6062162469885ec26db",
+      "tokens_in": 455,
+      "tokens_out": 74,
+      "latency_s": 1.83383619999222,
+      "diagram_hash": "b39b52242f07186f4814f4040f5ada87ab0a6558277d6927d27cf2df540dc99c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5f153373d188445d9dfcc84c6cccda6f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1ed6032001566c503453efda8c3f4b8bd9a7e5dc0294bea0b25bf28950009c7e",
+      "tokens_in": 249,
+      "tokens_out": 133,
+      "latency_s": 2.5826569000055315,
+      "diagram_hash": "a2d6b39461f09c9106e4de5051d6050d6371374f98ee92cff26e925e93b5f027",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_438567d0ff",
+      "request_id": "req_5f7b48466ac5479eaf5512b8fc4b6d9d",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "51beda5ef9e7848524a0479361b050ba7e21da978e1ad5cdf21f49d275667d3c",
+      "tokens_in": 486,
+      "tokens_out": 77,
+      "latency_s": 1.3665514000022085,
+      "diagram_hash": "a2d6b39461f09c9106e4de5051d6050d6371374f98ee92cff26e925e93b5f027",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_7679ec195d364dba979e834145a565a7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e0e7233fbf8ea1bda8c7f21ff41802211caef012b3a05d74a6f308fbff51a1f5",
+      "tokens_in": 298,
+      "tokens_out": 166,
+      "latency_s": 2.211598199995933,
+      "diagram_hash": "79f6321dff9870242254191cfff4a0afafec2643f36370fb03fd9da5a3e96490",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_14584b13be98415990e8fbe4bf6c701e",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\nOrder \"1\" --> \"0..*\" OrderItem // Order has multiple OrderItems\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\nOrder \"1\" --> \"0..*\" OrderItem // Order has multiple OrderItems\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a4e0405a8b0c0c1ea5046078b34908b1e9ceec1847f91c40d3d08a6a583639b0",
+      "tokens_in": 519,
+      "tokens_out": 51,
+      "latency_s": 1.094440000000759,
+      "diagram_hash": "79f6321dff9870242254191cfff4a0afafec2643f36370fb03fd9da5a3e96490",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.14814814814814814
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.10344827586206896
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e9db6e80d5bb4d35ad2d68eb81f98b58",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "47d8340ec96ec05f2e4408a0b7a7f03cdff35a1c8662e802428a60c96b3ca78d",
+      "tokens_in": 289,
+      "tokens_out": 166,
+      "latency_s": 2.3407143999938853,
+      "diagram_hash": "40b9dcc84685c9518df82d60fad763368dc431c3efca98eb978ca48cab46c47a",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_665ba72c7a754cf8a116aa7c7014224d",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\nOrder \"1\" --> \"0..*\" OrderItem // Order has multiple OrderItems\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nclass User {\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\nOrder \"1\" --> \"0..*\" OrderItem // Order has multiple OrderItems\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ec12d64f929e897e4cf1266edfa3e6b9bfe3ddfd9a2ff3ea13c1d59ede179e86",
+      "tokens_in": 519,
+      "tokens_out": 79,
+      "latency_s": 1.394449599989457,
+      "diagram_hash": "40b9dcc84685c9518df82d60fad763368dc431c3efca98eb978ca48cab46c47a",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.18518518518518517
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_f7321cdc505949308466d626d3399734",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile olan bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2815,
+  "tokens_out": 746,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 15.76010139999562,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complaint",
+          "investigation",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "investigation",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complaint",
+          "investigation",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "investigation",
+          "inheritance",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complaint",
+          "investigation",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "investigation",
+          "inheritance"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complaint",
+          "investigation",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "complaint",
+          "investigation",
+          "inheritance",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

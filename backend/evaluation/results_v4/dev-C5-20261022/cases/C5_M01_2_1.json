@@ -1,0 +1,592 @@
+{
+  "case_id": "M01_2",
+  "scenario_id": "M01",
+  "srs": "The complaint registration system records Citizen, Complaint, RegistrationDesk, and PoliceOfficer; each has an id attribute. Each Citizen can have zero or more Complaint records, and each Complaint belongs to exactly one Citizen. Each Complaint uses exactly one RegistrationDesk, and each RegistrationDesk serves zero or more Complaint records. Each RegistrationDesk manages one or more PoliceOfficer records by composition, and each PoliceOfficer belongs to exactly one RegistrationDesk. Each Citizen can reference zero or more PoliceOfficer records, and each PoliceOfficer can be referenced by zero or more Citizen records.",
+  "gold": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "defective": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "defect_ids": [
+    "D2"
+  ],
+  "seed": 1740,
+  "injections": [
+    {
+      "defect_id": "D2",
+      "seed": 1740,
+      "selected_class": "Complaint",
+      "added_class": "MusicPlaylist"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml",
+  "output_sha256": "310857464e4545f5222a2204e8f5a86d1f041aaddf70ff101eddf5f208568de3",
+  "input_sha256": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dd74c74faea1c89b406a18fffae842fc4768aeb909823a26600aed0b3f3843ee",
+      "tokens_in": 471,
+      "tokens_out": 78,
+      "latency_s": 1.391844999991008,
+      "diagram_hash": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_eb5258339aff45f3b56eab52e504d055",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "808615b2f777a2596e034205118a6ed30339f2b9e8bf84a7bcbc374708811efa",
+      "tokens_in": 241,
+      "tokens_out": 162,
+      "latency_s": 2.386469200006104,
+      "diagram_hash": "357821ee0906ab17b38ed5aa4526e2223fa1b2c439bde82886d31013896353cb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_ae6ce39f335a4212a8cf1efbd3eeb927",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\nclass MusicPlaylist {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\nclass MusicPlaylist {}\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e931fd9642ba03a21ab8acbd9fb12decba51c183dcd4150a0f43caf488569791",
+      "tokens_in": 525,
+      "tokens_out": 50,
+      "latency_s": 1.3402222999866353,
+      "diagram_hash": "357821ee0906ab17b38ed5aa4526e2223fa1b2c439bde82886d31013896353cb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e632b87e6414497695d705bd1e75ccbf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9fc339e0ec165952d7bcd7adbb742f7a4532a95962f0b79c57f1f432c094feec",
+      "tokens_in": 279,
+      "tokens_out": 161,
+      "latency_s": 2.0751367999910144,
+      "diagram_hash": "310857464e4545f5222a2204e8f5a86d1f041aaddf70ff101eddf5f208568de3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_beb6a18c79",
+      "request_id": "req_f1dafcfaec294a0ebabe2c38cec7d980",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c1724c106d0bab5a10f7a3d6daeaf5ad4cff17841700321a0ab4af8cb792e412",
+      "tokens_in": 524,
+      "tokens_out": 50,
+      "latency_s": 1.2965727999981027,
+      "diagram_hash": "310857464e4545f5222a2204e8f5a86d1f041aaddf70ff101eddf5f208568de3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5cf15c12ad334bfd836df20a2ff5b23e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e99b70d46ae853d5f322da2ca6b12cafe6af229a28b9d3950ba60c026aaad375",
+      "tokens_in": 278,
+      "tokens_out": 161,
+      "latency_s": 2.0985788999969373,
+      "diagram_hash": "310857464e4545f5222a2204e8f5a86d1f041aaddf70ff101eddf5f208568de3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_beb6a18c79",
+      "request_id": "req_b070e2a1b9cb4eacb0c2dbf6313ea9ef",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c1724c106d0bab5a10f7a3d6daeaf5ad4cff17841700321a0ab4af8cb792e412",
+      "tokens_in": 524,
+      "tokens_out": 53,
+      "latency_s": 1.1070108999992954,
+      "diagram_hash": "310857464e4545f5222a2204e8f5a86d1f041aaddf70ff101eddf5f208568de3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_53c676d7887e485d811c8135b902e7fd",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"OCL Kuralı 2 ihlali\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 2 ihlali"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2842,
+  "tokens_out": 715,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nUser \"1\" --> \"1\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nclass MusicPlaylist {}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.42927469999995,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 8,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 8,
+      "missing": [],
+      "spurious": [
+        "musicplaylist",
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.22222222222222232,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 8,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "reference_count": 4,
+      "predicted_count": 8,
+      "missing": [],
+      "spurious": [
+        "musicplaylist",
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.22222222222222232,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.19999999999999996,
+    "reference_rel_typed": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.19999999999999996,
+    "reference_rel_multiplicity": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.19999999999999996,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  }
+}

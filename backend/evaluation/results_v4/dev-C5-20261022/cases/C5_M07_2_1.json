@@ -1,0 +1,716 @@
+{
+  "case_id": "M07_2",
+  "scenario_id": "M07",
+  "srs": "The prosecution records system records CourtInteraction, Entry, ProsecutionModule, and CaseFile; each has an id attribute. Each CourtInteraction can have zero or more Entry records, and each Entry belongs to exactly one CourtInteraction. Each Entry uses exactly one ProsecutionModule, and each ProsecutionModule serves zero or more Entry records. Each ProsecutionModule manages one or more CaseFile records by composition, and each CaseFile belongs to exactly one ProsecutionModule. Each CourtInteraction can reference zero or more CaseFile records, and each CaseFile can be referenced by zero or more CourtInteraction records.",
+  "gold": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" Entry\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "defective": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1800,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1800,
+      "selected_class": "ProsecutionModule",
+      "original_relation": [
+        "CourtInteraction",
+        "Entry",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml",
+  "output_sha256": "4a3b7e81db7fa65c0f0d5f99c22b338561c5ca23cbca07c9dd072a7ab8e312aa",
+  "input_sha256": "b8ade11304f8406a753b2d2155e140cc324751f78911bc1f92eec869f411a343",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "09dc0d2170e110c735ff5db66c7a7ea3a8c2c447503da16d9e99e5ae41796407",
+      "tokens_in": 485,
+      "tokens_out": 76,
+      "latency_s": 2.2496900999976788,
+      "diagram_hash": "b8ade11304f8406a753b2d2155e140cc324751f78911bc1f92eec869f411a343",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_ff7a5c6c30d546338117f4ed376a7d1b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesi tanımlanmamış.\",\"OCL Kuralı 2 ihlal edildi: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesi tanımlanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "64739087673e490b9b59ce43b16d3fa3b750928a0f6ec4497040161eb6e1dc2d",
+      "tokens_in": 243,
+      "tokens_out": 166,
+      "latency_s": 2.0356805000046734,
+      "diagram_hash": "53337926624c62f2e0fdbb78b656a6974d08653f8bb412cbfc8e97b0933a7201",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_89ea449874",
+      "request_id": "req_5511d8009f1c4a8991f6cf0ffd04d14d",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bc1d472146a284836606501d14dcc4474ab328e744b970c6a1921695215e936c",
+      "tokens_in": 539,
+      "tokens_out": 70,
+      "latency_s": 1.3045364999998128,
+      "diagram_hash": "53337926624c62f2e0fdbb78b656a6974d08653f8bb412cbfc8e97b0933a7201",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_df02fc5ed31543e9a6b9616e3fc53aba",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasında 0..* bağıntısı var.\"],\"categories\":[\"UML Validation\",\"OCL Rule Violation\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasında 0..* bağıntısı var."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Rule Violation"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c585ca594df37a5cd210735f15ca302a5188162baf15236b801bbd50ca4f7c8b",
+      "tokens_in": 317,
+      "tokens_out": 166,
+      "latency_s": 2.252780700000585,
+      "diagram_hash": "eed97895792a1cc425811c96050395fbf62cedb3518aac1e25f782451e41a5fb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a010e5d37f",
+      "request_id": "req_570a1b5786f340f3a64cd990b109b309",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "3bd4638d489a3538a13a476e6950fe3ff1a4cffc979c8d8816a2d0b358fc684c",
+      "tokens_in": 539,
+      "tokens_out": 50,
+      "latency_s": 1.055177600006573,
+      "diagram_hash": "eed97895792a1cc425811c96050395fbf62cedb3518aac1e25f782451e41a5fb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_654af71db67148ab8e33467a7c9789e2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7a5cd63d5b8c25865ca923c26b49b282a489086b8db896aa67c6a095be07701f",
+      "tokens_in": 283,
+      "tokens_out": 179,
+      "latency_s": 2.253711600002134,
+      "diagram_hash": "4a3b7e81db7fa65c0f0d5f99c22b338561c5ca23cbca07c9dd072a7ab8e312aa",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a010e5d37f",
+      "request_id": "req_c6700e5cdeed4c0ca5381e4c2d612be9",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ec5aedd9d1ff1d233607f08539314517305a145285455a797307915805c591d0",
+      "tokens_in": 552,
+      "tokens_out": 50,
+      "latency_s": 1.1709032999933697,
+      "diagram_hash": "4a3b7e81db7fa65c0f0d5f99c22b338561c5ca23cbca07c9dd072a7ab8e312aa",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_327cddacfb8e4a109849774269bcbf3d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2958,
+  "tokens_out": 757,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\nUser \"1\" --> \"1..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order : contains\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 14.935563799997908,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.15000000000000002,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.20454545454545459,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "association"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.15000000000000002,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.20454545454545459,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "association"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  }
+}

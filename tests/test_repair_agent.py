@@ -181,3 +181,33 @@ def test_explicit_prompt_revision_preserves_prior_templates():
     )
     with pytest.raises(ValueError):
         RepairConfig(prompt_revision="unknown")
+
+
+def test_sdk_connection_reused_and_closed_without_network(monkeypatch):
+    from types import SimpleNamespace
+    import sys
+    from ai_core.src.ai.repair_agent import OpenAIModelClient
+
+    created = []
+    calls = []
+    closed = []
+    response = SimpleNamespace(
+        choices=[SimpleNamespace(message=SimpleNamespace(content="ok"))], model="test", usage=None
+    )
+
+    def factory(**kwargs):
+        created.append(kwargs)
+        return SimpleNamespace(
+            chat=SimpleNamespace(
+                completions=SimpleNamespace(create=lambda **params: calls.append(params) or response)
+            ),
+            close=lambda: closed.append(True),
+        )
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=factory))
+    client = OpenAIModelClient()
+    for role in ["critic", "healer", "critic"]:
+        assert client.invoke(role, "test", RepairConfig())["content"] == "ok"
+    assert len(created) == 1 and len(calls) == 3
+    client.close()
+    assert closed == [True] and client._client is None

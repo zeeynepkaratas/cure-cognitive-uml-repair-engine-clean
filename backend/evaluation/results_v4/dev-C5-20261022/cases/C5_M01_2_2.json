@@ -1,0 +1,502 @@
+{
+  "case_id": "M01_2",
+  "scenario_id": "M01",
+  "srs": "The complaint registration system records Citizen, Complaint, RegistrationDesk, and PoliceOfficer; each has an id attribute. Each Citizen can have zero or more Complaint records, and each Complaint belongs to exactly one Citizen. Each Complaint uses exactly one RegistrationDesk, and each RegistrationDesk serves zero or more Complaint records. Each RegistrationDesk manages one or more PoliceOfficer records by composition, and each PoliceOfficer belongs to exactly one RegistrationDesk. Each Citizen can reference zero or more PoliceOfficer records, and each PoliceOfficer can be referenced by zero or more Citizen records.",
+  "gold": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "defective": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "defect_ids": [
+    "D2"
+  ],
+  "seed": 1740,
+  "injections": [
+    {
+      "defect_id": "D2",
+      "seed": 1740,
+      "selected_class": "Complaint",
+      "added_class": "MusicPlaylist"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Complaint {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass RegistrationDesk {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "output_sha256": "6cbd07c66c81cff30ab29ace5bc69b0e11a8fd4fd0cc5b3d3b6673fcf2253c3e",
+  "input_sha256": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dd74c74faea1c89b406a18fffae842fc4768aeb909823a26600aed0b3f3843ee",
+      "tokens_in": 471,
+      "tokens_out": 77,
+      "latency_s": 1.4863191000040388,
+      "diagram_hash": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_dd482a04d3c64e9293218aafc987a641",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "92e716a176a41d5e87c90af8a18db758de05927e4a7868ade509cf3fb1725bc1",
+      "tokens_in": 247,
+      "tokens_out": 114,
+      "latency_s": 1.9301165999931982,
+      "diagram_hash": "b9ba893193ae1930452382b835296e8263805bcf673527f12874d9cebdebc089",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_90f8344e4e0e4ecf97999cecf2bcd50f",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n  +age: Integer\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n  +age: Integer\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5285994eddca7cb5d69ecfe6d4a17fe1ee35ba6ccafc394ac0df36ebd2bc9cbe",
+      "tokens_in": 477,
+      "tokens_out": 76,
+      "latency_s": 1.6686373999982607,
+      "diagram_hash": "b9ba893193ae1930452382b835296e8263805bcf673527f12874d9cebdebc089",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_6cd03a1141cd40248b76feac54325f41",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Citizen nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Citizen nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "79a9cf333a7ddbd4881fea749e91e087356e44724b3d7766eda5efe87f86a4cb",
+      "tokens_in": 266,
+      "tokens_out": 129,
+      "latency_s": 1.7967465000110678,
+      "diagram_hash": "466cb0c29058e775dfe85e55ee332a600328ed5fcd65b82089f947ce193c257b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6c1965d4ed",
+      "request_id": "req_10118984c0eb498b925e4c1e03801dd6",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a03b3224cf6eb6404d84c907459ed410c459e29332934a9191b35a5970c3044e",
+      "tokens_in": 494,
+      "tokens_out": 73,
+      "latency_s": 1.4219224999978906,
+      "diagram_hash": "466cb0c29058e775dfe85e55ee332a600328ed5fcd65b82089f947ce193c257b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-04"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.13043478260869565
+        },
+        {
+          "id": "DOMAIN-04",
+          "score": 0.08333333333333333
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_fbc5d27e8d49445c961b7031f143bcf0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Citizen sınıfında age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 4 ihlal ediliyor: Complaint veya RegistrationDesk sınıflarında balance özelliği yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Citizen sınıfında age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 4 ihlal ediliyor: Complaint veya RegistrationDesk sınıflarında balance özelliği yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "fae326bf067981f2a9c39fd02812c0f505eb82c223d36cab546cf4834ade6c94",
+      "tokens_in": 298,
+      "tokens_out": 149,
+      "latency_s": 1.8913881000044057,
+      "diagram_hash": "6cbd07c66c81cff30ab29ace5bc69b0e11a8fd4fd0cc5b3d3b6673fcf2253c3e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_4bf342be8ceb492cb6b284923c1e327d",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Complaint {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass RegistrationDesk {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Complaint {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass RegistrationDesk {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bc224cc9d114fa07e8e5e3ad24621eaaa31ad569ec71db1869ae287b6f1eab2a",
+      "tokens_in": 514,
+      "tokens_out": 81,
+      "latency_s": 1.5799410000036005,
+      "diagram_hash": "6cbd07c66c81cff30ab29ace5bc69b0e11a8fd4fd0cc5b3d3b6673fcf2253c3e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-04"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1111111111111111
+        },
+        {
+          "id": "DOMAIN-04",
+          "score": 0.1111111111111111
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_52482bbe93854ebb840a29f91ea25061",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: Citizen sınıfında age özelliği için 18 yaş sınırı kontrolü yok.\",\"OCL Kuralı 4 ihlal edildi: Complaint ve RegistrationDesk sınıflarında balance özelliği için sıfır altı kontrolü yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: Citizen sınıfında age özelliği için 18 yaş sınırı kontrolü yok.",
+        "OCL Kuralı 4 ihlal edildi: Complaint ve RegistrationDesk sınıflarında balance özelliği için sıfır altı kontrolü yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2767,
+  "tokens_out": 699,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Citizen {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\n\nclass Complaint {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass RegistrationDesk {\n  +id: String\n  +balance: Float // Added balance property\n}\n\nclass PoliceOfficer {\n  +id: String\n}\n\nclass MusicPlaylist {}\n\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 14.439516400001594,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "musicplaylist"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "citizen",
+          "age"
+        ],
+        [
+          "complaint",
+          "balance"
+        ],
+        [
+          "registrationdesk",
+          "balance"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "musicplaylist"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "citizen",
+          "age"
+        ],
+        [
+          "complaint",
+          "balance"
+        ],
+        [
+          "registrationdesk",
+          "balance"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  }
+}

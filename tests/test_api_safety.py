@@ -33,6 +33,24 @@ def test_api_returns_safe_output_and_retains_raw_regression(monkeypatch):
     assert result["reverted"] is True
     assert result["compiler_valid"] is True
     assert result["raw_compiler_valid"] is False
+    assert result["repair_accepted"] is False
+
+
+def test_compiler_pass_with_critic_rejection_is_not_accepted(monkeypatch):
+    import json
+
+    rejection = json.dumps({"is_valid": False, "errors": ["missing source element"]})
+    agent = UMLRepairAgent(
+        RepairConfig(max_iterations=1), ScriptedClient([rejection, GOOD, rejection]), validation
+    )
+    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args: agent)
+    monkeypatch.setattr(endpoints, "_compile_test", compile_result)
+    monkeypatch.setattr(endpoints, "render_plantuml", lambda code: {"svg": "<svg/>"})
+    result = endpoints.autonomous_repair(endpoints.AutonomousRepairRequest(plantuml_kodu=BAD))
+    assert result["compiler_valid"] is True
+    assert result["critic_valid"] is False
+    assert result["terminated_by"] == "budget_exhausted"
+    assert result["repair_accepted"] is result["basarili"] is False
 
 
 def test_evaluate_endpoint_returns_new_proxy_and_not_applicable():

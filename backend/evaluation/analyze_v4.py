@@ -85,7 +85,7 @@ def compute(rows):
             for r in items
             if r["critic_valid"] is not None
         )
-        latencies = [r["elapsed_seconds"] for r in items]
+        latencies = [r.get("end_to_end_seconds", r["elapsed_seconds"]) for r in items]
         met = [r for r in items if r.get("metrics")]
         usage_known = all(r["tokens_in"] is not None and r["tokens_out"] is not None for r in items)
         tokens_in = sum(r["tokens_in"] for r in items) if usage_known else None
@@ -113,6 +113,7 @@ def compute(rows):
             "first_compiler_valid_iteration": describe(
                 r.get("first_compiler_valid_iteration") for r in items
             ),
+            "latency_scope": "end_to_end_seconds when recorded; legacy v4 rows use the explicitly labelled repair-loop elapsed_seconds",
             "latency": {**describe(latencies), "p95": float(np.quantile(latencies, 0.95, method="linear"))},
             "tokens_in": tokens_in,
             "tokens_out": tokens_out,

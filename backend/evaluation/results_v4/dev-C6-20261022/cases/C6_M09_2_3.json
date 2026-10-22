@@ -1,0 +1,551 @@
+{
+  "case_id": "M09_2",
+  "scenario_id": "M09",
+  "srs": "The advanced search system records Person, Crime, SearchService, and PropertyRecord; each has an id attribute. Each Person can have zero or more Crime records, and each Crime belongs to exactly one Person. Each Crime uses exactly one SearchService, and each SearchService serves zero or more Crime records. Each SearchService manages one or more PropertyRecord records by composition, and each PropertyRecord belongs to exactly one SearchService. Each Person can reference zero or more PropertyRecord records, and each PropertyRecord can be referenced by zero or more Person records.",
+  "gold": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "defective": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "defect_ids": [
+    "D8"
+  ],
+  "seed": 1820,
+  "injections": [
+    {
+      "defect_id": "D8",
+      "seed": 1820,
+      "selected_class": "Crime"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\n\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" --> \"0..*\" PropertyRecord\nPropertyRecord \"1\" --> \"1\" SearchService\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "output_sha256": "445a9fd8fb6c551651e484080f999db1db0f253be9fca5d3498e41ffea393dda",
+  "input_sha256": "821a1c662bd24824fd4504bcb80cef33fb58d8bf57eedaccc7acaa833929f7c7",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0ca1123e8084af287eea4bc20f26b7b876c0aadc5b9aca33030c5bfb4ac0d2a7",
+      "tokens_in": 383,
+      "tokens_out": 55,
+      "latency_s": 1.3965629000012996,
+      "diagram_hash": "821a1c662bd24824fd4504bcb80cef33fb58d8bf57eedaccc7acaa833929f7c7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_2e334c4ec54e4c57a87c41357986cf26",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Crime and SearchService is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Crime uses exactly one SearchService.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Crime and SearchService is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Crime uses exactly one SearchService."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b7dfeda1ad1297587449e9bc96eb73d9055fac2873d1c7ef0a0ff7a73bac5e50",
+      "tokens_in": 202,
+      "tokens_out": 97,
+      "latency_s": 1.748152400003164,
+      "diagram_hash": "faf917b15c6653d27869aa492f3a157f89e31fff5d5742fd0263d96529d88c8a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_89ea449874",
+      "request_id": "req_889c869abcb44f46a167efd049c246e8",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6cfad4cdec82b1f159f6182192919b67dee7807195f20200699109c280275ca0",
+      "tokens_in": 382,
+      "tokens_out": 90,
+      "latency_s": 1.5402191999892239,
+      "diagram_hash": "faf917b15c6653d27869aa492f3a157f89e31fff5d5742fd0263d96529d88c8a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_8b7bfc26e59a4466ab7b32f3776a74a3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The 'Crime' class is missing the 'id' attribute as specified in the requirement.\",\"The relationship between 'SearchService' and 'PropertyRecord' should be '1' to '0..*' instead of '1..*' to reflect that each 'SearchService' can manage zero or more 'PropertyRecord' records.\"],\"categories\":[\"UML Structure\",\"Attribute Definition\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The 'Crime' class is missing the 'id' attribute as specified in the requirement.",
+        "The relationship between 'SearchService' and 'PropertyRecord' should be '1' to '0..*' instead of '1..*' to reflect that each 'SearchService' can manage zero or more 'PropertyRecord' records."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Attribute Definition",
+        "Association Multiplicity"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "fd3627fa7760ff893b2c154fe07f9f5ebfe1573e54511ae6109cc62291e7ac97",
+      "tokens_in": 230,
+      "tokens_out": 97,
+      "latency_s": 1.4300239000003785,
+      "diagram_hash": "232ad8699855bb09695c7f4273ef1b2dc5490a822d2bafaff438d7041efcd29e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_c3cad7a1cc1f485c9af5db9fb8a7c84a",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "297b4771d86404dcde62ffd829973a5e5c0037b06c58d061d5d751c12f035095",
+      "tokens_in": 382,
+      "tokens_out": 69,
+      "latency_s": 1.502595800004201,
+      "diagram_hash": "232ad8699855bb09695c7f4273ef1b2dc5490a822d2bafaff438d7041efcd29e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e51c4d4a494d4e8895ababc35441b8aa",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The 'Crime' class is missing the 'id' attribute as specified in the requirement.\",\"The relationship between 'SearchService' and 'PropertyRecord' is not clearly defined as 'each PropertyRecord belongs to exactly one SearchService'.\"],\"categories\":[\"UML Structure\",\"Attribute Definition\",\"Association Definition\"]}",
+      "critic_errors": [
+        "The 'Crime' class is missing the 'id' attribute as specified in the requirement.",
+        "The relationship between 'SearchService' and 'PropertyRecord' is not clearly defined as 'each PropertyRecord belongs to exactly one SearchService'."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Attribute Definition",
+        "Association Definition"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b6eea7cc99a8fac8947b297684edcdaf3b6d4242cda41b6a678639eedda48b84",
+      "tokens_in": 210,
+      "tokens_out": 108,
+      "latency_s": 1.5672942000092007,
+      "diagram_hash": "445a9fd8fb6c551651e484080f999db1db0f253be9fca5d3498e41ffea393dda",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_39776df8803942f188774b83b21a9663",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\n\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" --> \"0..*\" PropertyRecord\nPropertyRecord \"1\" --> \"1\" SearchService\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\n\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" --> \"0..*\" PropertyRecord\nPropertyRecord \"1\" --> \"1\" SearchService\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e8d1e6edeeb51dd8eebd3d2c937ee3de0d88ba31549fade9955ea49052e4c21b",
+      "tokens_in": 393,
+      "tokens_out": 76,
+      "latency_s": 1.363524200001848,
+      "diagram_hash": "445a9fd8fb6c551651e484080f999db1db0f253be9fca5d3498e41ffea393dda",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_b15b4fbb152d4ea2a4ce1ad9137fa883",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The 'Crime' class is missing the 'id' attribute as specified in the requirement.\",\"The relationship between 'PropertyRecord' and 'SearchService' is incorrectly represented as '1' to '1' instead of '1' to '0..*'.\"],\"categories\":[\"UML Structure\",\"Attribute Definition\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The 'Crime' class is missing the 'id' attribute as specified in the requirement.",
+        "The relationship between 'PropertyRecord' and 'SearchService' is incorrectly represented as '1' to '1' instead of '1' to '0..*'."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Attribute Definition",
+        "Association Multiplicity"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2182,
+  "tokens_out": 592,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {PropertyRecord, SearchService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {PropertyRecord, SearchService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Person {\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\n\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" --> \"0..*\" PropertyRecord\nPropertyRecord \"1\" --> \"1\" SearchService\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 11.416358500006027,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "propertyrecord",
+          "searchservice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "searchservice",
+          "propertyrecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "propertyrecord",
+          "searchservice",
+          "association"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3333333333333335,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "propertyrecord",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5555555555555556,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "person",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "propertyrecord",
+          "searchservice"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "searchservice",
+          "propertyrecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "propertyrecord",
+          "searchservice",
+          "association"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3333333333333335,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "propertyrecord",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "searchservice",
+          "propertyrecord",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5555555555555556,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "person",
+          "id"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

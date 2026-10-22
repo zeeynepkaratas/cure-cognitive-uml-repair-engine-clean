@@ -1,0 +1,658 @@
+{
+  "case_id": "M08_1",
+  "scenario_id": "M08",
+  "srs": "The case search system records PoliceOfficer, SearchQuery, SearchService, and CaseResult; each has an id attribute. Each PoliceOfficer can have zero or more SearchQuery records, and each SearchQuery belongs to exactly one PoliceOfficer. Each SearchQuery uses exactly one SearchService, and each SearchService serves zero or more SearchQuery records. Each SearchService manages one or more CaseResult records by composition, and each CaseResult belongs to exactly one SearchService. Each PoliceOfficer can reference zero or more CaseResult records, and each CaseResult can be referenced by zero or more PoliceOfficer records.",
+  "gold": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "defective": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1809,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1809,
+      "selected_class": "SearchService",
+      "original_relation": [
+        "PoliceOfficer",
+        "SearchQuery",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "output_sha256": "d50916e4b7da0b442225ec7ea198a2944c7c1de2d0a794c7d44369c2d6da23da",
+  "input_sha256": "9bd2988082e5e2f616d5b1bed94ef12e47998fda48f39e7996e34f9d30ca8648",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "f0bc860132c726f03b22bf3cfd4ad5e5e9f4befd3bff1ea3e763bd5d66c648a2",
+      "tokens_in": 621,
+      "tokens_out": 49,
+      "latency_s": 1.232660499998019,
+      "diagram_hash": "9bd2988082e5e2f616d5b1bed94ef12e47998fda48f39e7996e34f9d30ca8648",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_a88611172a284be981677db85cf0c9bf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"SearchQuery should have a composition relationship with SearchService instead of an association.\",\"CaseResult should have a composition relationship with SearchService instead of an association.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "SearchQuery should have a composition relationship with SearchService instead of an association.",
+        "CaseResult should have a composition relationship with SearchService instead of an association."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "739fae88ae928ba90b36da8e192a326394fcd1e51ced9ff91a1cf16469a57ad4",
+      "tokens_in": 511,
+      "tokens_out": 110,
+      "latency_s": 1.7309138999989955,
+      "diagram_hash": "5927f712379783aa086f74db2bd1ee6eba4873b95ca29552b581b9319a807ac2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_ee5e3c92041045bf9280c8cd242cbec2",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "471e3a3d0a6e964182a08ae713c34a642f3fc2fc95a53be8af10bccfebfa5b1c",
+      "tokens_in": 621,
+      "tokens_out": 57,
+      "latency_s": 1.6050630999961868,
+      "diagram_hash": "5927f712379783aa086f74db2bd1ee6eba4873b95ca29552b581b9319a807ac2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_27b3c441c29544799e45380531aee0d2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"SearchQuery should have a composition relationship with SearchService instead of aggregation.\",\"SearchService should have a multiplicity of '0..*' for CaseResult instead of '1..*'.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "SearchQuery should have a composition relationship with SearchService instead of aggregation.",
+        "SearchService should have a multiplicity of '0..*' for CaseResult instead of '1..*'."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "645a0942f39678052135123a44c1d8281b2023275234b392f983d64cddf69794",
+      "tokens_in": 519,
+      "tokens_out": 110,
+      "latency_s": 2.198597399998107,
+      "diagram_hash": "d50916e4b7da0b442225ec7ea198a2944c7c1de2d0a794c7d44369c2d6da23da",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_72881fd627684c37803bebce96aa7283",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a7f1c504558a19b4da60f6319e49b3d85537a3a0d18ba898b54f922b905003ea",
+      "tokens_in": 621,
+      "tokens_out": 51,
+      "latency_s": 1.1469982999988133,
+      "diagram_hash": "d50916e4b7da0b442225ec7ea198a2944c7c1de2d0a794c7d44369c2d6da23da",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_17596e5c8ab94ecab07eb893ef4b5d8a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"SearchQuery should have a composition relationship with SearchService instead of an aggregation relationship.\",\"CaseResult should have a composition relationship with SearchService instead of an aggregation relationship.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "SearchQuery should have a composition relationship with SearchService instead of an aggregation relationship.",
+        "CaseResult should have a composition relationship with SearchService instead of an aggregation relationship."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "bffe5b42cff48a21c41c1fdee8d80242367a00e5e8c7e09cee0acbdcf617cf78",
+      "tokens_in": 513,
+      "tokens_out": 110,
+      "latency_s": 1.642977899988182,
+      "diagram_hash": "d50916e4b7da0b442225ec7ea198a2944c7c1de2d0a794c7d44369c2d6da23da",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ab4674eefd",
+      "request_id": "req_f322793d557e49f89841274e16c1352f",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a7f1c504558a19b4da60f6319e49b3d85537a3a0d18ba898b54f922b905003ea",
+      "tokens_in": 621,
+      "tokens_out": 35,
+      "latency_s": 0.9522355000081006,
+      "diagram_hash": "d50916e4b7da0b442225ec7ea198a2944c7c1de2d0a794c7d44369c2d6da23da",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_65605e4008e14a28b4c135c28b61bbbc",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"SearchQuery should have a composition relationship with SearchService instead of an aggregation relationship.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "SearchQuery should have a composition relationship with SearchService instead of an aggregation relationship."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 4027,
+  "tokens_out": 522,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"1\" *-- \"1\" SearchService\nSearchService \"1\" *-- \"0..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 12.230308900005184,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.25,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "searchquery",
+          "searchservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "searchquery",
+          "searchservice",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "searchquery",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "searchservice",
+          "caseresult",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "searchquery",
+          "searchservice",
+          "composition",
+          "1",
+          "1"
+        ],
+        [
+          "searchservice",
+          "caseresult",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.25,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "searchquery",
+          "searchservice",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "searchquery",
+          "searchservice",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "searchquery",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "searchservice",
+          "caseresult",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "searchquery",
+          "searchservice",
+          "composition",
+          "1",
+          "1"
+        ],
+        [
+          "searchservice",
+          "caseresult",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

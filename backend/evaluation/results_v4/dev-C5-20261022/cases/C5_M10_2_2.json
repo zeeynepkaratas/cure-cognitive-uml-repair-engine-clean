@@ -1,0 +1,491 @@
+{
+  "case_id": "M10_2",
+  "scenario_id": "M10",
+  "srs": "The search result view system records User, ResultView, ViewService, and CaseSummary; each has an id attribute. Each User can have zero or more ResultView records, and each ResultView belongs to exactly one User. Each ResultView uses exactly one ViewService, and each ViewService serves zero or more ResultView records. Each ViewService manages one or more CaseSummary records by composition, and each CaseSummary belongs to exactly one ViewService. Each User can reference zero or more CaseSummary records, and each CaseSummary can be referenced by zero or more User records.",
+  "gold": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "defective": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1830,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1830,
+      "selected_class": "CaseSummary"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1831,
+      "selected_class": "User",
+      "added_class": "WeatherStation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "output_sha256": "852d54c721cbf117c185e66e0142785e1e0145b89e792d2a078d270ed547d646",
+  "input_sha256": "ad060f66736d9a235ed44ec5e557962d0904b074cd83620568fe380ab6c09628",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5776aef2db29312cba6debffb1d3634edc0f3f5167258115c40c544588d63a99",
+      "tokens_in": 473,
+      "tokens_out": 74,
+      "latency_s": 1.4332120999897597,
+      "diagram_hash": "ad060f66736d9a235ed44ec5e557962d0904b074cd83620568fe380ab6c09628",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0625
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_4008514dad344642bbe04f6ab4d628bc",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "815152eea6e4aa4c5f8787c7649d738976504f2769b37b06c5e0a4520b12345a",
+      "tokens_in": 251,
+      "tokens_out": 113,
+      "latency_s": 1.802665099996375,
+      "diagram_hash": "db52a991e3420d595e7a63d2c447c311ea90b3c7d35ac95bcdbbc127a474becf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0f86f2b5a2",
+      "request_id": "req_dc797b6bbb4e47438c3c800d75109cb6",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6dcb534971c890ab1d5b78631908fa6d68933ded414f5f2999632664dcbcea08",
+      "tokens_in": 482,
+      "tokens_out": 48,
+      "latency_s": 1.1787050999992061,
+      "diagram_hash": "db52a991e3420d595e7a63d2c447c311ea90b3c7d35ac95bcdbbc127a474becf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1111111111111111
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_0701cab77c204041aad07165d5e7b908",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "27ecf7637dd2ce0350bd2cb5cb505a1eda1a79d555c195bf02772ace9e9c4546",
+      "tokens_in": 226,
+      "tokens_out": 118,
+      "latency_s": 1.6858726999926148,
+      "diagram_hash": "852d54c721cbf117c185e66e0142785e1e0145b89e792d2a078d270ed547d646",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e3af1ca7c9",
+      "request_id": "req_4e059fab05ba4b6b9521967c7ed2a203",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "eea0be2aced90fbe4f014e6ac7f9b2e64071012c55048816fc6b3e743b5dd918",
+      "tokens_in": 487,
+      "tokens_out": 46,
+      "latency_s": 1.2499468000023626,
+      "diagram_hash": "852d54c721cbf117c185e66e0142785e1e0145b89e792d2a078d270ed547d646",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.10526315789473684
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5d54bb3a3afb49858cbab901b0f44adf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için minimum değer belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için minimum değer belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "aadb2f06c703ee3e6226e742e4315a857b80f6ae6aacee90346f3257789afc6d",
+      "tokens_in": 229,
+      "tokens_out": 118,
+      "latency_s": 2.1157418000075268,
+      "diagram_hash": "852d54c721cbf117c185e66e0142785e1e0145b89e792d2a078d270ed547d646",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_9348991c96",
+      "request_id": "req_859dcf4583b047f68da960bb0f72ea9d",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "eea0be2aced90fbe4f014e6ac7f9b2e64071012c55048816fc6b3e743b5dd918",
+      "tokens_in": 487,
+      "tokens_out": 95,
+      "latency_s": 1.5745612000027904,
+      "diagram_hash": "852d54c721cbf117c185e66e0142785e1e0145b89e792d2a078d270ed547d646",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.10526315789473684
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5bdd85d3de834f2fa24844ed207334a3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için minimum değer 0 olarak tanımlanmış, ancak 18'den büyük veya eşit olmalıdır.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi tanımlanmamış, ancak OrderItem ile ilgili bir kural var.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için minimum değer 0 olarak tanımlanmış, ancak 18'den büyük veya eşit olmalıdır.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi tanımlanmamış, ancak OrderItem ile ilgili bir kural var."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2635,
+  "tokens_out": 612,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass User {\n  +id: String\n  +age: Integer {min = 0}\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 11.941902699996717,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  }
+}

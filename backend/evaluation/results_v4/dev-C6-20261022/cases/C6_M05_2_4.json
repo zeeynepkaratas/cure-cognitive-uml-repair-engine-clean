@@ -1,0 +1,493 @@
+{
+  "case_id": "M05_2",
+  "scenario_id": "M05",
+  "srs": "The court prosecution system records Case, Court, ProsecutionService, and Hearing; each has an id attribute. Each Case can have zero or more Court records, and each Court belongs to exactly one Case. Each Court uses exactly one ProsecutionService, and each ProsecutionService serves zero or more Court records. Each ProsecutionService manages one or more Hearing records by composition, and each Hearing belongs to exactly one ProsecutionService. Each Case can reference zero or more Hearing records, and each Hearing can be referenced by zero or more Case records.",
+  "gold": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml",
+  "defective": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1780,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1780,
+      "selected_class": "Case"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1781,
+      "selected_class": "Case",
+      "added_class": "RecipeBook"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml",
+  "output_sha256": "307cf2279483af4e2ce0e3cf540e9423d384fd2c2aa4149a5555d774eb47fd7a",
+  "input_sha256": "7ac8c04baeecdd6a922e041843ddfaa6ce3546d68edd1c68e48bcd6e471ab47b",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a59ed557d765e4f98be543e0f2ab14fb595a9d21822e027d20da61e44933eb46",
+      "tokens_in": 386,
+      "tokens_out": 70,
+      "latency_s": 1.4068370000022696,
+      "diagram_hash": "7ac8c04baeecdd6a922e041843ddfaa6ce3546d68edd1c68e48bcd6e471ab47b",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_3104e84b4494413fa5e9bce3d418aac5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Court and Case is incorrectly defined. It should be '1' Court belongs to '1' Case, but the UML shows '0..*' from Court to ProsecutionService which implies multiple Courts can belong to one ProsecutionService.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Court and Case is incorrectly defined. It should be '1' Court belongs to '1' Case, but the UML shows '0..*' from Court to ProsecutionService which implies multiple Courts can belong to one ProsecutionService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "63b1cb7cddc73a5c2ef5647ca9ac2f8868703d18a4d8c662115cf890e4c45a6a",
+      "tokens_in": 217,
+      "tokens_out": 102,
+      "latency_s": 1.7719485999987228,
+      "diagram_hash": "f9083efe6dcb2c2fb1a3641855840e14dc52733e0e419ac498a2c79699e13bc8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_87d0b744be",
+      "request_id": "req_d7a2b30108654955a4fc10316921cb93",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "db11e1061c12d5778a080594c81825becd0a503da9543cd62f02bc37f189e8cb",
+      "tokens_in": 387,
+      "tokens_out": 106,
+      "latency_s": 1.5867574000003515,
+      "diagram_hash": "f9083efe6dcb2c2fb1a3641855840e14dc52733e0e419ac498a2c79699e13bc8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_3101ea52dcf846e88debefeb72b23c9a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Case and Court is incorrectly defined as '1' to '1'. It should be '1' to '0..*' to reflect that each Case can have zero or more Court records.\",\"The relationship between Court and ProsecutionService is correctly defined as '1' to '1', but it should be noted that ProsecutionService serves zero or more Court records, which is not explicitly represented in the UML.\"],\"categories\":[\"UML Structure\",\"Relationship Cardinality\"]}",
+      "critic_errors": [
+        "The relationship between Case and Court is incorrectly defined as '1' to '1'. It should be '1' to '0..*' to reflect that each Case can have zero or more Court records.",
+        "The relationship between Court and ProsecutionService is correctly defined as '1' to '1', but it should be noted that ProsecutionService serves zero or more Court records, which is not explicitly represented in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Cardinality"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1db93136ce08d2bc94f6026c1e2e981c7770a179b03f72cd422024c517b19ba5",
+      "tokens_in": 254,
+      "tokens_out": 104,
+      "latency_s": 1.589755500011961,
+      "diagram_hash": "48e28cc7745c043cf59959de5ba09c750f0fc35a724a89efe157178b8be94aee",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_80342fdd91",
+      "request_id": "req_cfbb1d0e1243428fad3f886321fcf0a0",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "73b5eb4e55477d71e8eb6728691caa76a3c4039f63a5d91985dbf1299dabf21b",
+      "tokens_in": 389,
+      "tokens_out": 51,
+      "latency_s": 1.2850450999976601,
+      "diagram_hash": "48e28cc7745c043cf59959de5ba09c750f0fc35a724a89efe157178b8be94aee",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_34af24016cfd4ac8865d2b5f121fad25",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Court must belong to exactly one Case, but the UML shows a 0..* relationship from Case to Court which implies multiple Courts can exist without a Case.\"],\"categories\":[\"UML Structure\",\"Association Rules\"]}",
+      "critic_errors": [
+        "Court must belong to exactly one Case, but the UML shows a 0..* relationship from Case to Court which implies multiple Courts can exist without a Case."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Rules"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "969bc14930f5dbd047f908ebbd271ec3124afed12875cf5b9882808e2f611462",
+      "tokens_in": 201,
+      "tokens_out": 104,
+      "latency_s": 1.6776938999973936,
+      "diagram_hash": "307cf2279483af4e2ce0e3cf540e9423d384fd2c2aa4149a5555d774eb47fd7a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_87d0b744be",
+      "request_id": "req_e61628273c1a4463b108d1d216642b57",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c16260b710c43322cc62571e6e3ffde783a893ed4e7a9f14bc7f452df991724b",
+      "tokens_in": 389,
+      "tokens_out": 75,
+      "latency_s": 1.5740568999899551,
+      "diagram_hash": "307cf2279483af4e2ce0e3cf540e9423d384fd2c2aa4149a5555d774eb47fd7a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_313b8408e3bb451c8255f1e0cd048b8c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Court must belong to exactly one Case, but UML shows it as '1' to '1..*' which is incorrect.\",\"ProsecutionService must serve zero or more Court records, but UML shows it as '1' to '0..*' which is incorrect.\"],\"categories\":[\"UML Structure\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "Court must belong to exactly one Case, but UML shows it as '1' to '1..*' which is incorrect.",
+        "ProsecutionService must serve zero or more Court records, but UML shows it as '1' to '0..*' which is incorrect."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Multiplicity"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2223,
+  "tokens_out": 612,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"1..*\" Court\nCourt \"1\" --> \"0..*\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 11.733623099993565,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "case",
+          "court",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "case",
+          "court",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "case",
+          "court",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "case",
+          "court",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

@@ -1,0 +1,611 @@
+{
+  "case_id": "M02_2",
+  "scenario_id": "M02",
+  "srs": "The police intake system records Complainant, IntakeForm, RegistrationModule, and PoliceUnit; each has an id attribute. Each Complainant can have zero or more IntakeForm records, and each IntakeForm belongs to exactly one Complainant. Each IntakeForm uses exactly one RegistrationModule, and each RegistrationModule serves zero or more IntakeForm records. Each RegistrationModule manages one or more PoliceUnit records by composition, and each PoliceUnit belongs to exactly one RegistrationModule. Each Complainant can reference zero or more PoliceUnit records, and each PoliceUnit can be referenced by zero or more Complainant records.",
+  "gold": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" PoliceUnit\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "defective": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" Complainant\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1750,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1750,
+      "selected_class": "RegistrationModule",
+      "original_relation": [
+        "RegistrationModule",
+        "PoliceUnit",
+        "composition",
+        "1",
+        "1..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"1\" --> \"0..*\" IntakeForm\nIntakeForm \"0..*\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" Complainant\nComplainant \"0..*\" --> \"0..*\" PoliceUnit\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" --> \"0..*\" Complainant\n@enduml",
+  "output_sha256": "decfded1a3912958674290a6a0af0fdede66f31b0441b60fa994b783c8ad78eb",
+  "input_sha256": "1ccd48727488c337af49981de54e7f61376e839f1fa7a5c2f630de8243b0ba4c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "af31011c865021d08a03a7bd04e152ac56ecd47b8ce9c45e58078977c60ccceb",
+      "tokens_in": 415,
+      "tokens_out": 128,
+      "latency_s": 2.1190371999982744,
+      "diagram_hash": "1ccd48727488c337af49981de54e7f61376e839f1fa7a5c2f630de8243b0ba4c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_677dd7a08b344965b5ac52e5497f0e94",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between RegistrationModule and IntakeForm is incorrectly defined. It should be '1' to '0..*' instead of '0..*' to '1'.\",\"The relationship between RegistrationModule and PoliceUnit is incorrectly defined. It should be '1' to '1..*' instead of '1' to '1..*'.\",\"The relationship between Complainant and RegistrationModule is incorrectly defined. It should be '0..*' to '1' instead of '1' to '0..*'.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between RegistrationModule and IntakeForm is incorrectly defined. It should be '1' to '0..*' instead of '0..*' to '1'.",
+        "The relationship between RegistrationModule and PoliceUnit is incorrectly defined. It should be '1' to '1..*' instead of '1' to '1..*'.",
+        "The relationship between Complainant and RegistrationModule is incorrectly defined. It should be '0..*' to '1' instead of '1' to '0..*'."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "0b68f5569d07a356e0ffb4dd1ae4c30a8591aaa5756ced6c41a8ed1371cf3648",
+      "tokens_in": 291,
+      "tokens_out": 116,
+      "latency_s": 2.066623899998376,
+      "diagram_hash": "c3f686fe744f25e45ce4625998b67998fd0e5c2496389ed65e3c55a90254049c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_438567d0ff",
+      "request_id": "req_6dd7d351376c4ad9a41431966f413d58",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"0..*\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" Complainant\nComplainant \"0..*\" --> \"1..*\" PoliceUnit\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"0..*\" RegistrationModule\nRegistrationModule \"1\" *-- \"1..*\" Complainant\nComplainant \"0..*\" --> \"1..*\" PoliceUnit\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "39fc2ca16d74f001d03cdced076242b52cfacf51cb8cff8ea9ac27c233ca127e",
+      "tokens_in": 416,
+      "tokens_out": 101,
+      "latency_s": 1.6476552999956766,
+      "diagram_hash": "c3f686fe744f25e45ce4625998b67998fd0e5c2496389ed65e3c55a90254049c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_190bf7d6a03e40db874111a6610d6ba5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"IntakeForm should have a 1-to-1 relationship with RegistrationModule, but it is defined as 1-to-many in the UML.\",\"RegistrationModule should have a 1-to-many relationship with IntakeForm, but it is defined as 1-to-1 in the UML.\",\"RegistrationModule should manage one or more PoliceUnit records by composition, but the UML does not reflect this correctly.\"],\"categories\":[\"UML Structure\",\"Relationship Cardinality\",\"Composition\"]}",
+      "critic_errors": [
+        "IntakeForm should have a 1-to-1 relationship with RegistrationModule, but it is defined as 1-to-many in the UML.",
+        "RegistrationModule should have a 1-to-many relationship with IntakeForm, but it is defined as 1-to-1 in the UML.",
+        "RegistrationModule should manage one or more PoliceUnit records by composition, but the UML does not reflect this correctly."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Cardinality",
+        "Composition"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7b76b7f619a932cf7dd2d0629c18d47d1d46c560b8beb8c91b3e07155be34e58",
+      "tokens_in": 262,
+      "tokens_out": 114,
+      "latency_s": 1.7101813000044785,
+      "diagram_hash": "be4e339e22c8481355881b15bc28e4bc912711f78fc014c58d76fcab49112107",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_10a66c9e69",
+      "request_id": "req_b886b3253ac64089af6a4192b1110ef7",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" *-- \"1..*\" Complainant\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" *-- \"1..*\" Complainant\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1fed83c425327d2177e3c0413488aa778b94b6bdea155bf008b4fd674833c739",
+      "tokens_in": 414,
+      "tokens_out": 67,
+      "latency_s": 1.228614199993899,
+      "diagram_hash": "be4e339e22c8481355881b15bc28e4bc912711f78fc014c58d76fcab49112107",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_92904bfd58bd44049d421aba3394d7b4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between RegistrationModule and Complainant is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 0..*' to reflect that each RegistrationModule can serve zero or more Complainants.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between RegistrationModule and Complainant is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 0..*' to reflect that each RegistrationModule can serve zero or more Complainants."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "503dea9d017782d90b51a11135268444ee9fbc1b287bfa60818df30975a68788",
+      "tokens_in": 227,
+      "tokens_out": 113,
+      "latency_s": 1.6950325000070734,
+      "diagram_hash": "decfded1a3912958674290a6a0af0fdede66f31b0441b60fa994b783c8ad78eb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_10a66c9e69",
+      "request_id": "req_11132c17c65347df98d2d6e47ca2c32f",
+      "response_text": "```plantuml\n@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" --> \"0..*\" Complainant\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" --> \"0..*\" Complainant\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "623ce8c1c171c1dd8630c0cfeb455ddf8f9715754e1a85966b9a6dd4c9d80fbc",
+      "tokens_in": 413,
+      "tokens_out": 51,
+      "latency_s": 1.2019604999950388,
+      "diagram_hash": "decfded1a3912958674290a6a0af0fdede66f31b0441b60fa994b783c8ad78eb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_79a162613b7d4d2ca02bf2d036747af1",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between RegistrationModule and Complainant should be '0..*' instead of '1' as a RegistrationModule can serve zero or more Complainants.\"],\"categories\":[\"UML Relationship Errors\"]}",
+      "critic_errors": [
+        "The relationship between RegistrationModule and Complainant should be '0..*' instead of '1' as a RegistrationModule can serve zero or more Complainants."
+      ],
+      "critic_categories": [
+        "UML Relationship Errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2438,
+  "tokens_out": 690,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Complainant, IntakeForm, RegistrationModule}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Complainant, IntakeForm, RegistrationModule}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Complainant, IntakeForm, RegistrationModule}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Complainant, IntakeForm, RegistrationModule}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Complainant {\n  +id: String\n}\nclass IntakeForm {\n  +id: String\n}\nclass RegistrationModule {\n  +id: String\n}\nclass PoliceUnit {\n  +id: String\n}\nComplainant \"0..*\" --> \"0..*\" IntakeForm\nIntakeForm \"1\" --> \"1\" RegistrationModule\nRegistrationModule \"1\" *-- \"0..*\" PoliceUnit\nRegistrationModule \"1\" --> \"0..*\" Complainant\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.642305199988186,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit"
+        ]
+      ],
+      "spurious": [
+        [
+          "complainant",
+          "registrationmodule"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit"
+        ]
+      ],
+      "spurious": [
+        [
+          "registrationmodule",
+          "complainant"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "registrationmodule",
+          "complainant",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "intakeform",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "complainant",
+          "policeunit",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "complainant",
+          "intakeform",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "complainant",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit"
+        ]
+      ],
+      "spurious": [
+        [
+          "complainant",
+          "registrationmodule"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit"
+        ]
+      ],
+      "spurious": [
+        [
+          "registrationmodule",
+          "complainant"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "policeunit",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "registrationmodule",
+          "complainant",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "complainant",
+          "intakeform",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "complainant",
+          "policeunit",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "complainant",
+          "intakeform",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "intakeform",
+          "registrationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "registrationmodule",
+          "complainant",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registrationmodule",
+          "policeunit",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

@@ -36,7 +36,7 @@ class RepairConfig:
         "single_pass",
         "improved_critic_healer",
     ] = "improved_critic_healer"
-    prompt_revision: Literal["v4", "v4.1"] = "v4"
+    prompt_revision: Literal["v4", "v4.1"] = "v4.1"
     use_rules: bool = True
     compiler_feedback: bool = True
     healer_sees_srs: bool = True
@@ -65,11 +65,23 @@ class RepairConfig:
 class OpenAIModelClient:
     """Lazy SDK boundary. Retries are performed by the agent so every attempt is counted."""
 
+    def __init__(self):
+        self._client = None
+
+    def close(self):
+        if self._client is not None:
+            try:
+                self._client.close()
+            finally:
+                self._client = None
+
     def invoke(self, role: str, prompt: str, config: RepairConfig):
         from openai import OpenAI
         from .critic_decision import CRITIC_DECISION_SCHEMA
 
-        client = OpenAI(timeout=config.timeout_s, max_retries=0)
+        if self._client is None:
+            self._client = OpenAI(timeout=config.timeout_s, max_retries=0)
+        client = self._client
         arguments = dict(
             model=config.model_critic if role == "critic" else config.model_healer,
             messages=[{"role": "user", "content": prompt}],
@@ -333,4 +345,9 @@ class UMLRepairAgent:
             usage_complete=all(t["tokens_in"] is not None and t["tokens_out"] is not None for t in trace),
         )
         self.last_final_state = state
+        if isinstance(self.client, OpenAIModelClient):
+            try:
+                self.client.close()
+            except Exception as exc:
+                logger.warning("Model client cleanup failed: %s", type(exc).__name__)
         return state if return_state else diagram

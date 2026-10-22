@@ -1,0 +1,697 @@
+{
+  "case_id": "M05_1",
+  "scenario_id": "M05",
+  "srs": "The court prosecution system records Case, Court, ProsecutionService, and Hearing; each has an id attribute. Each Case can have zero or more Court records, and each Court belongs to exactly one Case. Each Court uses exactly one ProsecutionService, and each ProsecutionService serves zero or more Court records. Each ProsecutionService manages one or more Hearing records by composition, and each Hearing belongs to exactly one ProsecutionService. Each Case can reference zero or more Hearing records, and each Hearing can be referenced by zero or more Case records.",
+  "gold": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml",
+  "defective": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\nclass ProsecutionService {}\n@enduml",
+  "defect_ids": [
+    "D9"
+  ],
+  "seed": 1779,
+  "injections": [
+    {
+      "defect_id": "D9",
+      "seed": 1779,
+      "selected_class": "ProsecutionService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"0..*\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"1..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\nclass ProsecutionService {}\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"1\" Hearing\nHearing \"0..*\" --> \"0..*\" Case\n@enduml",
+  "output_sha256": "c1f8d7c13a8ade529afd21dae296b2e1af8cc9db7445a8ae0a3ea2751f885341",
+  "input_sha256": "b6487cb42c6b151b788fd473495137b505d505edeb585a4239dd79a18cf9f81c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "12a7c9e1f72bd56f5f24e1b90f2ff90160ec57a39a2db39ff0883fa1a44312a8",
+      "tokens_in": 635,
+      "tokens_out": 42,
+      "latency_s": 1.270897700000205,
+      "diagram_hash": "b6487cb42c6b151b788fd473495137b505d505edeb585a4239dd79a18cf9f81c",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_c07fa61616b94b23910a215e54ea2643",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Duplicate class declaration for 'ProsecutionService'\",\"Class 'ProsecutionService' is declared twice in the diagram.\"],\"categories\":[\"Structural Errors\",\"Modeling Errors\"]}",
+      "critic_errors": [
+        "Duplicate class declaration for 'ProsecutionService'",
+        "Class 'ProsecutionService' is declared twice in the diagram."
+      ],
+      "critic_categories": [
+        "Structural Errors",
+        "Modeling Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "cc191a95cc56a2171f930b83b111523efb1fd4c590e49b55f6f65d4e64267bd8",
+      "tokens_in": 517,
+      "tokens_out": 103,
+      "latency_s": 1.4833054000046104,
+      "diagram_hash": "22813ac44a585ddf83e1f1c02bff81b13e2baddc77665c7e4d511e2a596f934f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_18581e8a86",
+      "request_id": "req_bafc42211aab41eeb40b8df9254d9beb",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "fac2423e4c29cd69f0e1ae5c5b43765de4b11c41f52bd210ef09b4200f5ab0d5",
+      "tokens_in": 604,
+      "tokens_out": 34,
+      "latency_s": 0.9766975999955321,
+      "diagram_hash": "22813ac44a585ddf83e1f1c02bff81b13e2baddc77665c7e4d511e2a596f934f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_4916aaea444e4cdcabf78e0a824d0d72",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing association from Case to ProsecutionService\",\"Missing association from Hearing to Case\"],\"categories\":[\"modeling\",\"associations\"]}",
+      "critic_errors": [
+        "Missing association from Case to ProsecutionService",
+        "Missing association from Hearing to Case"
+      ],
+      "critic_categories": [
+        "modeling",
+        "associations"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7a86f4b30f5d2ffbbc35d4de0e8af54ea079088030f40792e7e7d45cf19237b0",
+      "tokens_in": 480,
+      "tokens_out": 128,
+      "latency_s": 1.968059799997718,
+      "diagram_hash": "79c619f0c570f5ee1fb8412fa4bbd618f978958b7acfa9b84f677aa0e2f87179",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_18581e8a86",
+      "request_id": "req_4bb562a90a0c417fb6af36fc1b3f9469",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\nCase \"1\" --> \"1\" ProsecutionService\nHearing \"0..*\" --> \"0..*\" Case\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"0..*\" Hearing\nCase \"1\" --> \"1\" ProsecutionService\nHearing \"0..*\" --> \"0..*\" Case\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e48c352003627ae4bcf82cba7efdf80c1389a931533a55784ef847dc31d83bd8",
+      "tokens_in": 670,
+      "tokens_out": 77,
+      "latency_s": 1.3976030000048922,
+      "diagram_hash": "79c619f0c570f5ee1fb8412fa4bbd618f978958b7acfa9b84f677aa0e2f87179",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_50710325ad6d48948d18691aed203906",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Case should not reference ProsecutionService directly; it should only reference Hearing records.\",\"The relationship between Case and Hearing is incorrectly defined as '0..* --> 0..*'; it should be '0..* --> 1' to indicate that each Hearing belongs to exactly one Case.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "Case should not reference ProsecutionService directly; it should only reference Hearing records.",
+        "The relationship between Case and Hearing is incorrectly defined as '0..* --> 0..*'; it should be '0..* --> 1' to indicate that each Hearing belongs to exactly one Case."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "25d1c9cd2b531a931f926a96715a19cd4e1f7399777e72f93fcb61432ac5e0dc",
+      "tokens_in": 588,
+      "tokens_out": 115,
+      "latency_s": 1.8917330000112997,
+      "diagram_hash": "c1f8d7c13a8ade529afd21dae296b2e1af8cc9db7445a8ae0a3ea2751f885341",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_18581e8a86",
+      "request_id": "req_64f22aa3225a494d933c189da655df6f",
+      "response_text": "```plantuml\n@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"1\" Hearing\nHearing \"0..*\" --> \"0..*\" Case\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"1\" Hearing\nHearing \"0..*\" --> \"0..*\" Case\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "197574174055b1e050d200d3857a21963f41df9b83f52c40d57e1b3f7e78d24b",
+      "tokens_in": 657,
+      "tokens_out": 92,
+      "latency_s": 1.6178586000023643,
+      "diagram_hash": "c1f8d7c13a8ade529afd21dae296b2e1af8cc9db7445a8ae0a3ea2751f885341",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_8656448be0a64dc3aa4a54724b0770c2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Missing composition relationship from Case to Hearing as per requirements.\",\"The relationship from Case to Hearing should be '0..*' to '0..*' instead of '0..*' to '1'.\",\"The relationship from Court to ProsecutionService should be '1' to '1' instead of '1' to '0..*'.\"],\"categories\":[\"modeling\",\"relationship errors\",\"compliance\"]}",
+      "critic_errors": [
+        "Missing composition relationship from Case to Hearing as per requirements.",
+        "The relationship from Case to Hearing should be '0..*' to '0..*' instead of '0..*' to '1'.",
+        "The relationship from Court to ProsecutionService should be '1' to '1' instead of '1' to '0..*'."
+      ],
+      "critic_categories": [
+        "modeling",
+        "relationship errors",
+        "compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 4151,
+  "tokens_out": 591,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['ProsecutionService']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['ProsecutionService', 'ProsecutionService']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Case, Court, Hearing, ProsecutionService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Case, Court, Hearing, ProsecutionService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Case {\n  +id: String\n}\nclass Court {\n  +id: String\n}\nclass ProsecutionService {\n  +id: String\n}\nclass Hearing {\n  +id: String\n}\n\nCase \"1\" --> \"0..*\" Court\nCourt \"1\" --> \"1\" ProsecutionService\nProsecutionService \"1\" *-- \"0..*\" Hearing\nCase \"0..*\" --> \"1\" Hearing\nHearing \"0..*\" --> \"0..*\" Case\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 10.624483899999177,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "hearing",
+          "case"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "hearing",
+          "case",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.11111111111111105,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "case",
+          "hearing",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "prosecutionservice",
+          "hearing",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "case",
+          "hearing",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "hearing",
+          "case",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "prosecutionservice",
+          "hearing",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.7777777777777778,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "hearing",
+          "case"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "hearing",
+          "case",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.11111111111111105,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "case",
+          "hearing",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "prosecutionservice",
+          "hearing",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "case",
+          "hearing",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "court",
+          "prosecutionservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "hearing",
+          "case",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "prosecutionservice",
+          "hearing",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.7777777777777778,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

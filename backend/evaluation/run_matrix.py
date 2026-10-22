@@ -6,6 +6,9 @@ import csv
 from dataclasses import asdict
 from datetime import datetime, timezone
 from functools import lru_cache
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import random
+import threading
 import hashlib
 import importlib.metadata
 import json
@@ -19,7 +22,7 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from ai_core.src.ai.repair_agent import RepairConfig, UMLRepairAgent
+from ai_core.src.ai.repair_agent import RepairConfig, UMLRepairAgent, safe_error_text
 from backend.evaluation.shared_repair_benchmark_cases import SHARED_REPAIR_BENCHMARK_CASES
 from backend.evaluation.pure_external_repair_cases import PURE_EXTERNAL_REPAIR_CASES
 from backend.evaluation.reference_metrics import reference_metrics
@@ -36,6 +39,7 @@ CONDITIONS = {
     "C6": "critic_healer_norules",
     "C7": "improved_critic_healer",
 }
+COMPILER_SLOTS = threading.BoundedSemaphore(2)
 JAR_SHA = "89948f14c93756c7a3fb7b69078ff37e8489fd79dd430c582b931e2f65358690"
 
 
@@ -108,6 +112,7 @@ class Budget:
 
     def __init__(self, path, max_calls, max_cost, input_price=0.15, output_price=0.60):
         self.path = path
+        self.lock = threading.Lock()
         self.max_calls = max_calls
         self.max_cost = max_cost
         self.input_price = input_price
@@ -120,14 +125,15 @@ class Budget:
         cost = (
             (len(prompt.encode("utf-8")) + 4096) * self.input_price + config.max_tokens * self.output_price
         ) / 1e6
-        if (
-            self.state["calls_reserved"] + 1 > self.max_calls
-            or self.state["usd_reserved"] + cost > self.max_cost
-        ):
-            raise BudgetExceeded("Call/cost reservation limit reached before dispatch")
-        self.state["calls_reserved"] += 1
-        self.state["usd_reserved"] += cost
-        dump(self.path, self.state)
+        with self.lock:
+            if (
+                self.state["calls_reserved"] + 1 > self.max_calls
+                or self.state["usd_reserved"] + cost > self.max_cost
+            ):
+                raise BudgetExceeded("Call/cost reservation limit reached before dispatch")
+            self.state["calls_reserved"] += 1
+            self.state["usd_reserved"] += cost
+            dump(self.path, self.state)
 
 
 def plan(cases, conditions, reps, retries=2):
@@ -196,10 +202,12 @@ def metadata(args, cases):
 
 @lru_cache(maxsize=None)
 def cached_check(code):
-    return check_diagram(code)
+    with COMPILER_SLOTS:
+        return check_diagram(code)
 
 
 def evaluate(case, condition, rep, args, budget):
+    end_to_end_started = time.perf_counter()
     original = case["input_plantuml"]
     initial = cached_check(original)
     started = time.perf_counter()
@@ -269,6 +277,10 @@ def evaluate(case, condition, rep, args, budget):
         "metrics": reference_metrics(case["gold"], output, original) if case["gold"] else None,
         "metrics_if_reverted": reference_metrics(case["gold"], safe, original) if case["gold"] else None,
     }
+    row["end_to_end_seconds"] = time.perf_counter() - end_to_end_started
+    row["end_to_end_scope"] = (
+        "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+    )
     return row
 
 
@@ -316,8 +328,14 @@ def main(argv=None):
         default=["shared", "pure", "semantic"],
     )
     parser.add_argument("--split", choices=["dev", "test"], default="test")
-    parser.add_argument("--prompt-revision", choices=["v4", "v4.1"], default="v4")
+    parser.add_argument("--prompt-revision", choices=["v4", "v4.1"], default="v4.1")
     parser.add_argument("--case-ids", nargs="+", help="Explicit development-pilot selection only")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Bounded case workers; at most two concurrent compiler processes",
+    )
     parser.add_argument("--reps", type=int, default=5)
     parser.add_argument("--seed", type=int, default=1729)
     parser.add_argument(
@@ -334,7 +352,7 @@ def main(argv=None):
     parser.add_argument("--model-critic", default="gpt-4o-mini-2024-07-18")
     parser.add_argument("--model-healer", default="gpt-4o-mini-2024-07-18")
     args = parser.parse_args(argv)
-    if args.reps < 1 or args.max_calls < 0 or args.max_cost_usd < 0:
+    if args.reps < 1 or args.max_calls < 0 or args.max_cost_usd < 0 or not 1 <= args.workers <= 8:
         parser.error("Repetitions and budget limits must be non-negative (reps >= 1)")
     cases = load_cases(args.split, args.datasets)
     if args.case_ids:
@@ -356,6 +374,10 @@ def main(argv=None):
             "This cost bound is only configured for gpt-4o-mini; other models require reviewed pricing bounds"
         )
     directory = args.run_dir.resolve()
+    if not directory.is_relative_to((ROOT / "backend/evaluation/results_v4").resolve()):
+        parser.error(
+            "Run directory must be inside backend/evaluation/results_v4; retained evidence is protected"
+        )
     if (directory / "manifest.json").exists() and not args.resume:
         parser.error("Run already exists; use --resume or a new run directory")
     directory.mkdir(parents=True, exist_ok=True)
@@ -381,39 +403,104 @@ def main(argv=None):
         manifest = old
     dump(directory / "manifest.json", manifest)
     budget = Budget(directory / "budget.json", args.max_calls, args.max_cost_usd)
+    tasks = [
+        (case, condition, rep)
+        for condition in args.conditions
+        for rep in range(1, 2 if condition in {"C0", "C1", "C2"} else args.reps + 1)
+        for case in cases
+    ]
+    if args.workers > 1:
+        random.Random(args.seed).shuffle(tasks)
+    manifest["execution_order"] = (
+        "seeded shuffled case/condition/repetition" if args.workers > 1 else "condition/repetition/case"
+    )
+    manifest["task_order_sha256"] = sha(json.dumps([(c["case_id"], k, r) for c, k, r in tasks]).encode())
+    manifest["concurrent_case_workers"] = args.workers
+    manifest["concurrent_compiler_limit"] = 2
+    pending = []
+    for case, condition, rep in tasks:
+        path = directory / "cases" / f"{condition}_{case['case_id']}_{rep}.json"
+        if args.resume and path.exists():
+            previous = json.loads(path.read_text(encoding="utf-8"))
+            if previous.get("run_status", "completed") == "completed":
+                continue
+            archive = directory / "incomplete_attempts"
+            archive.mkdir(exist_ok=True)
+            archived = archive / (path.stem + "_" + sha(path.read_bytes())[:16] + ".json")
+            path.replace(archived)
+        pending.append((case, condition, rep, path))
+    stop_reason = None
+
+    def worker_error(case, condition, rep, exc):
+        nonlocal stop_reason
+        stop_reason = "worker_error"
+        errors = directory / "worker_errors"
+        errors.mkdir(exist_ok=True)
+        dump(
+            errors / f"{condition}_{case['case_id']}_{rep}.json",
+            {
+                "case_id": case["case_id"],
+                "condition": condition,
+                "rep": rep,
+                "error_type": type(exc).__name__,
+                "error": safe_error_text(exc),
+                "run_status": "worker_error",
+                "not_in_completed_denominator": True,
+            },
+        )
+
+    def save(row, path):
+        nonlocal stop_reason
+        dump(path, row)
+        print(
+            f"{row['condition']} {row['case_id']} rep={row['rep']} compiler={row['compiler_valid']} status={row['agent_status']}",
+            flush=True,
+        )
+        if row.get("provider_status_code") in {401, 403, 404} and stop_reason != "worker_error":
+            stop_reason = "provider_blocked"
+        if row["run_status"] == "budget_stopped" and stop_reason is None:
+            stop_reason = "budget_stopped"
+
     try:
-        for condition in args.conditions:
-            for rep in range(1, 2 if condition in {"C0", "C1", "C2"} else args.reps + 1):
-                for case in cases:
-                    path = directory / "cases" / f"{condition}_{case['case_id']}_{rep}.json"
-                    if args.resume and path.exists():
+        if args.workers == 1:
+            for case, condition, rep, path in pending:
+                try:
+                    save(evaluate(case, condition, rep, args, budget), path)
+                except Exception as exc:
+                    worker_error(case, condition, rep, exc)
+                if stop_reason:
+                    break
+        else:
+            with ThreadPoolExecutor(max_workers=args.workers) as pool:
+                futures = {
+                    pool.submit(evaluate, case, condition, rep, args, budget): (case, condition, rep, path)
+                    for case, condition, rep, path in pending
+                }
+                for future in as_completed(futures):
+                    if future.cancelled():
                         continue
+                    case, condition, rep, path = futures[future]
                     try:
-                        row = evaluate(case, condition, rep, args, budget)
-                    except BudgetExceeded:
-                        manifest["status"] = "budget_stopped"
-                        raise
-                    dump(path, row)
-                    if row["provider_status_code"] in {401, 403, 404}:
-                        manifest["status"] = "provider_blocked"
-                        print(
-                            "Provider authentication/access/model unavailable; stopping, failed case retained.",
-                            flush=True,
-                        )
-                        return manifest
-                    if row["run_status"] == "budget_stopped":
-                        manifest["status"] = "budget_stopped"
-                        raise BudgetExceeded(
-                            "Case interrupted; partial trace saved and excluded from completed-case denominator"
-                        )
-                    print(
-                        f"{condition} {case['case_id']} rep={rep} compiler={row['compiler_valid']} status={row['agent_status']}",
-                        flush=True,
-                    )
-        manifest["status"] = "completed"
-    except BudgetExceeded as exc:
-        print(str(exc), flush=True)
+                        save(future.result(), path)
+                    except Exception as exc:
+                        worker_error(case, condition, rep, exc)
+                    if stop_reason:
+                        for remaining in futures:
+                            remaining.cancel()
+        manifest["status"] = stop_reason or "completed"
+    except Exception as exc:
+        manifest["status"] = "interrupted"
+        manifest["interruption_type"] = type(exc).__name__
+        raise
     finally:
+        manifest["incomplete_attempt_files"] = [
+            str(p.relative_to(directory)).replace(chr(92), "/")
+            for p in sorted((directory / "incomplete_attempts").glob("*.json"))
+        ]
+        manifest["worker_error_files"] = [
+            str(p.relative_to(directory)).replace(chr(92), "/")
+            for p in sorted((directory / "worker_errors").glob("*.json"))
+        ]
         write_outputs(directory, manifest)
     return manifest
 

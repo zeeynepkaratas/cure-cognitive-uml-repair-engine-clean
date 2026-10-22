@@ -1,0 +1,662 @@
+{
+  "case_id": "M08_1",
+  "scenario_id": "M08",
+  "srs": "The case search system records PoliceOfficer, SearchQuery, SearchService, and CaseResult; each has an id attribute. Each PoliceOfficer can have zero or more SearchQuery records, and each SearchQuery belongs to exactly one PoliceOfficer. Each SearchQuery uses exactly one SearchService, and each SearchService serves zero or more SearchQuery records. Each SearchService manages one or more CaseResult records by composition, and each CaseResult belongs to exactly one SearchService. Each PoliceOfficer can reference zero or more CaseResult records, and each CaseResult can be referenced by zero or more PoliceOfficer records.",
+  "gold": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nPoliceOfficer \"1\" --> \"0..*\" SearchQuery\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "defective": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "defect_ids": [
+    "D5"
+  ],
+  "seed": 1809,
+  "injections": [
+    {
+      "defect_id": "D5",
+      "seed": 1809,
+      "selected_class": "SearchService",
+      "original_relation": [
+        "PoliceOfficer",
+        "SearchQuery",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer [1..1]\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "6e36d8e41d46ed9d0e78d16922306a881545cd81545ce9c234b405d46dbec7df",
+  "input_sha256": "9bd2988082e5e2f616d5b1bed94ef12e47998fda48f39e7996e34f9d30ca8648",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "304e239128891996df7e93c82163bde32d026d7bcb767e1f79f38e53316e0830",
+      "tokens_in": 483,
+      "tokens_out": 74,
+      "latency_s": 1.4549522000015713,
+      "diagram_hash": "9bd2988082e5e2f616d5b1bed94ef12e47998fda48f39e7996e34f9d30ca8648",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_013aaa91684245c78aa8d032a165bdfa",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "08bea52a8d99c4bc096c301ec90b8781b4fd1005e2c7610e6a2743bc362529e1",
+      "tokens_in": 257,
+      "tokens_out": 129,
+      "latency_s": 1.970108599998639,
+      "diagram_hash": "ed9383749943509fef86d3f8ee074a2f8ab6cf1891cff89073748d916134491c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_d2ffec0253c94ca79994004c45c8b716",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "010b476b35252a73995135dedb26b778bdf07ca0d3ff294d7d182c94aaf36e97",
+      "tokens_in": 502,
+      "tokens_out": 75,
+      "latency_s": 1.3494467999989865,
+      "diagram_hash": "ed9383749943509fef86d3f8ee074a2f8ab6cf1891cff89073748d916134491c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_f633946046bf40f7bab8218db591f0f8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "923272b3d7ee85a4d7c75abd2d1757d6c4eaf3178b895df2dbd9f7d4c14088b7",
+      "tokens_in": 284,
+      "tokens_out": 153,
+      "latency_s": 2.3319716999976663,
+      "diagram_hash": "bd7de7f97891940d5f496e622d72d32ae8c02b285272a65af56da87fb60ce67b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a71b930f7c",
+      "request_id": "req_2e09eb36965a4f3aba5343763f24da6d",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "41ed327e889cbd7dcde1b3700f19fe9eaf4a2d1659771c7eb3fb952a4d31de54",
+      "tokens_in": 526,
+      "tokens_out": 81,
+      "latency_s": 1.351249800005462,
+      "diagram_hash": "bd7de7f97891940d5f496e622d72d32ae8c02b285272a65af56da87fb60ce67b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_fbe34bfbbf924b4cae959a0996c98309",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "5c9dcce3a47d6945b492cd8ba750f99eebdacdb40b5d91139146cd48026d89ad",
+      "tokens_in": 325,
+      "tokens_out": 168,
+      "latency_s": 2.2507364000048256,
+      "diagram_hash": "6e36d8e41d46ed9d0e78d16922306a881545cd81545ce9c234b405d46dbec7df",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a71b930f7c",
+      "request_id": "req_cd2a2992dac94c39b505c6822bb5e185",
+      "response_text": "```plantuml\n@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer [1..1]\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer [1..1]\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "06f1d0bddad0ad424f779b28ec3a2532ee7ce925585cfd5c1e1e0c8bd5a22612",
+      "tokens_in": 541,
+      "tokens_out": 83,
+      "latency_s": 1.3890134999965085,
+      "diagram_hash": "6e36d8e41d46ed9d0e78d16922306a881545cd81545ce9c234b405d46dbec7df",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_59e98c11f440486ea0754bb0e58ff3df",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2918,
+  "tokens_out": 763,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']",
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass PoliceOfficer {\n  +id: String\n}\nclass SearchQuery {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass CaseResult {\n  +id: String\n}\nclass User {\n  +age: Integer [1..1]\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nSearchQuery \"1\" --> \"0..*\" PoliceOfficer\nSearchQuery \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" CaseResult\nPoliceOfficer \"0..*\" --> \"0..*\" CaseResult\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 2,
+  "warnings_removed": 0,
+  "elapsed_seconds": 14.740067999999155,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "searchquery",
+          "policeofficer"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.15000000000000002,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "searchquery",
+          "policeofficer",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "searchquery",
+          "policeofficer",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.15000000000000002,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "searchquery",
+          "policeofficer"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.15000000000000002,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "searchquery",
+          "policeofficer",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.15000000000000002,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "policeofficer",
+          "searchquery",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "searchquery",
+          "policeofficer",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.15000000000000002,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  }
+}

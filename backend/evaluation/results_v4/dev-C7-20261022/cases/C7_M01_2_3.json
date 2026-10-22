@@ -1,0 +1,703 @@
+{
+  "case_id": "M01_2",
+  "scenario_id": "M01",
+  "srs": "The complaint registration system records Citizen, Complaint, RegistrationDesk, and PoliceOfficer; each has an id attribute. Each Citizen can have zero or more Complaint records, and each Complaint belongs to exactly one Citizen. Each Complaint uses exactly one RegistrationDesk, and each RegistrationDesk serves zero or more Complaint records. Each RegistrationDesk manages one or more PoliceOfficer records by composition, and each PoliceOfficer belongs to exactly one RegistrationDesk. Each Citizen can reference zero or more PoliceOfficer records, and each PoliceOfficer can be referenced by zero or more Citizen records.",
+  "gold": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml",
+  "defective": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "defect_ids": [
+    "D2"
+  ],
+  "seed": 1740,
+  "injections": [
+    {
+      "defect_id": "D2",
+      "seed": 1740,
+      "selected_class": "Complaint",
+      "added_class": "MusicPlaylist"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\nclass MusicPlaylist {}\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"1\" *-- \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" *-- \"0..*\" PoliceOfficer\n@enduml",
+  "output_sha256": "3343835c8f1402fd807cdc2b77ab831e5dfeb9b70d9def9a33689d1f89a49feb",
+  "input_sha256": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2601c8035d1b21e5bda3fecc83e3dddda21da20d92a4ecfdca4d4fb15af69349",
+      "tokens_in": 629,
+      "tokens_out": 33,
+      "latency_s": 1.1624871000094572,
+      "diagram_hash": "fe3e9acf69c01d60df403e6f2d4fbcd3ac25821cfa8d7c43b6f7a8e9cb7e4cc6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_5808fcd3d1e7458aa87de3bafc04c166",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Class 'MusicPlaylist' is isolated and has no relationships with other classes.\"],\"categories\":[\"modeling\",\"class relationships\"]}",
+      "critic_errors": [
+        "Class 'MusicPlaylist' is isolated and has no relationships with other classes."
+      ],
+      "critic_categories": [
+        "modeling",
+        "class relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "df256b89e02fec5fd68fe6fef5bafa8b5f199b5967b0b546c752c273be4f3614",
+      "tokens_in": 503,
+      "tokens_out": 104,
+      "latency_s": 1.6412793999916175,
+      "diagram_hash": "00acf9ceb23040a043ef973eeeaf539d068b4765a4ef5138fe6b7b05ded8e058",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a010e5d37f",
+      "request_id": "req_102d718fb8824286be69b4889c8ae94a",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"1..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8542b6c94c09a7a61668da8896aa004956cb2319dfa6633af1e90d46e947be3d",
+      "tokens_in": 605,
+      "tokens_out": 83,
+      "latency_s": 1.4167390000075102,
+      "diagram_hash": "00acf9ceb23040a043ef973eeeaf539d068b4765a4ef5138fe6b7b05ded8e058",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_1606873625254fbeb2666ec3a8aaeb18",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"RegistrationDesk should have a multiplicity of '0..*' for Complaint instead of '0..*' to indicate it can serve multiple complaints.\",\"PoliceOfficer should have a multiplicity of '0..*' for Citizen instead of '0..*' to indicate it can be referenced by multiple citizens.\"],\"categories\":[\"modeling\",\"multiplicity\",\"class relationships\"]}",
+      "critic_errors": [
+        "RegistrationDesk should have a multiplicity of '0..*' for Complaint instead of '0..*' to indicate it can serve multiple complaints.",
+        "PoliceOfficer should have a multiplicity of '0..*' for Citizen instead of '0..*' to indicate it can be referenced by multiple citizens."
+      ],
+      "critic_categories": [
+        "modeling",
+        "multiplicity",
+        "class relationships"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "dd85e78a51c162fc48fe2bd52593aadc435b9caaa76ad269e8e6a3d7a97c5fb9",
+      "tokens_in": 527,
+      "tokens_out": 104,
+      "latency_s": 1.659759900008794,
+      "diagram_hash": "b2732fcd4862e3164e0add88dcaa1713dd29f587a918900e4cef3855518b53c5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a010e5d37f",
+      "request_id": "req_441bae2aa9cd4c86b203da0489be2e7e",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"0..*\" --> \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" --> \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "60ca530d315252a3f45618ce1d1bc9ba447cc9aa1c1ff9c9881639135b2a2814",
+      "tokens_in": 605,
+      "tokens_out": 79,
+      "latency_s": 1.4245490000030259,
+      "diagram_hash": "b2732fcd4862e3164e0add88dcaa1713dd29f587a918900e4cef3855518b53c5",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_ac58d13f0cbf426186bb1ba3a4cc85b9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Complaint class should have a composition relationship with RegistrationDesk instead of an association.\",\"The relationship between Complaint and RegistrationDesk is incorrectly defined as '0..* --> 1' instead of '1 --> 1'.\",\"The relationship between Citizen and PoliceOfficer should be a composition relationship instead of an association.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "Complaint class should have a composition relationship with RegistrationDesk instead of an association.",
+        "The relationship between Complaint and RegistrationDesk is incorrectly defined as '0..* --> 1' instead of '1 --> 1'.",
+        "The relationship between Citizen and PoliceOfficer should be a composition relationship instead of an association."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4db1eae9006f0b89b9d0d42266dd17bc2dd8a0badcb22c1756bd11695f5b9442",
+      "tokens_in": 526,
+      "tokens_out": 105,
+      "latency_s": 1.580276299995603,
+      "diagram_hash": "3343835c8f1402fd807cdc2b77ab831e5dfeb9b70d9def9a33689d1f89a49feb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a010e5d37f",
+      "request_id": "req_7c0f5a660f854113af2a44e0d9b818bb",
+      "response_text": "```plantuml\n@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"1\" *-- \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" *-- \"0..*\" PoliceOfficer\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"1\" *-- \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" *-- \"0..*\" PoliceOfficer\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a041139232536b26ebcaa92c49205ba609d9c5a6fd0434f31db15ce6201c97bd",
+      "tokens_in": 606,
+      "tokens_out": 62,
+      "latency_s": 1.1385670000017853,
+      "diagram_hash": "3343835c8f1402fd807cdc2b77ab831e5dfeb9b70d9def9a33689d1f89a49feb",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06976744186046512
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.047619047619047616
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.024390243902439025
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0ca0003e75",
+      "request_id": "req_3ee606cc107b441d9043d19512a26e69",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"RegistrationDesk should have a composition relationship with PoliceOfficer, but the current relationship is not correctly defined as composition.\",\"The relationship between Citizen and PoliceOfficer is incorrectly defined as a composition; it should be an association instead.\"],\"categories\":[\"modeling errors\",\"relationship errors\"]}",
+      "critic_errors": [
+        "RegistrationDesk should have a composition relationship with PoliceOfficer, but the current relationship is not correctly defined as composition.",
+        "The relationship between Citizen and PoliceOfficer is incorrectly defined as a composition; it should be an association instead."
+      ],
+      "critic_categories": [
+        "modeling errors",
+        "relationship errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 4001,
+  "tokens_out": 570,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['MusicPlaylist']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['MusicPlaylist']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Citizen {\n  +id: String\n}\nclass Complaint {\n  +id: String\n}\nclass RegistrationDesk {\n  +id: String\n}\nclass PoliceOfficer {\n  +id: String\n}\nCitizen \"1\" --> \"0..*\" Complaint\nComplaint \"1\" *-- \"1\" RegistrationDesk\nRegistrationDesk \"1\" *-- \"0..*\" PoliceOfficer\nCitizen \"0..*\" *-- \"0..*\" PoliceOfficer\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 1,
+  "elapsed_seconds": 10.937558999998146,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "policeofficer",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "citizen",
+          "policeofficer",
+          "composition"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "policeofficer",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationdesk",
+          "policeofficer",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "citizen",
+          "policeofficer",
+          "composition",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition",
+          "1",
+          "1"
+        ],
+        [
+          "registrationdesk",
+          "policeofficer",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "policeofficer",
+          "association"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "citizen",
+          "policeofficer",
+          "composition"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "citizen",
+          "policeofficer",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "registrationdesk",
+          "policeofficer",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "citizen",
+          "policeofficer",
+          "composition",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "complaint",
+          "registrationdesk",
+          "composition",
+          "1",
+          "1"
+        ],
+        [
+          "registrationdesk",
+          "policeofficer",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.75,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

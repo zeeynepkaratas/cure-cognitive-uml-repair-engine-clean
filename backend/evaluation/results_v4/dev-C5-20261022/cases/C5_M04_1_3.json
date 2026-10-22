@@ -1,0 +1,768 @@
+{
+  "case_id": "M04_1",
+  "scenario_id": "M04",
+  "srs": "The investigation workflow system records Investigation, Task, InvestigationModule, and CaseRecord; each has an id attribute. Each Investigation can have zero or more Task records, and each Task belongs to exactly one Investigation. Each Task uses exactly one InvestigationModule, and each InvestigationModule serves zero or more Task records. Each InvestigationModule manages one or more CaseRecord records by composition, and each CaseRecord belongs to exactly one InvestigationModule. Each Investigation can reference zero or more CaseRecord records, and each CaseRecord can be referenced by zero or more Investigation records.",
+  "gold": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nInvestigation \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defective": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1769,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1769,
+      "selected_class": "Investigation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "2c5eb26d1c7346e2fab07fdaabc0196521090909a100b8a263758d8d0ee40f64",
+  "input_sha256": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0f5ac002cf513e519b2755a0bf451fbf1aaa6d6d40ea2684417b93b95027536d",
+      "tokens_in": 474,
+      "tokens_out": 92,
+      "latency_s": 2.896615899997414,
+      "diagram_hash": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_07ebc1d5e9d84fcb9249da24a0c409aa",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesi tanımlanmamış, dolayısıyla age özelliği kontrol edilemiyor.\",\"OCL Kuralı 2: Order nesnesi tanımlanmamış, dolayısıyla OrderItem bağıntısı kontrol edilemiyor.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesi tanımlanmamış, dolayısıyla age özelliği kontrol edilemiyor.",
+        "OCL Kuralı 2: Order nesnesi tanımlanmamış, dolayısıyla OrderItem bağıntısı kontrol edilemiyor."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c7465152b8bb5f29c6828f3e78ab5499446a24fe95e5dcb14de05cde647213f1",
+      "tokens_in": 291,
+      "tokens_out": 142,
+      "latency_s": 2.014768799999729,
+      "diagram_hash": "e4b07ea6a5a01430c2ab48f705b9146580e58339ffb5774a3c1eb43fb46cc188",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d91fb09e94",
+      "request_id": "req_fa51e56faa2341b9b7a7bce9e903d725",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bfc801bd18f33591057985e381c84210567220e58f93c1c00ecded73a6000b75",
+      "tokens_in": 505,
+      "tokens_out": 75,
+      "latency_s": 1.3505549999972573,
+      "diagram_hash": "e4b07ea6a5a01430c2ab48f705b9146580e58339ffb5774a3c1eb43fb46cc188",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_b3066f0c17aa47e69ec41e65f7fc6a9d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "80d5556312a8d5be9ed163b8846608193cd4f5fac8d5c922466fd171665ffe2a",
+      "tokens_in": 297,
+      "tokens_out": 148,
+      "latency_s": 1.9714393000031123,
+      "diagram_hash": "9c6bf244ef6a83d9115486dd7ccf9b6473d464c4260bb5a636e811bff5ed7ec3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_7e7d86339eb84b1a8dc672dc53260003",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7b4d9c87220edeec9d1cfb744ec61661678a53f1765e1a416fd9464db9cc2fda",
+      "tokens_in": 511,
+      "tokens_out": 81,
+      "latency_s": 1.4392109000036726,
+      "diagram_hash": "9c6bf244ef6a83d9115486dd7ccf9b6473d464c4260bb5a636e811bff5ed7ec3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e0a0c33476b94524b67e208200ef208d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "976e3effeb335ca85f2a75d5f00389560587d1fc53cc13f8804c8f9dfb81d248",
+      "tokens_in": 320,
+      "tokens_out": 159,
+      "latency_s": 2.244053399990662,
+      "diagram_hash": "2c5eb26d1c7346e2fab07fdaabc0196521090909a100b8a263758d8d0ee40f64",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_181425ef652644ac88e5e914a724a71e",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b4193f85a6279dbcb689e889121bd61ab07301260ad5bc4f8f2a8ac3b2170060",
+      "tokens_in": 522,
+      "tokens_out": 78,
+      "latency_s": 1.3888027999928454,
+      "diagram_hash": "2c5eb26d1c7346e2fab07fdaabc0196521090909a100b8a263758d8d0ee40f64",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_6075295ee7874de1bab66c8c459443b2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2920,
+  "tokens_out": 775,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']",
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n}\n\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 2,
+  "warnings_removed": 0,
+  "elapsed_seconds": 15.93252719999873,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        "investigation"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.20454545454545459,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "caserecord",
+          "investigation"
+        ],
+        [
+          "investigation",
+          "task"
+        ]
+      ],
+      "spurious": [
+        [
+          "caserecord",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "task",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord"
+        ],
+        [
+          "investigation",
+          "task"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord"
+        ],
+        [
+          "unspecifiedentity",
+          "task"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association"
+        ],
+        [
+          "investigation",
+          "task",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigation",
+          "task",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.15000000000000002
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 6,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        "investigation"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.20454545454545459,
+    "reference_rel_undirected": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "caserecord",
+          "investigation"
+        ],
+        [
+          "investigation",
+          "task"
+        ]
+      ],
+      "spurious": [
+        [
+          "caserecord",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "task",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.055555555555555525,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord"
+        ],
+        [
+          "investigation",
+          "task"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord"
+        ],
+        [
+          "unspecifiedentity",
+          "task"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association"
+        ],
+        [
+          "investigation",
+          "task",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigation",
+          "task",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "investigation",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.15000000000000002
+  }
+}

@@ -1,0 +1,391 @@
+{
+  "case_id": "M10_2",
+  "scenario_id": "M10",
+  "srs": "The search result view system records User, ResultView, ViewService, and CaseSummary; each has an id attribute. Each User can have zero or more ResultView records, and each ResultView belongs to exactly one User. Each ResultView uses exactly one ViewService, and each ViewService serves zero or more ResultView records. Each ViewService manages one or more CaseSummary records by composition, and each CaseSummary belongs to exactly one ViewService. Each User can reference zero or more CaseSummary records, and each CaseSummary can be referenced by zero or more User records.",
+  "gold": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "defective": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1830,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1830,
+      "selected_class": "CaseSummary"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1831,
+      "selected_class": "User",
+      "added_class": "WeatherStation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"1\" --> \"1\" ViewService\nViewService \"1\" *-- \"0..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "output_sha256": "b609650f657cd4478d2c5980783ceeec0c043abfee18c8d4286af1ca729e371b",
+  "input_sha256": "ad060f66736d9a235ed44ec5e557962d0904b074cd83620568fe380ab6c09628",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 1,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a010f4e65a4027d7fbbc91a000778dddc272103b272c41d23b0f3fb84fabd7b1",
+      "tokens_in": 395,
+      "tokens_out": 110,
+      "latency_s": 1.5235902999993414,
+      "diagram_hash": "ad060f66736d9a235ed44ec5e557962d0904b074cd83620568fe380ab6c09628",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_280b0c5e15fd47cd8f7fbc929485e97d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between ResultView and ViewService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each ResultView uses exactly one ViewService.\",\"The association between ViewService and CaseSummary is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to indicate that each ViewService manages one or more CaseSummary records.\"],\"categories\":[\"UML Association Errors\",\"UML Composition Errors\"]}",
+      "critic_errors": [
+        "The association between ResultView and ViewService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each ResultView uses exactly one ViewService.",
+        "The association between ViewService and CaseSummary is incorrectly defined as '1 *-- 1..*'. It should be '1 *-- 0..*' to indicate that each ViewService manages one or more CaseSummary records."
+      ],
+      "critic_categories": [
+        "UML Association Errors",
+        "UML Composition Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d9bf337555d907eead547f6a673cc3da9fe32e6390827619b7b2e71ed33687bd",
+      "tokens_in": 258,
+      "tokens_out": 106,
+      "latency_s": 1.6884390999912284,
+      "diagram_hash": "b609650f657cd4478d2c5980783ceeec0c043abfee18c8d4286af1ca729e371b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0f86f2b5a2",
+      "request_id": "req_f9db805d587d47a38687372cc54b1bc9",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"1\" --> \"1\" ViewService\nViewService \"1\" *-- \"0..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"1\" --> \"1\" ViewService\nViewService \"1\" *-- \"0..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bec5acee3e225c79d5898e63e3c2dc341f6a5d5237ab1f91cbc8e8ccc020cd40",
+      "tokens_in": 397,
+      "tokens_out": 12,
+      "latency_s": 0.8267202999995789,
+      "diagram_hash": "b609650f657cd4478d2c5980783ceeec0c043abfee18c8d4286af1ca729e371b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_1b1197815219494b9a881bbb0ae03461",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 3,
+  "tokens_in": 1050,
+  "tokens_out": 228,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"1\" --> \"1\" ViewService\nViewService \"1\" *-- \"0..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 4.043210299991188,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resultview",
+          "viewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "viewservice",
+          "casesummary",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "resultview",
+          "viewservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "viewservice",
+          "casesummary",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "resultview",
+          "viewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "viewservice",
+          "casesummary",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "resultview",
+          "viewservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "viewservice",
+          "casesummary",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "case_id": "S49",
+  "dataset": "shared",
+  "srs": "The CacheService and StorageService exchange persisted state.",
+  "input_plantuml": "class CacheService {}\nclass CacheService {}\nclass StorageService {}\nCacheService --> StorageService\nStorageService --> CacheService",
+  "gold": null,
+  "defect_ids": [
+    "missing_both_duplicate_and_cycle"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must belong to one Order\n@enduml",
+  "output_sha256": "11a67e8aabcd064b4bceba2a16c8de00ff3fcb0c50541623e42a1aa28efc158c",
+  "input_sha256": "21411bbd89dc8f7ed026ae2ba5900f349bf452c96060af819d33d0bb696dc395",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1f6fd7b768d954632a85e2a45a8d32088f1f9ae48b8018be4c0fcf8caf99453e",
+      "tokens_in": 293,
+      "tokens_out": 80,
+      "latency_s": 2.5767126999999164,
+      "diagram_hash": "21411bbd89dc8f7ed026ae2ba5900f349bf452c96060af819d33d0bb696dc395",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_42420175050244899ca20fd95e4887ed",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği ile ilgili bir tanım yok.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Yapılandırma Hataları\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği ile ilgili bir tanım yok.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapılandırma Hataları",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "ff414efadf4b3c964352c5f36e564fb00d59e2f6c386b15cf6f47e47ab65e6b6",
+      "tokens_in": 177,
+      "tokens_out": 62,
+      "latency_s": 1.8622196000005715,
+      "diagram_hash": "b3237ad0316f6a2fe508a612e637b98cf9b7bbae26a2dc28372d353859edc9dc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0d55417811",
+      "request_id": "req_0dcdb4abe6fe40e180ec810dd2b72510",
+      "response_text": "```plantuml\n@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0bb61ea8a66983a64371a1da0cf264affd3abebfaf9b72e3678e3aa9570c41a8",
+      "tokens_in": 326,
+      "tokens_out": 85,
+      "latency_s": 3.0587266000002273,
+      "diagram_hash": "b3237ad0316f6a2fe508a612e637b98cf9b7bbae26a2dc28372d353859edc9dc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.11764705882352941
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1111111111111111
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_57e4ea486efd4669ab1ea440502bc50f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Kural İhlali\",\"OCL Kural İhlali\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Kural İhlali",
+        "OCL Kural İhlali"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e54b9e588070d123d0097498417467a5caab41ac3c0f371f810a2b7307419ec7",
+      "tokens_in": 219,
+      "tokens_out": 100,
+      "latency_s": 2.9474492000008468,
+      "diagram_hash": "7bf2590f047a49f57880a77d71c45b08511cc6e630553afd62e6580e25134404",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_17e56666f7c741e88232d1efd7e739fa",
+      "response_text": "```plantuml\n@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a085b4f5c077a9a75773dd7be650765270c88e5ab976da833d4ca3709deda872",
+      "tokens_in": 364,
+      "tokens_out": 94,
+      "latency_s": 2.0679246999998213,
+      "diagram_hash": "7bf2590f047a49f57880a77d71c45b08511cc6e630553afd62e6580e25134404",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.08695652173913043
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.08333333333333333
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c12d51c22c30475abaa21f014d5a5c2b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için herhangi bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş, ancak OrderItem nesnesinin bağıntısı zorunlu değil.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için herhangi bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olduğu belirtilmiş, ancak OrderItem nesnesinin bağıntısı zorunlu değil."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "230f1b90c2ccb0d26dd36392b594beb36f6e45296485dcf54a130b9f8f613b08",
+      "tokens_in": 295,
+      "tokens_out": 119,
+      "latency_s": 2.7422907000000123,
+      "diagram_hash": "11a67e8aabcd064b4bceba2a16c8de00ff3fcb0c50541623e42a1aa28efc158c",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d3b38c8dc1",
+      "request_id": "req_7275b1fda28c4a5d81e9c577b148fa5b",
+      "response_text": "```plantuml\n@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must belong to one Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must belong to one Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4d1c9426f45371b156ac5de70628adf2584330b8ff7bbc1dde7933a637c31910",
+      "tokens_in": 383,
+      "tokens_out": 55,
+      "latency_s": 1.4713736000003337,
+      "diagram_hash": "11a67e8aabcd064b4bceba2a16c8de00ff3fcb0c50541623e42a1aa28efc158c",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.15384615384615385
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.11538461538461539
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_ddf59b11f243473a8df53e5ff335a13f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Order class does not enforce that it must have at least one OrderItem associated with it.\",\"User class does not enforce that age must be greater than or equal to 18.\"],\"categories\":[\"UML Structure\",\"Business Rules Compliance\"]}",
+      "critic_errors": [
+        "Order class does not enforce that it must have at least one OrderItem associated with it.",
+        "User class does not enforce that age must be greater than or equal to 18."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Business Rules Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2057,
+  "tokens_out": 595,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@startuml etiketi eksik",
+      "@enduml etiketi eksik",
+      "@startuml etiketi eksik",
+      "@enduml etiketi eksik",
+      "Tekrar eden sinif ismi: ['CacheService']"
+    ],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {CacheService, StorageService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "IHLAL",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {CacheService, StorageService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['CacheService', 'CacheService']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass CacheService {}\nclass StorageService {}\nclass User {\n    - age: Integer\n    + setAge(age: Integer): void\n    + getAge(): Integer\n}\nclass Order {\n    - orderItems: List<OrderItem>\n    + addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nCacheService --> StorageService\nUser --> Order\nOrder --> OrderItem\nOrder \"1\" --> \"*\" OrderItem\nOrderItem \"1\" --> \"1\" Order // OrderItem must belong to one Order\n@enduml",
+  "compiler_valid_if_reverted": false,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 1,
+  "elapsed_seconds": 20.20241139999962,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 20.202466100000493,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

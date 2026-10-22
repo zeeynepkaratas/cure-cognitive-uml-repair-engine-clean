@@ -13,7 +13,7 @@ The v2.0 description says the curators do not know of licence agreements or
 intellectual property rights in the collected requirements, and offers removal
 on infringement reports. This caveat remains relevant even though the
 registration declares CC BY 4.0. Citing v1.0 does not establish which archive
-version CURE actually consumed: **BULUNAMADI**.
+version CURE actually consumed: **NOT RECORDED**.
 
 Sources:
 
@@ -30,26 +30,14 @@ CURE MIT license does not replace this license or third-party document rights.
 The upstream record's license declaration is recorded here; this is not an
 independent determination of rights in every original requirements document.
 
-## Changes and retained provenance
+## Historical data and new reconstruction
 
-`pure_dataset.csv` contains 7,219 rows and only the `Requirement` column. The
-converter in `../preprocessing/xml_to_csv.py` removes XML markup, normalizes
-whitespace, splits text, drops short fragments, and removes duplicates. The
-pilot further selects/paraphrases requirement excerpts, creates reference UML
-models manually, and injects defects. These are CURE transformations, not
-upstream PURE reference models.
+The original pure_dataset.csv has7219 rows and is retained unchanged. Its historical consumed archive version and exact34268-to7219 filtering procedure are NOT RECORDED. The new pipeline does not claim to reproduce that historical procedure. The original publication's79 documents and34268 sentences describe a larger collection than the downloaded XML subset.
 
-The original PURE publication describes 79 documents and 34,268 sentences.
-Those full-corpus counts do **not** establish how many original documents were
-actually read to produce this repository's CSV. The raw source archive and a
-document-to-row manifest were not retained: **BULUNAMADI**. Consequently the
-exact count and original filenames of documents used for P01–P10 cannot be
-verified from the retained CSV. Its opening text identifies CCTNS material,
-but this alone does not prove the original document identity for each P-case.
+The v4 reconstruction independently downloads requirements-xml.zip from official v1.0. pure_archive_manifest.json records SHA-2568b0a36ac34f806d16c0c13d4b28a92b10e3fb353739025b068249b2de95fbbdb,378737 bytes and the matching published MD5. This archive contains18 usable XML documents; the current record description says19. The missing nineteenth file was not invented.
 
-`pure_pilot_provenance.csv` preserves the stored `pure_row` values, actual CSV
-row text, and normalized exact text matches (where present). It explicitly
-leaves original document names unresolved rather than guessing a row convention.
-See `../../docs/submission-audit-2026-10-20/pure_license_record.json` for the
-upstream license metadata retrieved on 2026-10-20. Download verification of
-the original archive used by CURE: **BULUNAMADI**.
+The XML/HTML/Punkt pipeline produces pure_dataset_v2.csv with7017 rows, preserving source document and sentence metadata. pure_manifest.csv maps every source document to output rows. See pure_dataset_v2.status.json and docs/pure-pipeline-v4.md for the exact filter and reproduction commands.
+
+P01–P10 are all aligned to XMLZIPFile/0000 - cctns.xml in the official archive. pure_pilot_provenance.csv retains historical row indices and CSV text, adds verified new row indices and exact source sentences, and labels each pilot requirement verbatim or paraphrase. Historical indices are not treated as authoritative. P02 omits the source opt-in condition; this is a substantive paraphrase qualification. Pilot reference UML models and injected defects were authored for CURE, not supplied as PURE gold annotations.
+
+The optional local index was actually built from the new source-linked CSV:7162 segments of at most500 characters with50-character overlap, normalized384-dimensional bge-small-en-v1.5 vectors and persisted FAISS. The exact immutable model revision, source/output hashes and separate package lock are recorded in ../vector_db/. This document index is separate from the rule retriever used in the experiment matrix.

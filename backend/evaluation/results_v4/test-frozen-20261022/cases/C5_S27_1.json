@@ -1,0 +1,333 @@
+{
+  "case_id": "S27",
+  "dataset": "shared",
+  "srs": "The UserManager uses the DiagramService.",
+  "input_plantuml": "@startuml\nclass UserManager {}\nclass DiagramService {}",
+  "gold": null,
+  "defect_ids": [
+    "missing_end_isolated_classes"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n    + isAdult(): boolean\n}\n\nclass Order {\n    + addOrderItem(item: OrderItem): void\n}\n\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml",
+  "output_sha256": "ea39e0f65802548c4d68d425439049c1b40bc4bae6b7be214f79d41d56053b9e",
+  "input_sha256": "834fc303d8134ce13bd66492da6f7318821bde86efbc304ff5a339b0f4da646a",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "08357aba93311b64871767ec2bd3a99a34d27f32236fe4a5cca4e31e37adc463",
+      "tokens_in": 279,
+      "tokens_out": 51,
+      "latency_s": 1.6973539999999048,
+      "diagram_hash": "834fc303d8134ce13bd66492da6f7318821bde86efbc304ff5a339b0f4da646a",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_0382f26390884da3a01fc7f3feda73d0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age constraint as per OCL Rule 1.\",\"Order class does not enforce OrderItem association as per OCL Rule 2.\"],\"categories\":[\"UML Constraints\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age constraint as per OCL Rule 1.",
+        "Order class does not enforce OrderItem association as per OCL Rule 2."
+      ],
+      "critic_categories": [
+        "UML Constraints",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c1d9c0379faa4e5afdf3c342b29915398cb7ca6395c9f75855ec527d2470c4ff",
+      "tokens_in": 114,
+      "tokens_out": 37,
+      "latency_s": 1.4298952000003737,
+      "diagram_hash": "7f29c2aec4748df713087b6881d415d2a3457a83a41f4290662976efe05c7645",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_6548d98151",
+      "request_id": "req_65efa622253648bca85fde4bb9827b77",
+      "response_text": "```plantuml\n@startuml\nclass UserManager {\n    - age: int\n    + setAge(age: int): void\n}\n\nclass DiagramService {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UserManager {\n    - age: int\n    + setAge(age: int): void\n}\n\nclass DiagramService {}\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2754c0c5133bf45747911c62082061cdaacce4a2a89304d9363da734b64eaeaa",
+      "tokens_in": 299,
+      "tokens_out": 47,
+      "latency_s": 1.8584267000001091,
+      "diagram_hash": "7f29c2aec4748df713087b6881d415d2a3457a83a41f4290662976efe05c7645",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.06666666666666667
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_68cbfe09a6084692bfdd9da9fb13d16d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not exist to enforce the age constraint.\",\"Order class and OrderItem class do not exist to enforce the order-item relationship.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not exist to enforce the age constraint.",
+        "Order class and OrderItem class do not exist to enforce the order-item relationship."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f59cf86b94f0be8cb1f31f7667acef8d0bc6532f7b9bd783505ab8a90ac67091",
+      "tokens_in": 130,
+      "tokens_out": 66,
+      "latency_s": 3.1931845999997677,
+      "diagram_hash": "4a5a6e324012917ccf736a6c4932eff8ccaa6dc3901f987d7f5d873971285d58",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_7b4718ccca",
+      "request_id": "req_030f9e3b354e4c63a51ec12b5e3a89ea",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n}\n\nclass Order {}\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"0..*\" OrderItem : contains >\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n}\n\nclass Order {}\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"0..*\" OrderItem : contains >\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "fa626e1e72857f2d672164e20508c3b28b4184c8ee1dba04a19cabf62ad5956d",
+      "tokens_in": 328,
+      "tokens_out": 46,
+      "latency_s": 2.2237036000001353,
+      "diagram_hash": "4a5a6e324012917ccf736a6c4932eff8ccaa6dc3901f987d7f5d873971285d58",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.10526315789473684
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_19a88dd187c7488cb91d117033b25e72",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age constraint (age >= 18)\",\"Order class does not ensure at least one OrderItem exists\"],\"categories\":[\"UML Constraints\",\"Business Rules Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age constraint (age >= 18)",
+        "Order class does not ensure at least one OrderItem exists"
+      ],
+      "critic_categories": [
+        "UML Constraints",
+        "Business Rules Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "85305b7282dbb9fbf43fc8f6e0d27081684ce62e4e87cadacf72d76aafb7e80a",
+      "tokens_in": 157,
+      "tokens_out": 86,
+      "latency_s": 2.520169099999748,
+      "diagram_hash": "ea39e0f65802548c4d68d425439049c1b40bc4bae6b7be214f79d41d56053b9e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_fc65782694f94ef883507d6c782f5132",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n    + isAdult(): boolean\n}\n\nclass Order {\n    + addOrderItem(item: OrderItem): void\n}\n\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n    + isAdult(): boolean\n}\n\nclass Order {\n    + addOrderItem(item: OrderItem): void\n}\n\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6d0b319869d0a5e5dfb55d4ce468d2a22dd5eedf73a5181bc485d8126e3775eb",
+      "tokens_in": 348,
+      "tokens_out": 88,
+      "latency_s": 2.587072199999966,
+      "diagram_hash": "ea39e0f65802548c4d68d425439049c1b40bc4bae6b7be214f79d41d56053b9e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.08695652173913043
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.08333333333333333
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_01fbb0a46e8a48ffbbb81c76a2cd0d3b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User sınıfında age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order sınıfında OrderItem nesnesinin en az bir tane olması gerektiğine dair bir kontrol yok.\"],\"categories\":[\"UML Kısıtlamaları\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User sınıfında age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order sınıfında OrderItem nesnesinin en az bir tane olması gerektiğine dair bir kontrol yok."
+      ],
+      "critic_categories": [
+        "UML Kısıtlamaları",
+        "OCL Uygunluğu"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1655,
+  "tokens_out": 421,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['UserManager', 'DiagramService']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['UserManager', 'DiagramService']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass User {\n    - age: int\n    + setAge(age: int): void\n    + isAdult(): boolean\n}\n\nclass Order {\n    + addOrderItem(item: OrderItem): void\n}\n\nclass OrderItem {}\n\nUser \"1\" -- \"0..*\" Order : places >\nOrder \"1\" -- \"1..*\" OrderItem : contains >\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 1,
+  "elapsed_seconds": 18.977029199999834,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 18.977063499999986,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

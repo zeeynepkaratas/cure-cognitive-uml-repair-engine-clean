@@ -1,22 +1,20 @@
-import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 import logging
 
-# Loglama sisteminin kurulumu 
-logging.basicConfig(filename='uml_generation.log', level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+# Loglama sisteminin kurulumu
 
 # .env dosyasından API anahtarlarını yükle
 load_dotenv()
 
+
 class UMLGenerator:
     def __init__(self, model_name="gpt-4o-mini", temperature=0):
-        # LLM API Bağlantısı 
+        # LLM API Bağlantısı
         self.llm = ChatOpenAI(model=model_name, temperature=temperature)
-        
-        # Ham metinden UML üretimi için prompt tasarımı 
+
+        # Ham metinden UML üretimi için prompt tasarımı
         self.prompt = PromptTemplate(
             input_variables=["requirements"],
             template="""
@@ -27,7 +25,7 @@ class UMLGenerator:
             {requirements}
             
             PlantUML Kodu:
-            """
+            """,
         )
         self.chain = self.prompt | self.llm
 
@@ -43,10 +41,11 @@ class UMLGenerator:
             logging.error(f"UML üretimi sırasında hata oluştu: {str(e)}")
             return f"Hata: {str(e)}"
 
+
 # Prompt testleri için basit bir kullanım örneği
 if __name__ == "__main__":
     generator = UMLGenerator()
     test_text = "Sistemde User ve Order sınıfları olmalıdır. User birden fazla Order verebilir. Order sınıfında total_amount özelliği bulunmalıdır."
-    
+
     result = generator.generate_uml(test_text)
     print("Üretilen PlantUML:\n", result)

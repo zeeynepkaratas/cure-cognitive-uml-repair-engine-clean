@@ -1,0 +1,610 @@
+{
+  "case_id": "M27_2",
+  "scenario_id": "M27",
+  "srs": "The sports registration system records Athlete, Registration, TournamentService, and Event; each has an id attribute. Each Athlete can have zero or more Registration records, and each Registration belongs to exactly one Athlete. Each Registration uses exactly one TournamentService, and each TournamentService serves zero or more Registration records. Each TournamentService manages one or more Event records by composition, and each Event belongs to exactly one TournamentService. Each Athlete can reference zero or more Event records, and each Event can be referenced by zero or more Athlete records.",
+  "gold": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "defective": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 2000,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 2000,
+      "selected_class": "Event",
+      "original_relation": [
+        "Athlete",
+        "Registration",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 18}\n@enduml",
+  "output_sha256": "c627efd771b359b1f1df5926e38477c275b2d0ea3966f2cbaf7df78364b324fc",
+  "input_sha256": "af2c77dd12c0b37c205265e4cbd609fa69da3a147eea316397955ab9c81fb1c8",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a0dcca98bccea88d97722539fb6dc7ccbf1f0a9552554f43d76a2010b9ffff23",
+      "tokens_in": 461,
+      "tokens_out": 84,
+      "latency_s": 2.42253380000011,
+      "diagram_hash": "af2c77dd12c0b37c205265e4cbd609fa69da3a147eea316397955ab9c81fb1c8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_facf0ab6060d4e84b64180452eee34fb",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Kural İhlalleri\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Kural İhlalleri"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b8da795cbe10e54228e2eea0e23c56ad417ded35d9bb442dd8a6cfb74f9a915d",
+      "tokens_in": 262,
+      "tokens_out": 96,
+      "latency_s": 1.5541739000000234,
+      "diagram_hash": "e117cb2d904ebf43036fe0eae0e0356cdebf183486cfe4b82e931030404d0d75",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_5753b80ac69249b9a858ba3c38a697b4",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "da302fda8fe2ec9365ede629416b47c509b52a8c7aa72636fc633b8266f0881f",
+      "tokens_in": 454,
+      "tokens_out": 77,
+      "latency_s": 1.989393199999995,
+      "diagram_hash": "e117cb2d904ebf43036fe0eae0e0356cdebf183486cfe4b82e931030404d0d75",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_468ac63c51984779bb72061a8b19dc2c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1050bcb69ecb508909005c8fe124a0371278f1cebba79a4a2a803d182939a217",
+      "tokens_in": 253,
+      "tokens_out": 168,
+      "latency_s": 3.419809299999997,
+      "diagram_hash": "eee77a9db64b36eb375e3b9b48fd78bb675cd81c03bbec5a4579d6ead94a30d0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_16c1774bc0",
+      "request_id": "req_74bae3cbb6a149dbb1757e19acefe7c8",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 0}\n\n' OCL Kuralı 2: Registration sınıfına en az bir Event ile bağlantı ekleniyor\nRegistration \"1\" --> \"0..*\" Event\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 0}\n\n' OCL Kuralı 2: Registration sınıfına en az bir Event ile bağlantı ekleniyor\nRegistration \"1\" --> \"0..*\" Event\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "12c505a43d613c220f863d9ab4beed922673f5d47689c2fc4f496cdcb23caa79",
+      "tokens_in": 526,
+      "tokens_out": 83,
+      "latency_s": 1.7487797999997383,
+      "diagram_hash": "eee77a9db64b36eb375e3b9b48fd78bb675cd81c03bbec5a4579d6ead94a30d0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.03125
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_aa57fdc1e5254e5a894898cda1203125",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: Athlete sınıfındaki age özelliği için 18 yaş kısıtlaması uygulanmamış.\",\"OCL Kuralı 2 ihlal edildi: Registration sınıfının Event ile olan bağıntısı en az bir Event ile sınırlı değil.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: Athlete sınıfındaki age özelliği için 18 yaş kısıtlaması uygulanmamış.",
+        "OCL Kuralı 2 ihlal edildi: Registration sınıfının Event ile olan bağıntısı en az bir Event ile sınırlı değil."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "40835d8419407aee56edea53dbe2aa23b37d8f2b496d908825d8c0ec23c3c357",
+      "tokens_in": 379,
+      "tokens_out": 144,
+      "latency_s": 2.6022953000001507,
+      "diagram_hash": "c627efd771b359b1f1df5926e38477c275b2d0ea3966f2cbaf7df78364b324fc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ad31506360",
+      "request_id": "req_19ab9f23604041bca8ff8c84ace1fe3e",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 18}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 18}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "288dfef4c73b540bb719bea5f4bf12c306b57697dafe2a42a202a726cb199972",
+      "tokens_in": 502,
+      "tokens_out": 62,
+      "latency_s": 1.890393099999983,
+      "diagram_hash": "c627efd771b359b1f1df5926e38477c275b2d0ea3966f2cbaf7df78364b324fc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.07407407407407407
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8b0563813f9d4d7eaf81f7c9f2a2f033",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Athlete sınıfındaki age özelliği için bir kısıtlama eklenmiş ancak bu kısıtlama UML'de belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Athlete sınıfındaki age özelliği için bir kısıtlama eklenmiş ancak bu kısıtlama UML'de belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2837,
+  "tokens_out": 714,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Athlete {\n  +id: String\n  +age: Integer\n}\n\nclass Registration {\n  +id: String\n}\n\nclass TournamentService {\n  +id: String\n}\n\nclass Event {\n  +id: String\n}\n\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n\n' OCL Kuralı 1: Athlete sınıfına age için bir kısıtlama ekleniyor\nAthlete : +age: Integer {min = 18}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 19.76158250000026,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration"
+        ]
+      ],
+      "spurious": [
+        [
+          "event",
+          "registration"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1071428571428571,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration"
+        ]
+      ],
+      "spurious": [
+        [
+          "registration",
+          "event"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.1071428571428571,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "registration",
+          "event",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.1071428571428571,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "athlete",
+          "registration",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registration",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "athlete",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration"
+        ]
+      ],
+      "spurious": [
+        [
+          "event",
+          "registration"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1071428571428571,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration"
+        ]
+      ],
+      "spurious": [
+        [
+          "registration",
+          "event"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.1071428571428571,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "registration",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "registration",
+          "event",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.1071428571428571,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "athlete",
+          "registration",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registration",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "athlete",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "end_to_end_seconds": 19.7744603000001,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

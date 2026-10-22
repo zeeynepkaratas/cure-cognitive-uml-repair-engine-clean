@@ -1,0 +1,539 @@
+{
+  "case_id": "P07",
+  "dataset": "pure",
+  "srs": "The System must allow only admin-users to set up user profiles and allocate users to groups.",
+  "input_plantuml": "class System {}\nclass AdminUser {}\nclass UserProfile {}\nclass UserGroup {}\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\n@enduml",
+  "gold": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {}\nclass UserGroup {}\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\n@enduml",
+  "defect_ids": [
+    "missing_startuml"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n    +checkAge(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n    +addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n\nUserProfile : +checkAge() {\n    return age >= 18\n}\n\nOrder : +addOrderItem(item: OrderItem) {\n    if (orderItems.size() == 0) {\n        throw new Exception(\"Order must have at least one OrderItem.\")\n    }\n    orderItems.add(item)\n}\n@enduml",
+  "output_sha256": "3be4e8acc5b2af59d682a684da7ff9c74f2d5a23b6fa13ed22a9d89697b7dbdc",
+  "input_sha256": "b97874699831f96a940ee40c3d78aabf2f44318017c520ab329119bd0883d6e6",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "601d67bb94f89842223dec8e26e64645af3f27472cc78cb0aac433f33688a6ac",
+      "tokens_in": 312,
+      "tokens_out": 81,
+      "latency_s": 2.3957256000003326,
+      "diagram_hash": "b97874699831f96a940ee40c3d78aabf2f44318017c520ab329119bd0883d6e6",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_011bbef7487046ffb1d774369b6d2e28",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edilebilir: User nesnesinin age özelliği belirtilmemiştir.\",\"OCL Kuralı 2 ihlal edilebilir: Order nesnesi ve OrderItem nesnesi tanımlanmamıştır.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edilebilir: User nesnesinin age özelliği belirtilmemiştir.",
+        "OCL Kuralı 2 ihlal edilebilir: Order nesnesi ve OrderItem nesnesi tanımlanmamıştır."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "837056c413ebcf92eb8a95f0329475fb6d55ba96ec2329af912e2b2ae11624c8",
+      "tokens_in": 184,
+      "tokens_out": 58,
+      "latency_s": 1.4947560000000522,
+      "diagram_hash": "785abc25d7d7910d61910592808494f66aef3d7be920ff65f22d39b4c535a1d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_cd839501f6",
+      "request_id": "req_c4e27665c4e54d87aeaa933bec819ba5",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n}\nclass UserGroup {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n}\nclass UserGroup {}\nclass Order {}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a793e6c023e238761275f6f7307c084fe7fcdd9f5418baec464ef3819809ba1f",
+      "tokens_in": 330,
+      "tokens_out": 60,
+      "latency_s": 1.8004906000005576,
+      "diagram_hash": "785abc25d7d7910d61910592808494f66aef3d7be920ff65f22d39b4c535a1d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.11764705882352941
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.058823529411764705
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8d00efcebd23415d8642106152a4d60c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Order class must have at least one OrderItem association to satisfy OCL Rule 2.\",\"UserProfile class must ensure age is greater than or equal to 18 to satisfy OCL Rule 1.\"],\"categories\":[\"OCL Compliance\",\"UML Structure\"]}",
+      "critic_errors": [
+        "Order class must have at least one OrderItem association to satisfy OCL Rule 2.",
+        "UserProfile class must ensure age is greater than or equal to 18 to satisfy OCL Rule 1."
+      ],
+      "critic_categories": [
+        "OCL Compliance",
+        "UML Structure"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d68b703cce3717b9a20951841212a5c7ae70108363e059ff3b44ee08b5757b22",
+      "tokens_in": 164,
+      "tokens_out": 80,
+      "latency_s": 1.7472024999997302,
+      "diagram_hash": "008d4e94cf6e222cd05fcc9f9740d14af61be0c42594698c53e2fa4f6907d873",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_402fb8a3d9",
+      "request_id": "req_cd35a71ffe4f4881b10d1fb07e770881",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ceeaff9c283ab5033fd956db4fd0894170296f871e18e1a4433de768616a05d5",
+      "tokens_in": 352,
+      "tokens_out": 55,
+      "latency_s": 2.3148119999996197,
+      "diagram_hash": "008d4e94cf6e222cd05fcc9f9740d14af61be0c42594698c53e2fa4f6907d873",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_3b87775a657240dfadf85f12784c94fd",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Order class does not enforce that it must have at least one OrderItem associated with it.\",\"UserProfile class does not enforce that age must be greater than or equal to 18.\"],\"categories\":[\"UML Structure\",\"Business Logic\"]}",
+      "critic_errors": [
+        "Order class does not enforce that it must have at least one OrderItem associated with it.",
+        "UserProfile class does not enforce that age must be greater than or equal to 18."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Business Logic"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4aeda0d77776e6e9f70986ef1fcd8f513076b228bc594f39d4d882e3e2366295",
+      "tokens_in": 182,
+      "tokens_out": 162,
+      "latency_s": 3.0738976000002367,
+      "diagram_hash": "3be4e8acc5b2af59d682a684da7ff9c74f2d5a23b6fa13ed22a9d89697b7dbdc",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_a1f74971daa1400f84df5070007ebbd9",
+      "response_text": "```plantuml\n@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n    +checkAge(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n    +addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n\nUserProfile : +checkAge() {\n    return age >= 18\n}\n\nOrder : +addOrderItem(item: OrderItem) {\n    if (orderItems.size() == 0) {\n        throw new Exception(\"Order must have at least one OrderItem.\")\n    }\n    orderItems.add(item)\n}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n    +checkAge(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n    +addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n\nUserProfile : +checkAge() {\n    return age >= 18\n}\n\nOrder : +addOrderItem(item: OrderItem) {\n    if (orderItems.size() == 0) {\n        throw new Exception(\"Order must have at least one OrderItem.\")\n    }\n    orderItems.add(item)\n}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "36629bf7a7eba68146834c78a0408e89d1462189e03ce65cde3c4687743b6756",
+      "tokens_in": 434,
+      "tokens_out": 12,
+      "latency_s": 1.173428199999762,
+      "diagram_hash": "3be4e8acc5b2af59d682a684da7ff9c74f2d5a23b6fa13ed22a9d89697b7dbdc",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.17142857142857143
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.14285714285714285
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d3df1f3687364b45b0839db33dc2e6f5",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1958,
+  "tokens_out": 508,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@startuml etiketi eksik",
+      "@startuml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "IHLAL",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass System {}\nclass AdminUser {}\nclass UserProfile {\n    +age: int\n    +isAdult(): boolean\n    +checkAge(): boolean\n}\nclass UserGroup {}\nclass Order {\n    +orderItems: List<OrderItem>\n    +addOrderItem(item: OrderItem): void\n}\nclass OrderItem {}\n\nSystem --> AdminUser\nAdminUser --> UserProfile\nAdminUser --> UserGroup\nOrder --> OrderItem\n\nUserProfile : +checkAge() {\n    return age >= 18\n}\n\nOrder : +addOrderItem(item: OrderItem) {\n    if (orderItems.size() == 0) {\n        throw new Exception(\"Order must have at least one OrderItem.\")\n    }\n    orderItems.add(item)\n}\n@enduml",
+  "compiler_valid_if_reverted": false,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 16.456884199999877,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 3,
+    "output_class_count": 6,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "",
+          ""
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.1428571428571429,
+    "reference_attribute": {
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "reference_count": 0,
+      "predicted_count": 2,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "userprofile",
+          "age"
+        ]
+      ],
+      "status": "not_applicable"
+    }
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 3,
+    "output_class_count": 6,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem"
+      ]
+    },
+    "delta_class_f1": -0.19999999999999996,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "reference_count": 3,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "",
+          ""
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.1428571428571429,
+    "reference_attribute": {
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "reference_count": 0,
+      "predicted_count": 2,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "userprofile",
+          "age"
+        ]
+      ],
+      "status": "not_applicable"
+    }
+  },
+  "end_to_end_seconds": 16.461753800000224,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

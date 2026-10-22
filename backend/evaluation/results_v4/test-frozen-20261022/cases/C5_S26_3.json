@@ -1,0 +1,346 @@
+{
+  "case_id": "S26",
+  "dataset": "shared",
+  "srs": "The UserManager uses the DiagramService.",
+  "input_plantuml": "class UserManager {}\nclass DiagramService {}\n@enduml",
+  "gold": null,
+  "defect_ids": [
+    "missing_start_isolated_classes"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0 && age < 120\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0 && orderItems.allMatch(item -> item.isValid())\n    }\n}\n\nclass OrderItem {\n    + isValid(): boolean {\n        // Implement validation logic for OrderItem\n    }\n}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml",
+  "output_sha256": "cc5e1d93ec796618e8d69b62ee8a0d8eb87ff514afacce8f202f6ae2e2ea75f7",
+  "input_sha256": "dc2e79a5047b73025b26f0db32367290bff5a38ddd3765e27321fe83dfbe7fe8",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "9855d02601c2a441092970f18c9194be7172da3828835af91272f1a2cc9868f0",
+      "tokens_in": 278,
+      "tokens_out": 49,
+      "latency_s": 1.4320369000006394,
+      "diagram_hash": "dc2e79a5047b73025b26f0db32367290bff5a38ddd3765e27321fe83dfbe7fe8",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1b6ea9b589b54bc988b63afaf7f22943",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class is missing age attribute with validation for age >= 18.\",\"Order class is missing OrderItem association with validation for size > 0.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class is missing age attribute with validation for age >= 18.",
+        "Order class is missing OrderItem association with validation for size > 0."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f37391d0faf08da5dae3b941c75f95185a5d52c501f86cc75d09fd0b1b5149fe",
+      "tokens_in": 111,
+      "tokens_out": 62,
+      "latency_s": 1.4992901000005077,
+      "diagram_hash": "5cc56853d0506d46dc34a0a238415b3cfe4045e1d019232b38ea2e9ec5432963",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fbfbfe4157",
+      "request_id": "req_83d8a07074b14bb68fe835eca6ff6dd0",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean\n}\n\nclass OrderItem {}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean\n}\n\nclass OrderItem {}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "1f36345dcab61c8060a20b4ba809784c6d2ccc7bedad535b60add4e73d1e60e9",
+      "tokens_in": 324,
+      "tokens_out": 107,
+      "latency_s": 2.3615192999995998,
+      "diagram_hash": "5cc56853d0506d46dc34a0a238415b3cfe4045e1d019232b38ea2e9ec5432963",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8827df4beb7345b1994f3faf12703145",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User sınıfında age özelliği için bir doğrulama metodu var ancak bu metodun içeriği belirtilmemiş.\",\"OCL Kuralı 2 ihlal ediliyor: Order sınıfında orderItems özelliği için bir doğrulama metodu var ancak bu metodun içeriği belirtilmemiş.\"],\"categories\":[\"OCL Kuralı 1\",\"OCL Kuralı 2\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User sınıfında age özelliği için bir doğrulama metodu var ancak bu metodun içeriği belirtilmemiş.",
+        "OCL Kuralı 2 ihlal ediliyor: Order sınıfında orderItems özelliği için bir doğrulama metodu var ancak bu metodun içeriği belirtilmemiş."
+      ],
+      "critic_categories": [
+        "OCL Kuralı 1",
+        "OCL Kuralı 2"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "92f4e375a36ccfb621fbfc7dfba5317c0e33e6e4517176a04cb2602e785bd95e",
+      "tokens_in": 279,
+      "tokens_out": 83,
+      "latency_s": 2.212725700000192,
+      "diagram_hash": "258c78cc571e421c50e789275b222c9862e33a5b0757f1e5d80dfda4c4eb313d",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_ad31506360",
+      "request_id": "req_705cf8cab05c44dc97934540a1b3018f",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0\n    }\n}\n\nclass OrderItem {}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0\n    }\n}\n\nclass OrderItem {}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b5b766718aad92127ac0d3186cdbd68d0a0e6152125f541176010b4d2c509d01",
+      "tokens_in": 345,
+      "tokens_out": 66,
+      "latency_s": 2.0945136999998795,
+      "diagram_hash": "258c78cc571e421c50e789275b222c9862e33a5b0757f1e5d80dfda4c4eb313d",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.08695652173913043
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.08333333333333333
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9635da6c96ad435eb6bddc00cd92f44a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal edildi: User sınıfında age özelliği için gerekli kontrol yok.\",\"OCL Kuralı 2 ihlal edildi: Order sınıfında orderItems için gerekli kontrol yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal edildi: User sınıfında age özelliği için gerekli kontrol yok.",
+        "OCL Kuralı 2 ihlal edildi: Order sınıfında orderItems için gerekli kontrol yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "944c2dfa7590f6735da0a589e534cdc8598b7b0865f4d69b64846dff9b3df650",
+      "tokens_in": 236,
+      "tokens_out": 117,
+      "latency_s": 2.5630377000006774,
+      "diagram_hash": "cc5e1d93ec796618e8d69b62ee8a0d8eb87ff514afacce8f202f6ae2e2ea75f7",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_a3087697a5",
+      "request_id": "req_a48c7537f0e141ceb074aae351a7d7aa",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0 && age < 120\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0 && orderItems.allMatch(item -> item.isValid())\n    }\n}\n\nclass OrderItem {\n    + isValid(): boolean {\n        // Implement validation logic for OrderItem\n    }\n}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0 && age < 120\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0 && orderItems.allMatch(item -> item.isValid())\n    }\n}\n\nclass OrderItem {\n    + isValid(): boolean {\n        // Implement validation logic for OrderItem\n    }\n}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e88f32726b27953d3da8cfdb26bb953f1d1ab7829d6ab46aed16baa94a5de7af",
+      "tokens_in": 379,
+      "tokens_out": 47,
+      "latency_s": 2.196862499999952,
+      "diagram_hash": "cc5e1d93ec796618e8d69b62ee8a0d8eb87ff514afacce8f202f6ae2e2ea75f7",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.06451612903225806
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0625
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_b9b802c9c77a4232a0510792d617947e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır.\"],\"categories\":[\"User\",\"Order\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den büyük veya eşit olmalıdır."
+      ],
+      "critic_categories": [
+        "User",
+        "Order"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1952,
+  "tokens_out": 531,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@startuml etiketi eksik",
+      "@startuml etiketi eksik"
+    ],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['UserManager', 'DiagramService']"
+    ],
+    "rule_results": {
+      "OCL-01": "IHLAL",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['UserManager', 'DiagramService']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem', 'UserManager', 'DiagramService']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem', 'UserManager', 'DiagramService']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors"
+      ],
+      "stderr": "Error java.lang.IllegalStateException\njava.lang.IllegalStateException\n\tat net.atmp.CucaDiagram.getCurrentGroup(CucaDiagram.java:183)\n\tat net.atmp.CucaDiagram.quarkInContextSafe(CucaDiagram.java:260)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:230)\n\tat net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines.executeNow(CommandCreateClassMultilines.java:81)\n\tat net.sourceforge.plantuml.command.CommandMultilines2.execute(CommandMultilines2.java:118)\n\tat net.sourceforge.plantuml.command.ProtectedCommand.execute(ProtectedCommand.java:57)\n\tat net.sourceforge.plantuml.core.AbstractDiagram.executeCommand(AbstractDiagram.java:176)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.executeFewLines(PSystemCommandFactory.java:177)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:133)\n\tat net.sourceforge.plantuml.command.PSystemCommandFactory.createSystem(PSystemCommandFactory.java:60)\n\tat net.sourceforge.plantuml.PSystemBuilder.createPSystem(PSystemBuilder.java:283)\n\tat net.sourceforge.plantuml.BlockUml.getDiagram(BlockUml.java:194)\n\tat net.sourceforge.plantuml.SourceFileReaderAbstract.updateStatus(SourceFileReaderAbstract.java:111)\n\tat net.sourceforge.plantuml.Run.manageFileInternal(Run.java:345)\n\tat net.sourceforge.plantuml.Run.lambda$processInputsInParallel$12(Run.java:316)\n\tat net.sourceforge.plantuml.Run.lambda$processInParallel$14(Run.java:332)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)\n\tat java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)\n\tat java.base/java.lang.Thread.run(Thread.java:1575)\nYou should send a mail to plantuml@gmail.com with this log (V1.2026.6)\nSome diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass User {\n    - age: int\n    + validateAge(): boolean {\n        return age > 0 && age < 120\n    }\n}\n\nclass Order {\n    - orderItems: List<OrderItem>\n    + validateOrderItems(): boolean {\n        return orderItems.size() > 0 && orderItems.allMatch(item -> item.isValid())\n    }\n}\n\nclass OrderItem {\n    + isValid(): boolean {\n        // Implement validation logic for OrderItem\n    }\n}\n\nclass UserManager {}\nclass DiagramService {}\n@enduml",
+  "compiler_valid_if_reverted": false,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 1,
+  "elapsed_seconds": 17.61597449999954,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 17.61602689999927,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

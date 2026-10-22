@@ -61,14 +61,13 @@ def execution_metadata(
     return metadata
 
 
-def compile_check(plantuml_code: str) -> dict:
-    syntax = plantuml_syntax_kontrol(plantuml_code)
-    ocl = validate_ocl(plantuml_code)
+def compile_check(plantuml_code: str, legacy: bool = True) -> dict:
+    """Historical scripts default to the retained validator; v4 opts out explicitly."""
+    syntax = plantuml_syntax_kontrol(plantuml_code, legacy=legacy)
+    ocl = validate_ocl(plantuml_code, legacy=legacy)
     plantuml_runtime = validate_with_plantuml(plantuml_code)
     project_defined_success = syntax["gecerli"] and ocl["gecerli_mi"]
-    plantuml_validated_success = (
-        plantuml_runtime["successful"] if plantuml_runtime["available"] else None
-    )
+    plantuml_validated_success = plantuml_runtime["successful"] if plantuml_runtime["available"] else None
     errors = syntax["hatalar"] + ocl["hatalar"]
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         errors.extend(plantuml_runtime["errors"])

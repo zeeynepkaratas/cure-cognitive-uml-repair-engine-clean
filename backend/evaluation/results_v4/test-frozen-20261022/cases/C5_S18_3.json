@@ -1,0 +1,334 @@
+{
+  "case_id": "S18",
+  "dataset": "shared",
+  "srs": "The DocumentParser sends parsed documents to IndexService.",
+  "input_plantuml": "@startuml\nclass DocumentParser {}\nclass DocumentParser {}\nclass IndexService {}",
+  "gold": null,
+  "defect_ids": [
+    "duplicate_class_missing_end"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int {min = 0} // OCL Kuralı 1 için kısıtlama eklendi\n}\n\nclass Order {\n    +items: List<OrderItem> // OCL Kuralı 2 için OrderItem ile bağlantı eklendi\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml",
+  "output_sha256": "de686b1b4849e4602d9a1b45509cb397da8bd195b91b97dc05019e0e8cc45349",
+  "input_sha256": "002f9727588a79807a20ed0f9b5a5d70b3fe26cda4285144b001edbfac4f27c0",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "719ae528386a4c4a54371e1215f8d37027bb3f9091d3d0f8c961d4dc1c8637a1",
+      "tokens_in": 285,
+      "tokens_out": 36,
+      "latency_s": 1.4557457000000795,
+      "diagram_hash": "002f9727588a79807a20ed0f9b5a5d70b3fe26cda4285144b001edbfac4f27c0",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8c3c81a4cde546e88dde587760d000a6",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Duplicate class definition for DocumentParser\",\"IndexService class is not connected to DocumentParser\"],\"categories\":[\"UML Structure\",\"Class Relationships\"]}",
+      "critic_errors": [
+        "Duplicate class definition for DocumentParser",
+        "IndexService class is not connected to DocumentParser"
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "8ba6161ea47358a0a7785ec543079e725f852e04ce304b754be14f7681bd5cf6",
+      "tokens_in": 104,
+      "tokens_out": 35,
+      "latency_s": 1.0974617000001672,
+      "diagram_hash": "0cbf7244ff90ddbdc5bae7971d7061807c995c621c89ee8750c9c938a19528f7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_1aa955b2cd",
+      "request_id": "req_44a4d1b986ab47e29e84e9dad7b70198",
+      "response_text": "```plantuml\n@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\nDocumentParser --> IndexService\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\nDocumentParser --> IndexService\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bbcad8117427b1c456259f64dac224aef6ec53ca03f39418247bfbf3f8d3d663",
+      "tokens_in": 299,
+      "tokens_out": 84,
+      "latency_s": 1.825417799999741,
+      "diagram_hash": "0cbf7244ff90ddbdc5bae7971d7061807c995c621c89ee8750c9c938a19528f7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_2e161b88ff444a6e92126212d548a3d1",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir tanım yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Kural İhlalleri\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir tanım yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Kural İhlalleri"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "916b3de0dbd3eedd1d4e642bb50341f4300a76581b8c7d4dea45af8341fb059d",
+      "tokens_in": 194,
+      "tokens_out": 63,
+      "latency_s": 1.9284318999998504,
+      "diagram_hash": "7fbedd08047db2daad4973de1ddd6d6ffe00ff1c847cf8acf3b9683cc63e29f4",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_22ba900b6f",
+      "request_id": "req_d93ba38432db4f22a8ea944c4e89f54c",
+      "response_text": "```plantuml\n@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7a1c010b244c0d6aef13d220ce7a6a5fccdfa8bc46623c5fd11474dc8576fdf7",
+      "tokens_in": 327,
+      "tokens_out": 72,
+      "latency_s": 1.878069499999583,
+      "diagram_hash": "7fbedd08047db2daad4973de1ddd6d6ffe00ff1c847cf8acf3b9683cc63e29f4",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.11764705882352941
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1111111111111111
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_5f7988aeff7b40c085e572f7ae94c285",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin OrderItem ile bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "b8e424829f24e6451cdcd29f3aace5c85a1bff029c93ccafe4771ccfb207d389",
+      "tokens_in": 215,
+      "tokens_out": 111,
+      "latency_s": 3.584838700000546,
+      "diagram_hash": "de686b1b4849e4602d9a1b45509cb397da8bd195b91b97dc05019e0e8cc45349",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_6b6a5c42b360457d8a69c3e39a3e0ae3",
+      "response_text": "```plantuml\n@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int {min = 0} // OCL Kuralı 1 için kısıtlama eklendi\n}\n\nclass Order {\n    +items: List<OrderItem> // OCL Kuralı 2 için OrderItem ile bağlantı eklendi\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int {min = 0} // OCL Kuralı 1 için kısıtlama eklendi\n}\n\nclass Order {\n    +items: List<OrderItem> // OCL Kuralı 2 için OrderItem ile bağlantı eklendi\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "90d246b3e703b3b17c55dabcf3cc11364e8ea7b7e4c0ce7cb9676ec230b42801",
+      "tokens_in": 375,
+      "tokens_out": 67,
+      "latency_s": 1.9083486999998058,
+      "diagram_hash": "de686b1b4849e4602d9a1b45509cb397da8bd195b91b97dc05019e0e8cc45349",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.06666666666666667
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.06451612903225806
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d229478a14fa448d9b46fbc9d21455b5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class age property does not enforce the minimum age of 18 as required by OCL Rule 1.\",\"Order class does not ensure that there is at least one OrderItem associated with it as required by OCL Rule 2.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class age property does not enforce the minimum age of 18 as required by OCL Rule 1.",
+        "Order class does not ensure that there is at least one OrderItem associated with it as required by OCL Rule 2."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1799,
+  "tokens_out": 468,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik",
+      "Tekrar eden sinif ismi: ['DocumentParser']"
+    ],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['DocumentParser', 'DocumentParser', 'IndexService']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['DocumentParser', 'DocumentParser', 'IndexService']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['DocumentParser', 'DocumentParser']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass DocumentParser {}\nclass IndexService {\n    +parse(document: DocumentParser)\n}\n\nclass User {\n    +age: int {min = 0} // OCL Kuralı 1 için kısıtlama eklendi\n}\n\nclass Order {\n    +items: List<OrderItem> // OCL Kuralı 2 için OrderItem ile bağlantı eklendi\n}\n\nclass OrderItem {\n}\n\nUser --> Order\nOrder --> OrderItem\nDocumentParser --> IndexService\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 1,
+  "elapsed_seconds": 16.930434400000195,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 16.930492700000286,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

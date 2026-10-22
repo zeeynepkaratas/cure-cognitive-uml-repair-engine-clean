@@ -1,0 +1,7 @@
+| dataset | condition | rep | n | compiler_pass | compiler_rate | project_pass | regressions | estimated_cost_usd |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| semantic | C7 | 1 | 20 | 20 | 1.0 | 20 | 0 | 0.008770199999999999 |
+| semantic | C7 | 2 | 20 | 20 | 1.0 | 20 | 0 | 0.009378449999999998 |
+| semantic | C7 | 3 | 20 | 20 | 1.0 | 20 | 0 | 0.008712 |
+| semantic | C7 | 4 | 20 | 20 | 1.0 | 20 | 0 | 0.0094071 |
+| semantic | C7 | 5 | 20 | 19 | 0.95 | 18 | 0 | None |

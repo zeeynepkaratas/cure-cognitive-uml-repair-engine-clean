@@ -1,0 +1,14 @@
+| dataset | rep | a | b | field | paired_n | a_fail_b_pass | a_pass_b_fail | both_pass | both_fail | p_exact_two_sided | p_holm |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| pure | 1 | C0 | C1 | compiler_valid | 10 | 8 | 0 | 2 | 0 | 0.0078125 | 0.0234375 |
+| pure | 1 | C0 | C1 | project_valid | 10 | 7 | 0 | 0 | 3 | 0.015625 | 0.0234375 |
+| pure | 1 | C0 | C2 | compiler_valid | 10 | 8 | 0 | 2 | 0 | 0.0078125 | 0.0234375 |
+| pure | 1 | C0 | C2 | project_valid | 10 | 10 | 0 | 0 | 0 | 0.001953125 | 0.0078125 |
+| semantic | 1 | C0 | C1 | compiler_valid | 40 | 4 | 0 | 36 | 0 | 0.125 | 0.375 |
+| semantic | 1 | C0 | C1 | project_valid | 40 | 4 | 0 | 32 | 4 | 0.125 | 0.375 |
+| semantic | 1 | C0 | C2 | compiler_valid | 40 | 4 | 0 | 36 | 0 | 0.125 | 0.375 |
+| semantic | 1 | C0 | C2 | project_valid | 40 | 8 | 0 | 32 | 0 | 0.0078125 | 0.03125 |
+| shared | 1 | C0 | C1 | compiler_valid | 50 | 29 | 0 | 12 | 9 | 3.725290298461914e-09 | 3.725290298461914e-09 |
+| shared | 1 | C0 | C1 | project_valid | 50 | 31 | 0 | 0 | 19 | 9.313225746154785e-10 | 1.862645149230957e-09 |
+| shared | 1 | C0 | C2 | compiler_valid | 50 | 37 | 0 | 12 | 1 | 1.4551915228366852e-11 | 4.3655745685100555e-11 |
+| shared | 1 | C0 | C2 | project_valid | 50 | 50 | 0 | 0 | 0 | 1.7763568394002505e-15 | 7.105427357601002e-15 |

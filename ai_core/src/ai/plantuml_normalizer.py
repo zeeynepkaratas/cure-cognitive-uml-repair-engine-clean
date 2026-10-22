@@ -36,11 +36,7 @@ def normalize_plantuml_text(raw_text: str | None) -> str:
     fenced_blocks = FENCE_PATTERN.findall(text)
     if fenced_blocks:
         text = next(
-            (
-                block
-                for block in fenced_blocks
-                if "@startuml" in block.lower() or "@enduml" in block.lower()
-            ),
+            (block for block in fenced_blocks if "@startuml" in block.lower() or "@enduml" in block.lower()),
             fenced_blocks[0],
         )
 

@@ -151,20 +151,20 @@ def main() -> None:
         p95_ms=round(percentile(durations_ms, 95), 3),
         p99_ms=round(percentile(durations_ms, 99), 3),
         sla_limit_seconds=SLA_LIMIT_SECONDS,
-        sla_pass_rate=round(
-            sum(1 for row in successful_rows if row["sla_passed"]) / len(rows), 4
-        ),
+        sla_pass_rate=round(sum(1 for row in successful_rows if row["sla_passed"]) / len(rows), 4),
         llm_calls=0,
         notes=[
             "This experiment measures the deterministic workload used by /api/analyze.",
             "It does not measure /api/autonomous-repair or any ChatOpenAI call.",
         ],
     )
-    summary.update({
-        "run_id": run_id,
-        "generated_at": generated_at,
-        "measurement_scope": "deterministic_analyze_pipeline_no_llm",
-    })
+    summary.update(
+        {
+            "run_id": run_id,
+            "generated_at": generated_at,
+            "measurement_scope": "deterministic_analyze_pipeline_no_llm",
+        }
+    )
 
     csv_path = RESULTS / "deterministic_analysis_latency_experiment.csv"
     json_path = RESULTS / "deterministic_analysis_latency_experiment.json"

@@ -1,0 +1,443 @@
+{
+  "case_id": "M11_2",
+  "scenario_id": "M11",
+  "srs": "The library lending system records Reader, Loan, LibraryService, and Book; each has an id attribute. Each Reader can have zero or more Loan records, and each Loan belongs to exactly one Reader. Each Loan uses exactly one LibraryService, and each LibraryService serves zero or more Loan records. Each LibraryService manages one or more Book records by composition, and each Book belongs to exactly one LibraryService. Each Reader can reference zero or more Book records, and each Book can be referenced by zero or more Reader records.",
+  "gold": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\n@enduml",
+  "defective": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml",
+  "defect_ids": [
+    "D2"
+  ],
+  "seed": 1840,
+  "injections": [
+    {
+      "defect_id": "D2",
+      "seed": 1840,
+      "selected_class": "Book",
+      "added_class": "WeatherStation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"0..*\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml",
+  "output_sha256": "9490e742e688b76307e35eddff1ea56c9b9763bbaabd648d00415c8e60db372d",
+  "input_sha256": "3ae66f0badc5b8a584ecd514005f466a0f3c7074da76030ad484ab54eaa88290",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "abc5ca4c13844d8fbbf14cbaefb95fc7423bee07ef571d31b5912a7820ee34e0",
+      "tokens_in": 385,
+      "tokens_out": 110,
+      "latency_s": 2.9431980999997904,
+      "diagram_hash": "3ae66f0badc5b8a584ecd514005f466a0f3c7074da76030ad484ab54eaa88290",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_dfec54a6749f4724bfee084c4203758b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Loan and LibraryService is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Loan uses exactly one LibraryService.\",\"The composition relationship between LibraryService and Book is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' since each LibraryService manages one or more Book records, but it can also manage none.\"],\"categories\":[\"UML Structure\",\"Relationship Cardinality\"]}",
+      "critic_errors": [
+        "The relationship between Loan and LibraryService is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Loan uses exactly one LibraryService.",
+        "The composition relationship between LibraryService and Book is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' since each LibraryService manages one or more Book records, but it can also manage none."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Cardinality"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "57bc84036804a31a02596bcceb2e6516603e4d14e01bf3b780159daf0aa1e15e",
+      "tokens_in": 261,
+      "tokens_out": 104,
+      "latency_s": 3.033858099999634,
+      "diagram_hash": "5aecf66e3b4900d5f75be5f61446f512a771584d596860d1b8d6a47994bebe36",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_7a7734f5870741c7825fb6ae60d0b887",
+      "response_text": "```plantuml\n@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"0..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" *-- \"0..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e58ef8f28ea93bad3ae7849908fd2ced4622b320c5b985ebd534b057a59689e6",
+      "tokens_in": 384,
+      "tokens_out": 68,
+      "latency_s": 2.3600900000001275,
+      "diagram_hash": "5aecf66e3b4900d5f75be5f61446f512a771584d596860d1b8d6a47994bebe36",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_2e0fd337c6d74ce3aa29d26ac68b0d4a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the relationship between Loan and LibraryService correctly. The UML indicates that each Loan belongs to exactly one LibraryService, which is correct, but it does not show that each LibraryService can serve zero or more Loan records properly.\"],\"categories\":[\"UML Structure\",\"Relationship Constraints\"]}",
+      "critic_errors": [
+        "The UML does not represent the relationship between Loan and LibraryService correctly. The UML indicates that each Loan belongs to exactly one LibraryService, which is correct, but it does not show that each LibraryService can serve zero or more Loan records properly."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Constraints"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "22b5a9a3c85f5902abfff4f599ae832455636e636d481675cd1635f3233f459f",
+      "tokens_in": 218,
+      "tokens_out": 116,
+      "latency_s": 3.0819219000004523,
+      "diagram_hash": "41ca38b07d3569c0617dc8a30c8d04d25418d25fbc88a0677346d490f9edcdd2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_43f7546cd4bd42f38eb260d945b1ea0c",
+      "response_text": "```plantuml\n@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"0..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"0..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b679fd1dfc1347be35a65977ad487a03c1494aaf83e0778f1d8e01d6c700878d",
+      "tokens_in": 396,
+      "tokens_out": 70,
+      "latency_s": 2.0625122999999803,
+      "diagram_hash": "41ca38b07d3569c0617dc8a30c8d04d25418d25fbc88a0677346d490f9edcdd2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_62ca0936b16e4830bd1bf03253263b41",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the composition relationship correctly between LibraryService and Book. It should indicate that each LibraryService manages one or more Book records by composition, but the UML shows a multiplicity of '0..*' for Book, which is incorrect.\"],\"categories\":[\"UML Structure\",\"Composition Relationship\"]}",
+      "critic_errors": [
+        "The UML does not represent the composition relationship correctly between LibraryService and Book. It should indicate that each LibraryService manages one or more Book records by composition, but the UML shows a multiplicity of '0..*' for Book, which is incorrect."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Composition Relationship"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "bb04d821be13ad77e69fee4d9e20687d8a02aba2715e4af243385f3c9e8f059c",
+      "tokens_in": 232,
+      "tokens_out": 116,
+      "latency_s": 3.2461825000000317,
+      "diagram_hash": "9490e742e688b76307e35eddff1ea56c9b9763bbaabd648d00415c8e60db372d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_d70682538c324138b726a6b4bd77f435",
+      "response_text": "```plantuml\n@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e9f19492f973147d4f973146de339371c2e0c33f9f25b1f27f739bd10717a62a",
+      "tokens_in": 396,
+      "tokens_out": 77,
+      "latency_s": 2.4472523000004003,
+      "diagram_hash": "9490e742e688b76307e35eddff1ea56c9b9763bbaabd648d00415c8e60db372d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a937767056fc47c1b957623eeda00d28",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the composition relationship correctly between LibraryService and Book. The multiplicity should be '1' for LibraryService and '0..*' for Book, indicating that each LibraryService can manage zero or more Books, but each Book must belong to exactly one LibraryService.\"],\"categories\":[\"UML Structure\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The UML does not represent the composition relationship correctly between LibraryService and Book. The multiplicity should be '1' for LibraryService and '0..*' for Book, indicating that each LibraryService can manage zero or more Books, but each Book must belong to exactly one LibraryService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2272,
+  "tokens_out": 661,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['WeatherStation']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['WeatherStation']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['WeatherStation']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['WeatherStation']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Reader {\n  +id: String\n}\nclass Loan {\n  +id: String\n}\nclass LibraryService {\n  +id: String\n}\nclass Book {\n  +id: String\n}\nReader \"1\" --> \"0..*\" Loan\nLoan \"1\" --> \"1\" LibraryService\nLibraryService \"1\" <-- \"0..*\" Loan\nLibraryService \"1\" *-- \"1..*\" Book\nReader \"0..*\" --> \"0..*\" Book\nclass WeatherStation {}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.27075969999987,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "weatherstation"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "loan",
+          "libraryservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.11111111111111105,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "weatherstation"
+      ]
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "loan",
+          "libraryservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.11111111111111105,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 21.27966480000032,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

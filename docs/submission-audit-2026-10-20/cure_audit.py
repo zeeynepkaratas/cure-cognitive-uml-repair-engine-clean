@@ -2,9 +2,15 @@ import sys
 sys.dont_write_bytecode = True
 import os, json, csv, statistics, hashlib, ast, collections, subprocess
 from pathlib import Path
+import argparse
+_parser = argparse.ArgumentParser()
+_parser.add_argument('--results-dir', type=Path, default=Path(__file__).resolve().parents[2] / 'backend/evaluation/results')
+_parser.add_argument('--output-dir', type=Path, default=Path.cwd() / 'audit-output')
+_args = _parser.parse_args()
+_args.output_dir.mkdir(parents=True, exist_ok=True)
 
-ROOT=Path(r'C:/Users/zeyne/Documents/Codex/2026-10-20/https-github-com-zeeynepkaratas-cure-cognitive/work/repo')
-OUT=Path('C:/tmp')
+ROOT=Path(__file__).resolve().parents[2]
+OUT=_args.output_dir
 sys.path.insert(0,str(ROOT/'backend/src'))
 sys.path.insert(0,str(ROOT/'backend/evaluation'))
 from evaluators.semantic_eval import calculate_semantic_fidelity, extract_srs_entities, extract_uml_entities

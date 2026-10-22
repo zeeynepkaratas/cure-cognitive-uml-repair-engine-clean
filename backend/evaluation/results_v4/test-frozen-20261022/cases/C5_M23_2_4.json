@@ -1,0 +1,682 @@
+{
+  "case_id": "M23_2",
+  "scenario_id": "M23",
+  "srs": "The energy metering system records Resident, Reading, MeteringService, and Meter; each has an id attribute. Each Resident can have zero or more Reading records, and each Reading belongs to exactly one Resident. Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records. Each MeteringService manages one or more Meter records by composition, and each Meter belongs to exactly one MeteringService. Each Resident can reference zero or more Meter records, and each Meter can be referenced by zero or more Resident records.",
+  "gold": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "defective": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1960,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1960,
+      "selected_class": "MeteringService",
+      "original_relation": [
+        "Resident",
+        "Meter",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "output_sha256": "19000b833b52eee77c043f4ac5d4cdffcbba476a11cb7f5a6917a2d62d36e1f2",
+  "input_sha256": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "27995fa37b1516e1fc580d2332052b83c175a22fdebf7f25797043f668f468e4",
+      "tokens_in": 470,
+      "tokens_out": 78,
+      "latency_s": 1.962565799999993,
+      "diagram_hash": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_741c6d9e5df5479e90cc5dd5640e9059",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygulama Hataları\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesi tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order ve OrderItem nesneleri tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygulama Hataları"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2b910378d3f1cc60377a49b3796e2313d275af15c26ac863075020f92252f387",
+      "tokens_in": 239,
+      "tokens_out": 160,
+      "latency_s": 4.179960299999948,
+      "diagram_hash": "cfe811356e1bb0bf3422ace00f686076d358d9205ab748fb8148ebb8dbfe6c29",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e9e83bb9dc",
+      "request_id": "req_520a514d28544abeaf405a1d790fb29d",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "21adabd39b8731ecc673eb016a56f0f48c7b0d4bc3b3270e8e354e7a33498b59",
+      "tokens_in": 524,
+      "tokens_out": 49,
+      "latency_s": 1.7008362999999918,
+      "diagram_hash": "cfe811356e1bb0bf3422ace00f686076d358d9205ab748fb8148ebb8dbfe6c29",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_27b7b961005145d6a3e2a4bdb2867e1a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "549c92ad4a14faec4c023a7236b1dfdae39747f73544c120e67031136edebdd6",
+      "tokens_in": 276,
+      "tokens_out": 160,
+      "latency_s": 4.194812600000205,
+      "diagram_hash": "76fde1a508abedb697321b79c3085c031c76b46f065af84aedf8d1408fedeb8f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_4fb22c93cc6b430ca9e2d6f9f847d55c",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "cc0d3f0e030c51eddadcd73b884f5435b24a6dd399f07330d980499f9808cb99",
+      "tokens_in": 524,
+      "tokens_out": 86,
+      "latency_s": 2.2297053999996024,
+      "diagram_hash": "76fde1a508abedb697321b79c3085c031c76b46f065af84aedf8d1408fedeb8f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_e8e9c58a821a4283adbc477892bbfd9e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki 1..* olarak tanımlanmış ve OrderItem'ın en az bir tane olması gerektiği belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak UML'de Order ile OrderItem arasındaki ilişki 1..* olarak tanımlanmış ve OrderItem'ın en az bir tane olması gerektiği belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d43ee6e0386fc96006d57a13692822ab2a85e9676cf02d5d4bb7806794119e3a",
+      "tokens_in": 341,
+      "tokens_out": 171,
+      "latency_s": 4.201366899999812,
+      "diagram_hash": "19000b833b52eee77c043f4ac5d4cdffcbba476a11cb7f5a6917a2d62d36e1f2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_114c977701684c4bad2418a0128329d3",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c1f7726ee2706477c3f6599ce3bb301fe4b0c98ba932ba361ed98e3c9af46a8d",
+      "tokens_in": 535,
+      "tokens_out": 49,
+      "latency_s": 1.4290628999997352,
+      "diagram_hash": "19000b833b52eee77c043f4ac5d4cdffcbba476a11cb7f5a6917a2d62d36e1f2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_bb8269dc5a4c45338f12b6b6679922d5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2909,
+  "tokens_out": 753,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Order, OrderItem}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Order, OrderItem}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nclass User {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\nUser \"1\" --> \"0..*\" Order\nOrder \"1\" --> \"1..*\" OrderItem\nOrderItem \"1\" --> \"1\" Order\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 23.914498999999978,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.2727272727272727,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "order",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19999999999999996,
+    "reference_rel_directed": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "order"
+        ],
+        [
+          "user",
+          "order"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.2727272727272727,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance"
+        ],
+        [
+          "user",
+          "order",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.20454545454545459,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "resident",
+          "meter",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "1..*"
+        ],
+        [
+          "orderitem",
+          "order",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "resident",
+          "meter",
+          "inheritance",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "user",
+          "order",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.20454545454545459,
+    "reference_attribute": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.2727272727272727
+  },
+  "end_to_end_seconds": 23.91863820000026,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

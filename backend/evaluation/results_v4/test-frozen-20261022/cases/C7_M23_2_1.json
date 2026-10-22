@@ -1,0 +1,628 @@
+{
+  "case_id": "M23_2",
+  "scenario_id": "M23",
+  "srs": "The energy metering system records Resident, Reading, MeteringService, and Meter; each has an id attribute. Each Resident can have zero or more Reading records, and each Reading belongs to exactly one Resident. Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records. Each MeteringService manages one or more Meter records by composition, and each Meter belongs to exactly one MeteringService. Each Resident can reference zero or more Meter records, and each Meter can be referenced by zero or more Resident records.",
+  "gold": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --> \"0..*\" Meter\n@enduml",
+  "defective": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1960,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1960,
+      "selected_class": "MeteringService",
+      "original_relation": [
+        "Resident",
+        "Meter",
+        "association",
+        "0..*",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"0..*\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml",
+  "condition": "C7",
+  "condition_name": "improved_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"0..*\" Meter\nResident \"0..*\" -- \"0..*\" Meter\n@enduml",
+  "output_sha256": "645e91edaff676c995e528ef89b477b5695e9fbfc09568f844bdfdf480e109c3",
+  "input_sha256": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e7ad59c7f55b28d32d86a5cbd47d87a71b12f26dd987f316be3a7c42d25abe08",
+      "tokens_in": 906,
+      "tokens_out": 77,
+      "latency_s": 1.955789100000402,
+      "diagram_hash": "43ecb328b65c36b2ed094d85131e9b377242a13fd97db5d4cd3df1021e08a9c3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_bb7fa10fed99450ea44abad473fa4f78",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Reading has a reverse association to MeteringService which is not required by the requirements. Requirement: \\\"Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records.\\\" Conflicting element: \\\"Reading '0..*' --> '1' MeteringService\\\".\"],\"categories\":[\"association\",\"composition\"]}",
+      "critic_errors": [
+        "Reading has a reverse association to MeteringService which is not required by the requirements. Requirement: \"Each Reading uses exactly one MeteringService, and each MeteringService serves zero or more Reading records.\" Conflicting element: \"Reading '0..*' --> '1' MeteringService\"."
+      ],
+      "critic_categories": [
+        "association",
+        "composition"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "e295461124f25eb43356ac79ea06fa6f7452f28552f54ad3a36a659b41415d24",
+      "tokens_in": 721,
+      "tokens_out": 105,
+      "latency_s": 2.4728628000002573,
+      "diagram_hash": "8055723884df466ac8617ac5f7541acd01837b6b32ac1fe921e88762399b6d01",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_7a400ffb204444bfbd4b5dc616f3bb03",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "27a6acc929b3e312cd649d5337e1d29ddf73cc7e20ad15ebb69157fb35c9de2a",
+      "tokens_in": 905,
+      "tokens_out": 118,
+      "latency_s": 2.254957499999364,
+      "diagram_hash": "8055723884df466ac8617ac5f7541acd01837b6b32ac1fe921e88762399b6d01",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_4008f38eeaf94423afe48011532e22ef",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Each MeteringService manages one or more Meter records by composition, but the diagram shows a composition from MeteringService to Meter without specifying the multiplicity for MeteringService as '1..*'. Requirement: 'Each MeteringService manages one or more Meter records by composition.' Diagram Element: 'MeteringService \\\"1\\\" *-- \\\"1..*\\\" Meter' is correct, but the multiplicity for MeteringService should be '1..*' instead of '1'.\"],\"categories\":[\"UML Structure\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "Each MeteringService manages one or more Meter records by composition, but the diagram shows a composition from MeteringService to Meter without specifying the multiplicity for MeteringService as '1..*'. Requirement: 'Each MeteringService manages one or more Meter records by composition.' Diagram Element: 'MeteringService \"1\" *-- \"1..*\" Meter' is correct, but the multiplicity for MeteringService should be '1..*' instead of '1'."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c57f93a7762e314c7a971c542f919c8a1eec05c0cdcc91243efd3de22b7e590a",
+      "tokens_in": 758,
+      "tokens_out": 106,
+      "latency_s": 2.451173000000381,
+      "diagram_hash": "dafd0f7fb9dc7e0809b7fbc7dfe8e5885263d7374d8cd71abacf6cfa7a4d5e6b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_4143b32d373e4644a85ec47db156325a",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1..*\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1..*\" *-- \"1..*\" Meter\nResident \"0..*\" --|> \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b644ec2f173dbbc0e5306d4efd5e99ecad0b16c1d8b4b0f9e61625dc42422714",
+      "tokens_in": 906,
+      "tokens_out": 90,
+      "latency_s": 2.0021010000000388,
+      "diagram_hash": "dafd0f7fb9dc7e0809b7fbc7dfe8e5885263d7374d8cd71abacf6cfa7a4d5e6b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_4b3362ae0d184d089eb2052841d7ab59",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between MeteringService and Meter is incorrectly represented as '1..* *-- 1..*'. According to the requirements, 'MeteringService manages one or more Meter records by composition', which should be represented as '1 *-- 0..*'. The current representation does not reflect that a Meter belongs to exactly one MeteringService.\"],\"categories\":[\"relationship errors\",\"composition errors\"]}",
+      "critic_errors": [
+        "The relationship between MeteringService and Meter is incorrectly represented as '1..* *-- 1..*'. According to the requirements, 'MeteringService manages one or more Meter records by composition', which should be represented as '1 *-- 0..*'. The current representation does not reflect that a Meter belongs to exactly one MeteringService."
+      ],
+      "critic_categories": [
+        "relationship errors",
+        "composition errors"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d3615e516c673f0ef08a0c233efa1a894121d35ca178aa3673941494ca379717",
+      "tokens_in": 732,
+      "tokens_out": 103,
+      "latency_s": 2.2091534000001047,
+      "diagram_hash": "645e91edaff676c995e528ef89b477b5695e9fbfc09568f844bdfdf480e109c3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0d55417811",
+      "request_id": "req_43390fd050714456bc3983935677554f",
+      "response_text": "```plantuml\n@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"0..*\" Meter\nResident \"0..*\" -- \"0..*\" Meter\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"0..*\" Meter\nResident \"0..*\" -- \"0..*\" Meter\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d077eaee951697fdff6cd175b1d55d5db2eecdb338a5377c99fbb00e284a59ec",
+      "tokens_in": 903,
+      "tokens_out": 12,
+      "latency_s": 0.9810966000004555,
+      "diagram_hash": "645e91edaff676c995e528ef89b477b5695e9fbfc09568f844bdfdf480e109c3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [
+        "OCL-04",
+        "OCL-08",
+        "OCL-03",
+        "OCL-01",
+        "OCL-02",
+        "OCL-05",
+        "OCL-09"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "OCL-04",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-08",
+          "score": 0.06818181818181818
+        },
+        {
+          "id": "OCL-03",
+          "score": 0.046511627906976744
+        },
+        {
+          "id": "OCL-01",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-02",
+          "score": 0.024390243902439025
+        },
+        {
+          "id": "OCL-05",
+          "score": 0.023809523809523808
+        },
+        {
+          "id": "OCL-09",
+          "score": 0.023809523809523808
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_ae19be045d084954b37a8566af2bf1b5",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 5831,
+  "tokens_out": 611,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Resident {\n  +id: String\n}\nclass Reading {\n  +id: String\n}\nclass MeteringService {\n  +id: String\n}\nclass Meter {\n  +id: String\n}\nResident \"1\" --> \"0..*\" Reading\nReading \"1\" --> \"1\" MeteringService\nMeteringService \"1\" *-- \"0..*\" Meter\nResident \"0..*\" -- \"0..*\" Meter\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 15.484945799999878,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.25,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "meteringservice",
+          "meter",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "reading",
+          "meteringservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "meteringservice",
+          "meter",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "reading",
+          "meteringservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.25,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "meteringservice",
+          "meter",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "reading",
+          "meteringservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "meteringservice",
+          "meter",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "reading",
+          "meteringservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 15.490905399999974,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

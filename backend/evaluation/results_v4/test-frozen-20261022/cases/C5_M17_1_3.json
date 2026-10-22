@@ -1,0 +1,560 @@
+{
+  "case_id": "M17_1",
+  "scenario_id": "M17",
+  "srs": "The vehicle rental system records Driver, Rental, RentalService, and Vehicle; each has an id attribute. Each Driver can have zero or more Rental records, and each Rental belongs to exactly one Driver. Each Rental uses exactly one RentalService, and each RentalService serves zero or more Rental records. Each RentalService manages one or more Vehicle records by composition, and each Vehicle belongs to exactly one RentalService. Each Driver can reference zero or more Vehicle records, and each Vehicle can be referenced by zero or more Driver records.",
+  "gold": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defective": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defect_ids": [
+    "D3"
+  ],
+  "seed": 1899,
+  "injections": [
+    {
+      "defect_id": "D3",
+      "seed": 1899,
+      "selected_class": "Rental",
+      "original_relation": [
+        "Driver",
+        "Rental",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\n\nclass Rental {\n  +id: String\n}\n\nclass RentalService {\n  +id: String\n}\n\nclass Vehicle {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n  +isAdult(): Boolean\n  +User(age: Integer) {\n    if (age < 18) {\n      throw new IllegalArgumentException(\"Age must be at least 18\")\n    }\n  }\n}\n\nclass Order {\n  +id: String\n  +orderItems: List<OrderItem>\n  +hasAtLeastOneOrderItem(): Boolean\n  +Order(orderItems: List<OrderItem>) {\n    if (orderItems.isEmpty()) {\n      throw new IllegalArgumentException(\"There must be at least one OrderItem\")\n    }\n  }\n}\n\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "output_sha256": "8f56a1ec33ad018b545069389c7ec5b694065b54e2777b540e4bb9acd1c2b234",
+  "input_sha256": "5912f2c95f4b2bcc43c514c9b889a53fac74c99e3c54b912d85603d1ed275734",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "3e4f63287652c5b42f1ff7e92e2ba39d0687d52cbbb342fc3de292952afc7180",
+      "tokens_in": 448,
+      "tokens_out": 74,
+      "latency_s": 3.5567887999995946,
+      "diagram_hash": "5912f2c95f4b2bcc43c514c9b889a53fac74c99e3c54b912d85603d1ed275734",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_7d9ceedfafc9460c9cf1c6137f761069",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "82ef7af64e213394e799c107a859cc3373517f8802b919fcc668a1c3c7e0c590",
+      "tokens_in": 229,
+      "tokens_out": 127,
+      "latency_s": 2.812889499999983,
+      "diagram_hash": "e661f00c6eb2c90b52e4b6491fd031c96d2221b03fb790d33d031fd5eccd6b67",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9abc8cdcf7ab47ef886c19e1211d0300",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass User {\n  +age: Integer\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "99b15452470b03fceac386b2c22c1ae44d243c11b1c91c5b4b0e012d8fe518b9",
+      "tokens_in": 485,
+      "tokens_out": 43,
+      "latency_s": 1.961762599999929,
+      "diagram_hash": "e661f00c6eb2c90b52e4b6491fd031c96d2221b03fb790d33d031fd5eccd6b67",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09090909090909091
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6f7074864f2f4af2baa13b859a4d50b8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age >= 18 constraint.\",\"Order class does not enforce at least one OrderItem constraint.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age >= 18 constraint.",
+        "Order class does not enforce at least one OrderItem constraint."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d0cdc08717d50990db6f16e0e2d531cc1c154b413a73b50728958bb07e644ba7",
+      "tokens_in": 216,
+      "tokens_out": 154,
+      "latency_s": 4.313506599999528,
+      "diagram_hash": "1d1442ff0f6fe146b974bc1953771a830252406d153a46850a8d90dc41d1664f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_5906b91c803e4ed6ac0fc912a05fb193",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\n\nclass Rental {\n  +id: String\n}\n\nclass RentalService {\n  +id: String\n}\n\nclass Vehicle {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n  +isAdult(): Boolean\n}\n\nclass Order {\n  +id: String\n  +orderItems: List<OrderItem>\n  +hasAtLeastOneOrderItem(): Boolean\n}\n\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\n\nclass Rental {\n  +id: String\n}\n\nclass RentalService {\n  +id: String\n}\n\nclass Vehicle {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n  +isAdult(): Boolean\n}\n\nclass Order {\n  +id: String\n  +orderItems: List<OrderItem>\n  +hasAtLeastOneOrderItem(): Boolean\n}\n\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "249eaa6bad8de5bc22c9002d5bfdbb3d668db69ac3190fa000c750d7a83bb882",
+      "tokens_in": 512,
+      "tokens_out": 49,
+      "latency_s": 1.5563976000003095,
+      "diagram_hash": "1d1442ff0f6fe146b974bc1953771a830252406d153a46850a8d90dc41d1664f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.07692307692307693
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.07407407407407407
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_67f77bfb809c48b6ae17aa7d23956bb8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age >= 18 constraint for age attribute.\",\"Order class does not enforce that there must be at least one OrderItem.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce age >= 18 constraint for age attribute.",
+        "Order class does not enforce that there must be at least one OrderItem."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "732bb88b5118023c1922494fa24a0cd2b7eb301377993a03f6b5e08354f01f7e",
+      "tokens_in": 249,
+      "tokens_out": 230,
+      "latency_s": 6.137890800000605,
+      "diagram_hash": "8f56a1ec33ad018b545069389c7ec5b694065b54e2777b540e4bb9acd1c2b234",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_7fd0ef84913f49ef8328160bd0a46a3a",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\n\nclass Rental {\n  +id: String\n}\n\nclass RentalService {\n  +id: String\n}\n\nclass Vehicle {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n  +isAdult(): Boolean\n  +User(age: Integer) {\n    if (age < 18) {\n      throw new IllegalArgumentException(\"Age must be at least 18\")\n    }\n  }\n}\n\nclass Order {\n  +id: String\n  +orderItems: List<OrderItem>\n  +hasAtLeastOneOrderItem(): Boolean\n  +Order(orderItems: List<OrderItem>) {\n    if (orderItems.isEmpty()) {\n      throw new IllegalArgumentException(\"There must be at least one OrderItem\")\n    }\n  }\n}\n\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n  +age: Integer\n}\n\nclass Rental {\n  +id: String\n}\n\nclass RentalService {\n  +id: String\n}\n\nclass Vehicle {\n  +id: String\n}\n\nclass User {\n  +age: Integer\n  +isAdult(): Boolean\n  +User(age: Integer) {\n    if (age < 18) {\n      throw new IllegalArgumentException(\"Age must be at least 18\")\n    }\n  }\n}\n\nclass Order {\n  +id: String\n  +orderItems: List<OrderItem>\n  +hasAtLeastOneOrderItem(): Boolean\n  +Order(orderItems: List<OrderItem>) {\n    if (orderItems.isEmpty()) {\n      throw new IllegalArgumentException(\"There must be at least one OrderItem\")\n    }\n  }\n}\n\nclass OrderItem {\n  +id: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "545f65e0c24bf1104701bd12655d903bff37d28474bbf9f275d5c9f35e5e1ed4",
+      "tokens_in": 588,
+      "tokens_out": 87,
+      "latency_s": 2.0201961000002484,
+      "diagram_hash": "8f56a1ec33ad018b545069389c7ec5b694065b54e2777b540e4bb9acd1c2b234",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.21212121212121213
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.17142857142857143
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a7bef9b7f6364311b9ca94582ec82585",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için 18 yaş kontrolü UML'de belirtilmemiş.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı UML'de belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için 18 yaş kontrolü UML'de belirtilmemiş.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı UML'de belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2727,
+  "tokens_out": 764,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'Order', 'OrderItem']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'Order', 'OrderItem']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 25.66075920000003,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 7,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5714285714285714,
+      "recall": 1.0,
+      "f1": 0.7272727272727273,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [],
+      "spurious": [
+        "order",
+        "orderitem",
+        "user"
+      ]
+    },
+    "delta_class_f1": -0.2727272727272727,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.4444444444444444,
+      "recall": 1.0,
+      "f1": 0.6153846153846153,
+      "reference_count": 4,
+      "predicted_count": 9,
+      "missing": [],
+      "spurious": [
+        [
+          "driver",
+          "age"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.3846153846153847
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 3,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental",
+          "association"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "reference_count": 4,
+      "predicted_count": 3,
+      "missing": [
+        [
+          "driver",
+          "rental",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 25.672570200000337,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

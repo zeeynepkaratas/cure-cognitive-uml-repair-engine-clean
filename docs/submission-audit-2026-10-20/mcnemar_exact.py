@@ -2,9 +2,15 @@ import sys
 sys.dont_write_bytecode=True
 import json
 from pathlib import Path
+import argparse
+_parser = argparse.ArgumentParser()
+_parser.add_argument('--results-dir', type=Path, default=Path(__file__).resolve().parents[2] / 'backend/evaluation/results')
+_parser.add_argument('--output-dir', type=Path, default=Path.cwd() / 'audit-output')
+_args = _parser.parse_args()
+_args.output_dir.mkdir(parents=True, exist_ok=True)
 from scipy.stats import binomtest
 
-R=Path(r'C:/Users/zeyne/Documents/Codex/2026-10-20/https-github-com-zeeynepkaratas-cure-cognitive/work/repo/backend/evaluation/results')
+R=_args.results_dir
 def load(name):
     return {x['case_id']:x for x in json.loads((R/name).read_text(encoding='utf-8'))['cases']}
 d=load('shared_benchmark_deterministic_experiment.json')

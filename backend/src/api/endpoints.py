@@ -2,11 +2,15 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, List
-import sys, os, time
+from typing import Optional
+import sys
+import os
+import time
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'ai_core', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(
+    0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "ai_core", "src")
+)
 from parsers.srs_parser import srs_to_plantuml
 from evaluators.semantic_eval import calculate_semantic_fidelity
 from ocl_engine.ocl_validator import validate_ocl
@@ -16,20 +20,24 @@ from plantuml_runtime import validate_with_plantuml
 from api.error_log_endpoint import router as error_log_router, hata_kaydet, HataLogGirdisi
 from api.performance import olcum_kaydet, performans_raporu, olcumleri_sifirla
 from ai.agent_workflow import UMLMultiAgentSystem
+from ai.repair_agent import UMLRepairAgent, RepairConfig
+from backend.src.utils.plantuml_parser import parse_classes
 
 # FastAPI uygulamasinin ana giris noktasi.
 # Swagger ekraninda gorunen tum backend endpointleri bu app uzerinden yayinlanir.
 app = FastAPI(
-    title="CURE Backend API",
-    description="Cognitive UML Repair Engine - Backend Services",
-    version="1.0.0"
+    title="CURE Backend API", description="Cognitive UML Repair Engine - Backend Services", version="1.0.0"
 )
 
 # Frontend farkli porttan calisabilecegi icin CORS acik tutulur.
 # Boylece React/Vue arayuzu tarayici uzerinden bu API'ye istek atabilir.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        origin.strip()
+        for origin in os.getenv("CURE_CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+        if origin.strip() and origin.strip() != "*"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -68,7 +76,9 @@ class AutonomousRepairRequest(BaseModel):
     # Max iterasyon 3 ile sinirli; bu sonsuz dongu riskini engeller.
     plantuml_kodu: str = Field(..., description="Onarilacak PlantUML kodu")
     srs_metni: Optional[str] = Field(None, description="Final semantik skor icin SRS metni")
-    max_iterations: int = Field(default=3, ge=1, le=5, description="Guvenli maksimum iterasyon")
+    max_iterations: int = Field(default=3, ge=1, le=5, description="Maximum repair attempts")
+    force_repair: bool = False
+    legacy: bool = False
 
 
 class PerformansOlcumGirdisi(BaseModel):
@@ -85,11 +95,19 @@ def ana_sayfa():
         "versiyon": "1.0.0",
         "durum": "aktif",
         "endpoints": [
-            "/generate-uml", "/api/parse", "/api/render", "/api/validate",
-            "/api/evaluate", "/api/analyze", "/api/iterate",
-            "/api/autonomous-repair", "/api/error-log", "/api/performance",
-            "/api/demo-diagram", "/health"
-        ]
+            "/generate-uml",
+            "/api/parse",
+            "/api/render",
+            "/api/validate",
+            "/api/evaluate",
+            "/api/analyze",
+            "/api/iterate",
+            "/api/autonomous-repair",
+            "/api/error-log",
+            "/api/performance",
+            "/api/demo-diagram",
+            "/health",
+        ],
     }
 
 
@@ -166,7 +184,7 @@ def _basit_healer(plantuml_kodu: str) -> str:
         kod = "@startuml\n" + kod
     if "@enduml" not in kod:
         kod = kod + "\n@enduml"
-    if "class " not in kod:
+    if not parse_classes(kod):
         kod = kod.replace("@enduml", "class GeneratedDiagram {}\n@enduml")
     return kod
 
@@ -180,13 +198,15 @@ def _compile_test(plantuml_kodu: str) -> dict:
     ocl = validate_ocl(plantuml_kodu)
     plantuml_runtime = validate_with_plantuml(plantuml_kodu)
     project_defined_success = syntax["gecerli"] and ocl["gecerli_mi"]
-    plantuml_validated_success = (
-        plantuml_runtime["successful"] if plantuml_runtime["available"] else None
-    )
+    plantuml_validated_success = plantuml_runtime["successful"] if plantuml_runtime["available"] else None
     hatalar = syntax["hatalar"] + ocl["hatalar"]
     if plantuml_runtime["available"] and plantuml_runtime["successful"] is False:
         hatalar.extend(plantuml_runtime["errors"])
     return {
+        "project_valid": project_defined_success,
+        "compiler_valid": plantuml_validated_success,
+        "critic_valid": None,
+        "deprecated_aliases": ["basarili", "project_defined_success", "plantuml_validated_success"],
         "basarili": project_defined_success,
         "success_definition": "project_defined_lightweight_validation",
         "project_defined_success": project_defined_success,
@@ -195,7 +215,18 @@ def _compile_test(plantuml_kodu: str) -> dict:
         "syntax": syntax,
         "ocl": ocl,
         "plantuml_runtime": plantuml_runtime,
-        "normalize_hatalar": hata_normalize_et(hatalar, kaynak="COMPILE")
+        "normalize_hatalar": hata_normalize_et(hatalar, kaynak="COMPILE"),
+    }
+
+
+def _validation_status_fields(code: str) -> dict:
+    result = _compile_test(code)
+    return {
+        "project_valid": result["project_valid"],
+        "compiler_valid": result["compiler_valid"],
+        "critic_valid": None,
+        "validation": result,
+        "success_definition": "basarili is a deprecated request-completed alias; inspect independent validation statuses",
     }
 
 
@@ -223,6 +254,7 @@ def srs_parse_et(girdi: SRSGirdisi):
         # 3) UML, OCL kurallariyla dogrulanir ve ayni JSON cevabina eklenir.
         ocl_sonuc = validate_ocl(sonuc["plantuml_kodu"])
         cevap = {
+            **_validation_status_fields(sonuc["plantuml_kodu"]),
             "basarili": True,
             "plantuml_kodu": sonuc["plantuml_kodu"],
             "siniflar": sonuc["bulunan_siniflar"],
@@ -235,7 +267,7 @@ def srs_parse_et(girdi: SRSGirdisi):
                 "uyarilar": ocl_sonuc["uyarilar"],
                 "skor": ocl_sonuc["skor"],
             },
-            "response_format": "json"
+            "response_format": "json",
         }
         olcum_kaydet("/api/parse", 0.0, True)
         return cevap
@@ -258,7 +290,10 @@ def plantuml_render_et(girdi: UMLDogrulamaGirdisi):
             "basarili": True,
             "plantuml_kodu": girdi.plantuml_kodu,
             "render": render_plantuml(girdi.plantuml_kodu),
-            "compile": compile_sonuc
+            "compile": compile_sonuc,
+            "project_valid": compile_sonuc["project_valid"],
+            "compiler_valid": compile_sonuc["compiler_valid"],
+            "critic_valid": None,
         }
     except HTTPException:
         raise
@@ -274,13 +309,14 @@ def uml_dogrula(girdi: UMLDogrulamaGirdisi):
         sonuc = validate_ocl(girdi.plantuml_kodu)
         return {
             "basarili": True,
+            **_validation_status_fields(girdi.plantuml_kodu),
             "gecerli_mi": sonuc["gecerli_mi"],
             "skor": sonuc["skor"],
             "yuzde": sonuc["yuzde"],
             "hatalar": sonuc["hatalar"],
             "uyarilar": sonuc["uyarilar"],
             "sinif_sayisi": sonuc["sinif_sayisi"],
-            "detaylar": sonuc["detaylar"]
+            "detaylar": sonuc["detaylar"],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OCL dogrulama hatasi: {str(e)}")
@@ -293,16 +329,8 @@ def semantik_degerlendir(girdi: TamAnalizGirdisi):
         raise HTTPException(status_code=400, detail="Degerlendirme icin plantuml_kodu gerekli")
     try:
         sonuc = calculate_semantic_fidelity(girdi.srs_metni, girdi.plantuml_kodu)
-        return {
-            "basarili": True,
-            "genel_skor": sonuc["genel_skor"],
-            "yuzde": sonuc["yuzde"],
-            "gecti_mi": sonuc["gecti_mi"],
-            "halusinasyonlar": sonuc["halusinasyonlar"],
-            "eksik_siniflar": sonuc["eksik_siniflar"],
-            "ieee_kriterleri": sonuc["ieee_kriterleri"],
-            "sinif_metrikleri": sonuc["sinif_metrikleri"]
-        }
+        return {"basarili": True, **sonuc}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Degerlendirme hatasi: {str(e)}")
 
@@ -312,10 +340,7 @@ def iterasyon_testi(girdi: IterasyonGirdisi):
     """Her onarim iterasyonunda compile + opsiyonel semantik test calistirir."""
     MAX_ITERATIONS = 3
     if girdi.iterasyon_no > MAX_ITERATIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Maksimum iterasyon sayisi aşıldı: {MAX_ITERATIONS}"
-        )
+        raise HTTPException(status_code=400, detail=f"Maksimum iterasyon sayisi aşıldı: {MAX_ITERATIONS}")
 
     baslangic = time.time()
 
@@ -349,15 +374,17 @@ def iterasyon_testi(girdi: IterasyonGirdisi):
                 "yuzde": ocl_sonuc["yuzde"],
                 "hatalar": ocl_sonuc["hatalar"],
                 "uyarilar": ocl_sonuc["uyarilar"],
-                "normalize_hatalar": compile_sonuc["normalize_hatalar"]
+                "normalize_hatalar": compile_sonuc["normalize_hatalar"],
             },
             "semantik": {
                 "genel_skor": semantik_sonuc["genel_skor"] if semantik_sonuc else None,
                 "yuzde": semantik_sonuc["yuzde"] if semantik_sonuc else None,
                 "gecti_mi": semantik_sonuc["gecti_mi"] if semantik_sonuc else None,
                 "halusinasyonlar": semantik_sonuc["halusinasyonlar"] if semantik_sonuc else [],
-            } if semantik_sonuc else None,
-            "sure_saniye": gecen_sure
+            }
+            if semantik_sonuc
+            else None,
+            "sure_saniye": gecen_sure,
         }
 
     except HTTPException:
@@ -367,14 +394,13 @@ def iterasyon_testi(girdi: IterasyonGirdisi):
         raise HTTPException(status_code=500, detail=f"Iterasyon test hatasi: {str(e)}")
 
 
-@app.post("/api/autonomous-repair")
-def autonomous_repair(girdi: AutonomousRepairRequest):
+def _autonomous_repair_legacy(girdi: AutonomousRepairRequest):
     """
     Gerçek AI (Healer/Critic) ajanını kullanan otonom onarım akışı.
     """
     baslangic = time.time()
     aktif_kod = girdi.plantuml_kodu
-    
+
     # Başlangıç durumu kontrolü
     compile_sonuc = _compile_test(aktif_kod)
     iterasyonlar = []
@@ -383,22 +409,28 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
     agent_is_valid = None
     agent_llm_call_count = 0
 
-    iterasyonlar.append({
-        "iteration_no": 1,
-        "status": "COMPILE_OK" if compile_sonuc["basarili"] else "HEALER_REQUIRED",
-        "compile_result": compile_sonuc,
-        "fix_summary": "İlk derleme testi (Orijinal UML)"
-    })
+    iterasyonlar.append(
+        {
+            "iteration_no": 1,
+            "status": "COMPILE_OK" if compile_sonuc["basarili"] else "HEALER_REQUIRED",
+            "compile_result": compile_sonuc,
+            "fix_summary": "İlk derleme testi (Orijinal UML)",
+        }
+    )
 
     # Eğer kodda hata varsa, LangGraph AI Ajanını devreye sok
     if not compile_sonuc["basarili"]:
         try:
             # Multi-Agent sistemi başlatılıyor
             agent = UMLMultiAgentSystem(max_iterations=girdi.max_iterations)
-            
+
             # Eğer SRS metni boş gelirse varsayılan bir prompt veriyoruz
-            srs_metni = girdi.srs_metni if girdi.srs_metni else "Verilen UML kodunu OCL ve sözdizimi kurallarına uygun şekilde onar."
-            
+            srs_metni = (
+                girdi.srs_metni
+                if girdi.srs_metni
+                else "Verilen UML kodunu OCL ve sözdizimi kurallarına uygun şekilde onar."
+            )
+
             # Ajan kendi içerisindeki 3 iterasyonluk döngüyü çalıştırıp en iyi sonucu döner
             aktif_kod = agent.run(original_text=srs_metni, initial_uml=aktif_kod)
             if agent.last_final_state:
@@ -406,26 +438,31 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
                 agent_iteration_count = agent_repair_attempt_count
                 agent_is_valid = agent.last_final_state.get("is_valid")
             agent_llm_call_count = agent.llm_call_count
-            
+
             # Ajanın çıktısı tekrar test ediliyor
             yeni_compile = _compile_test(aktif_kod)
-            iterasyonlar.append({
-                "iteration_no": 2,
-                "status": "AI_HEALER_APPLIED",
-                "compile_result": yeni_compile,
-                "fix_summary": "LangGraph Multi-Agent sistemi ile otonom onarım uygulandı."
-            })
-            
+            iterasyonlar.append(
+                {
+                    "iteration_no": 2,
+                    "status": "AI_HEALER_APPLIED",
+                    "compile_result": yeni_compile,
+                    "fix_summary": "LangGraph Multi-Agent sistemi ile otonom onarım uygulandı.",
+                }
+            )
+
             # Başarısızlık devam ediyorsa logla
             if not yeni_compile["basarili"]:
-                hata_kaydet(HataLogGirdisi(
-                    kategori="AI_HEALER_FAILED",
-                    mesaj="Ajan onarımı sonrası hatalar devam ediyor: " + "; ".join(yeni_compile["syntax"]["hatalar"] or yeni_compile["ocl"]["hatalar"]),
-                    plantuml_kodu=aktif_kod,
-                    iterasyon_no=2,
-                    skor=yeni_compile["ocl"]["skor"]
-                ))
-                
+                hata_kaydet(
+                    HataLogGirdisi(
+                        kategori="AI_HEALER_FAILED",
+                        mesaj="Ajan onarımı sonrası hatalar devam ediyor: "
+                        + "; ".join(yeni_compile["syntax"]["hatalar"] or yeni_compile["ocl"]["hatalar"]),
+                        plantuml_kodu=aktif_kod,
+                        iterasyon_no=2,
+                        skor=yeni_compile["ocl"]["skor"],
+                    )
+                )
+
         except Exception as e:
             exception_logla(e, "/api/autonomous-repair - AI Ajan Hatası")
 
@@ -453,6 +490,71 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
     }
 
 
+@app.post("/api/autonomous-repair")
+def autonomous_repair(girdi: AutonomousRepairRequest):
+    """Repair with independent statuses and explicit regression reversion."""
+    if girdi.legacy:
+        return _autonomous_repair_legacy(girdi)
+    started = time.perf_counter()
+    agent = UMLRepairAgent(RepairConfig(max_iterations=girdi.max_iterations))
+    state = agent.run(
+        girdi.srs_metni or "", girdi.plantuml_kodu, return_state=True, force_repair=girdi.force_repair
+    )
+    output = state["safe_plantuml"]
+    final_compile = _compile_test(output)
+    elapsed = time.perf_counter() - started
+    success = (
+        state["agent_status"] == "ok"
+        and state["terminated_by"] == "accepted"
+        and not state["regression"]
+        and final_compile["project_valid"]
+        and final_compile["compiler_valid"] is True
+    )
+    olcum_kaydet("/api/autonomous-repair", elapsed, success)
+    return {
+        "project_valid": final_compile["project_valid"],
+        "compiler_valid": final_compile["compiler_valid"],
+        "critic_valid": state["critic_valid"],
+        "repair_accepted": success,
+        "agent_status": state["agent_status"],
+        "agent_error": state["agent_error"],
+        "terminated_by": state["terminated_by"],
+        "regression": state["regression"],
+        "reverted": state["regression"],
+        "raw_final_plantuml": state["current_uml"],
+        "raw_project_valid": state["project_valid"],
+        "raw_compiler_valid": state["compiler_valid"],
+        "final_plantuml": output,
+        "final_compile": final_compile,
+        "final_render": render_plantuml(output) if final_compile["compiler_valid"] is True else None,
+        "trace": state["trace"],
+        "first_compiler_valid_iteration": state["first_compiler_valid_iteration"],
+        "first_project_valid_iteration": state["first_project_valid_iteration"],
+        "elapsed_seconds": elapsed,
+        "llm_call_count": state["llm_call_count"],
+        "tokens_in": state["tokens_in"],
+        "tokens_out": state["tokens_out"],
+        "deprecated_aliases": ["basarili", "sure_saniye", "agent_is_valid", "agent_iteration_count"],
+        "basarili": success,
+        "sure_saniye": round(elapsed, 3),
+        "sla_gecti_mi": elapsed < 15,
+        "agent_is_valid": state["critic_valid"],
+        "agent_iteration_count": state["repair_attempt_count"],
+        "agent_repair_attempt_count": state["repair_attempt_count"],
+        "agent_llm_call_count": state["llm_call_count"],
+        "max_iterations": girdi.max_iterations,
+        "iterasyonlar": [
+            {"iteration_no": 0, "status": "INPUT", "compile_result": _compile_test(girdi.plantuml_kodu)},
+            {
+                "iteration_no": state["repair_attempt_count"],
+                "status": state["terminated_by"],
+                "compile_result": final_compile,
+            },
+        ],
+        "semantik": calculate_semantic_fidelity(girdi.srs_metni, output) if girdi.srs_metni else None,
+    }
+
+
 @app.post("/api/analyze")
 def tam_analiz_yap(girdi: SRSGirdisi):
     """Tam pipeline: SRS -> UML uret -> OCL dogrula -> semantik degerlendir."""
@@ -465,6 +567,7 @@ def tam_analiz_yap(girdi: SRSGirdisi):
         uml = parse_sonuc["plantuml_kodu"]
         ocl_sonuc = validate_ocl(uml)
         eval_sonuc = calculate_semantic_fidelity(girdi.metin, uml)
+        independent_statuses = _validation_status_fields(uml)
 
         gecen_sure = round(time.time() - baslangic, 3)
         olcum_kaydet("/api/analyze", gecen_sure, True)
@@ -473,6 +576,7 @@ def tam_analiz_yap(girdi: SRSGirdisi):
             "basarili": True,
             "sure_saniye": gecen_sure,
             "sla_gecti_mi": gecen_sure < 15,
+            **independent_statuses,
             "uretilen_uml": uml,
             "siniflar": parse_sonuc["bulunan_siniflar"],
             "iliskiler": parse_sonuc["iliskiler"],
@@ -481,15 +585,15 @@ def tam_analiz_yap(girdi: SRSGirdisi):
                 "skor": ocl_sonuc["skor"],
                 "yuzde": ocl_sonuc["yuzde"],
                 "hatalar": ocl_sonuc["hatalar"],
-                "uyarilar": ocl_sonuc["uyarilar"]
+                "uyarilar": ocl_sonuc["uyarilar"],
             },
             "semantik": {
                 "genel_skor": eval_sonuc["genel_skor"],
                 "yuzde": eval_sonuc["yuzde"],
                 "gecti_mi": eval_sonuc["gecti_mi"],
                 "halusinasyonlar": eval_sonuc["halusinasyonlar"],
-                "ieee_kriterleri": eval_sonuc["ieee_kriterleri"]
-            }
+                "ieee_kriterleri": eval_sonuc["ieee_kriterleri"],
+            },
         }
     except HTTPException:
         raise

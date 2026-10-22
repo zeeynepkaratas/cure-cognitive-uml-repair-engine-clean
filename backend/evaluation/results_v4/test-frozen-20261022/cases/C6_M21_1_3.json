@@ -1,0 +1,579 @@
+{
+  "case_id": "M21_1",
+  "scenario_id": "M21",
+  "srs": "The document review system records Reviewer, Review, ReviewService, and Document; each has an id attribute. Each Reviewer can have zero or more Review records, and each Review belongs to exactly one Reviewer. Each Review uses exactly one ReviewService, and each ReviewService serves zero or more Review records. Each ReviewService manages one or more Document records by composition, and each Document belongs to exactly one ReviewService. Each Reviewer can reference zero or more Document records, and each Document can be referenced by zero or more Reviewer records.",
+  "gold": "@startuml\nclass Reviewer {\n  +id: String\n}\nclass Review {\n  +id: String\n}\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewer \"1\" --> \"0..*\" Review\nReview \"0..*\" --> \"1\" ReviewService\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "defective": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1939,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1939,
+      "selected_class": "Review"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\nclass Document {\n  +id: String\n}\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Document\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReview \"1\" --> \"1\" ReviewService\nReviewService \"1\" --> \"0..*\" Review\n@enduml",
+  "output_sha256": "3c890d0c50558a1d2445e796a6c86a1bb5cedf28c0a55cbefa02018d75c9ccf6",
+  "input_sha256": "06e9464444bfa2cce502b74460dbd85fb6e9bce2bb5d206932f951596ef7927f",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "75d77eab3415adcd14a415add627f20fd1955fcd7e52be3a694876aad4d7dbc0",
+      "tokens_in": 348,
+      "tokens_out": 60,
+      "latency_s": 2.081940900000518,
+      "diagram_hash": "06e9464444bfa2cce502b74460dbd85fb6e9bce2bb5d206932f951596ef7927f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1dfaa570990a4305a78b16f81f0425f7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not include the Review class, which is essential for the requirements.\",\"The relationship between Review and Reviewer is not represented in the UML.\",\"The relationship between Review and ReviewService is missing in the UML.\"],\"categories\":[\"Missing Classes\",\"Missing Relationships\"]}",
+      "critic_errors": [
+        "The UML does not include the Review class, which is essential for the requirements.",
+        "The relationship between Review and Reviewer is not represented in the UML.",
+        "The relationship between Review and ReviewService is missing in the UML."
+      ],
+      "critic_categories": [
+        "Missing Classes",
+        "Missing Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "173f52e8739f38b8ed8dbee1a3a168f85b1a43d469c429bf2be51965604f5d2b",
+      "tokens_in": 177,
+      "tokens_out": 101,
+      "latency_s": 3.196644599999672,
+      "diagram_hash": "296180317eca7626066a60596ffc315b7f453221d276f0f1ed4972551769a066",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fa7dc80a62",
+      "request_id": "req_45675984648e45afb327c17f0c8967de",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Review\nReview \"0..*\" --> \"1\" Document\nReviewService \"1\" --> \"0..*\" Review\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"0..*\" --> \"0..*\" Review\nReview \"0..*\" --> \"1\" Document\nReviewService \"1\" --> \"0..*\" Review\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ca0d05b21a9d4f2afa034a2d102d6e55921ac6c5f46db7b2e8850a6f7efc01bf",
+      "tokens_in": 381,
+      "tokens_out": 117,
+      "latency_s": 2.948137499999575,
+      "diagram_hash": "296180317eca7626066a60596ffc315b7f453221d276f0f1ed4972551769a066",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a94d78dfa9884a4297b6949c3fdb897f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Review and Document is incorrectly defined. It should be '1' Review to '1' Document, but it is currently defined as '0..*' to '1'.\",\"The association between Reviewer and Review is incorrectly defined. It should be '1' Reviewer to '0..*' Review, but it is currently defined as '0..*' to '1'.\",\"The association between Review and ReviewService is missing. Each Review should use exactly one ReviewService.\"],\"categories\":[\"Association Errors\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The association between Review and Document is incorrectly defined. It should be '1' Review to '1' Document, but it is currently defined as '0..*' to '1'.",
+        "The association between Reviewer and Review is incorrectly defined. It should be '1' Reviewer to '0..*' Review, but it is currently defined as '0..*' to '1'.",
+        "The association between Review and ReviewService is missing. Each Review should use exactly one ReviewService."
+      ],
+      "critic_categories": [
+        "Association Errors",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "0c493effcd05e5414be8ffdb6bd0dc49feb50ec2c04cf9261de1b756458f481a",
+      "tokens_in": 267,
+      "tokens_out": 99,
+      "latency_s": 3.2897382000001016,
+      "diagram_hash": "7678b60af97841a5a367e44e5d1451391ddda0f02fdc5d3bd496570a714905b2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_2d489352984e4411bb5413061644606e",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReviewService \"1\" --> \"0..*\" Review\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReviewService \"1\" --> \"0..*\" Review\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b9797684029b9c4d2a265675909483543eef9ea3f139c7d1d592606d12478b31",
+      "tokens_in": 379,
+      "tokens_out": 54,
+      "latency_s": 1.7410359000004973,
+      "diagram_hash": "7678b60af97841a5a367e44e5d1451391ddda0f02fdc5d3bd496570a714905b2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_37370bd0eb0148b49a9ad79e68ec02f9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Review and Document is incorrectly defined. According to the requirement, each Review should use exactly one ReviewService, but the UML does not show this relationship clearly.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "The relationship between Review and Document is incorrectly defined. According to the requirement, each Review should use exactly one ReviewService, but the UML does not show this relationship clearly."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "238d3fbfa8cf12cd3fb497fc931efa47c672d9c4274a0d7f6b831442d63b4bcf",
+      "tokens_in": 198,
+      "tokens_out": 110,
+      "latency_s": 2.9285978999996587,
+      "diagram_hash": "3c890d0c50558a1d2445e796a6c86a1bb5cedf28c0a55cbefa02018d75c9ccf6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_ba7b9e96189244fc9187fdb192979c76",
+      "response_text": "```plantuml\n@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReview \"1\" --> \"1\" ReviewService\nReviewService \"1\" --> \"0..*\" Review\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReview \"1\" --> \"1\" ReviewService\nReviewService \"1\" --> \"0..*\" Review\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e8259df4a8e9ff50817b550810dc00444df106455c21a2552fddf876a55c5f4d",
+      "tokens_in": 390,
+      "tokens_out": 58,
+      "latency_s": 2.0782136000007085,
+      "diagram_hash": "3c890d0c50558a1d2445e796a6c86a1bb5cedf28c0a55cbefa02018d75c9ccf6",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_87ae8355d0f14ca29324c0f37186dc65",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Review and Document is incorrectly defined. According to the requirement, each Review should belong to exactly one Document, but the UML shows a relationship that implies a Review can reference multiple Documents.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Review and Document is incorrectly defined. According to the requirement, each Review should belong to exactly one Document, but the UML shows a relationship that implies a Review can reference multiple Documents."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2140,
+  "tokens_out": 599,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Review, ReviewService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Review, ReviewService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Reviewer {\n  +id: String\n}\n\nclass Review {\n  +id: String\n}\n\nclass ReviewService {\n  +id: String\n}\n\nclass Document {\n  +id: String\n}\n\nReviewService \"1\" *-- \"1..*\" Document\nReviewer \"1\" --> \"0..*\" Review\nReview \"1\" --> \"1\" Document\nReview \"1\" --> \"1\" ReviewService\nReviewService \"1\" --> \"0..*\" Review\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.57029750000038,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "document",
+          "reviewer"
+        ]
+      ],
+      "spurious": [
+        [
+          "document",
+          "review"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.08333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reviewer",
+          "document"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document"
+        ],
+        [
+          "reviewservice",
+          "review"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -1.1102230246251565e-16,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reviewer",
+          "document",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document",
+          "association"
+        ],
+        [
+          "reviewservice",
+          "review",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -1.1102230246251565e-16,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reviewer",
+          "document",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "reviewservice",
+          "review",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.22222222222222215,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "document",
+          "reviewer"
+        ]
+      ],
+      "spurious": [
+        [
+          "document",
+          "review"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.08333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reviewer",
+          "document"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document"
+        ],
+        [
+          "reviewservice",
+          "review"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -1.1102230246251565e-16,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "reviewer",
+          "document",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document",
+          "association"
+        ],
+        [
+          "reviewservice",
+          "review",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -1.1102230246251565e-16,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "reviewer",
+          "document",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "review",
+          "document",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "review",
+          "reviewservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "reviewservice",
+          "review",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.22222222222222215,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "end_to_end_seconds": 20.57613290000063,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

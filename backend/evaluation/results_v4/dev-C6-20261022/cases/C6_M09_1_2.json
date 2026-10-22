@@ -1,0 +1,449 @@
+{
+  "case_id": "M09_1",
+  "scenario_id": "M09",
+  "srs": "The advanced search system records Person, Crime, SearchService, and PropertyRecord; each has an id attribute. Each Person can have zero or more Crime records, and each Crime belongs to exactly one Person. Each Crime uses exactly one SearchService, and each SearchService serves zero or more Crime records. Each SearchService manages one or more PropertyRecord records by composition, and each PropertyRecord belongs to exactly one SearchService. Each Person can reference zero or more PropertyRecord records, and each PropertyRecord can be referenced by zero or more Person records.",
+  "gold": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "defective": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" UnspecifiedEntity\nPerson \"0..*\" --> \"0..*\" UnspecifiedEntity\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1819,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1819,
+      "selected_class": "PropertyRecord"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"0..*\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" UnspecifiedEntity\nPerson \"0..*\" --> \"0..*\" UnspecifiedEntity\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "output_sha256": "6835ffd83b3290a5afc865e373dd3ad1a793789f23ec39c16b6e78e2d338c69a",
+  "input_sha256": "3af28d9e0f212e09503a1964ef646d46af49ac55b2ec3865c13bec5b7cdef1f2",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5cbf9c0432f26412ce3d88837ccffe7b97002064f8cd25a9dba4594e43e61099",
+      "tokens_in": 392,
+      "tokens_out": 101,
+      "latency_s": 1.9854573999909917,
+      "diagram_hash": "3af28d9e0f212e09503a1964ef646d46af49ac55b2ec3865c13bec5b7cdef1f2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5ec76e8a6fa0420c9b7028f5f81f634a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not correctly represent the relationships between Crime and SearchService. The relationship should be '1' Crime to '1' SearchService, but it is currently '0..*' to '1'.\",\"The UML uses 'UnspecifiedEntity' instead of 'PropertyRecord', which is a requirement in the specification.\",\"The relationship between SearchService and PropertyRecord is missing in the UML.\"],\"categories\":[\"UML Structure\",\"Relationship Constraints\",\"Entity Representation\"]}",
+      "critic_errors": [
+        "The UML does not correctly represent the relationships between Crime and SearchService. The relationship should be '1' Crime to '1' SearchService, but it is currently '0..*' to '1'.",
+        "The UML uses 'UnspecifiedEntity' instead of 'PropertyRecord', which is a requirement in the specification.",
+        "The relationship between SearchService and PropertyRecord is missing in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Constraints",
+        "Entity Representation"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7fb42fa6a11563143c17b1e6bdda427db420ab25c2f19b70c6cabd1d8ee6b1b4",
+      "tokens_in": 253,
+      "tokens_out": 103,
+      "latency_s": 1.7608020000043325,
+      "diagram_hash": "6835ffd83b3290a5afc865e373dd3ad1a793789f23ec39c16b6e78e2d338c69a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_abc5dce10b5d4dce991f1189d077ebd4",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a27655e2d68231d195fcc39c1ed831d85b91fa635f71640e7f63537207710a0e",
+      "tokens_in": 388,
+      "tokens_out": 47,
+      "latency_s": 1.2131788999977289,
+      "diagram_hash": "6835ffd83b3290a5afc865e373dd3ad1a793789f23ec39c16b6e78e2d338c69a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_40b871d0de514c23948738481e06fdb3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Person and PropertyRecord is not correctly represented as it should be a bidirectional association with multiplicity 0..* on both sides.\"],\"categories\":[\"UML Association Error\"]}",
+      "critic_errors": [
+        "The association between Person and PropertyRecord is not correctly represented as it should be a bidirectional association with multiplicity 0..* on both sides."
+      ],
+      "critic_categories": [
+        "UML Association Error"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "29407a71aac52b9ff4f0b986b6f92013c3f16faf2f518bae0b8ddb3b575f6729",
+      "tokens_in": 198,
+      "tokens_out": 104,
+      "latency_s": 1.753044699988095,
+      "diagram_hash": "05029d63a5d9e38ef39a5c3034889dc8511785fcc3611cb1bb498fe8534d9137",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_9fdb32c1c4",
+      "request_id": "req_7ec1c08cb3024808a5a67547f0f2aeae",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" <--> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" <--> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a7d6a52c4f48901f784e7dc6bb86cbe0b8d12d7c4a642d2312eac839393b19f5",
+      "tokens_in": 389,
+      "tokens_out": 88,
+      "latency_s": 1.3704594999871915,
+      "diagram_hash": "05029d63a5d9e38ef39a5c3034889dc8511785fcc3611cb1bb498fe8534d9137",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_473b1242785d4830b3780dea13b1b2c6",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Person and PropertyRecord is incorrectly defined as a bidirectional association with multiplicity '0..* <--> 0..*'. It should be '0..* --> 0..*' to indicate that a Person can reference zero or more PropertyRecords, but a PropertyRecord can also be referenced by zero or more Persons.\"],\"categories\":[\"UML Association\",\"Multiplicity Error\"]}",
+      "critic_errors": [
+        "The association between Person and PropertyRecord is incorrectly defined as a bidirectional association with multiplicity '0..* <--> 0..*'. It should be '0..* --> 0..*' to indicate that a Person can reference zero or more PropertyRecords, but a PropertyRecord can also be referenced by zero or more Persons."
+      ],
+      "critic_categories": [
+        "UML Association",
+        "Multiplicity Error"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "d5ce6099390de3a2ae6c04fa98dc20628002c83c7196d745f56ec49514eedc00",
+      "tokens_in": 238,
+      "tokens_out": 103,
+      "latency_s": 1.9564030000037747,
+      "diagram_hash": "6835ffd83b3290a5afc865e373dd3ad1a793789f23ec39c16b6e78e2d338c69a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_9fdb32c1c4",
+      "request_id": "req_1ebb3742735c47ad92ed441fef36eb86",
+      "response_text": "```plantuml\n@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a27655e2d68231d195fcc39c1ed831d85b91fa635f71640e7f63537207710a0e",
+      "tokens_in": 388,
+      "tokens_out": 61,
+      "latency_s": 1.1431799000129104,
+      "diagram_hash": "6835ffd83b3290a5afc865e373dd3ad1a793789f23ec39c16b6e78e2d338c69a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_6fb9f295d02e4a15972bfc7a39025d23",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Person and PropertyRecord is not correctly represented as it should allow for zero or more references from Person to PropertyRecord, but the UML does not clearly indicate the multiplicity on the PropertyRecord side.\"],\"categories\":[\"UML Association\",\"Multiplicity Error\"]}",
+      "critic_errors": [
+        "The association between Person and PropertyRecord is not correctly represented as it should allow for zero or more references from Person to PropertyRecord, but the UML does not clearly indicate the multiplicity on the PropertyRecord side."
+      ],
+      "critic_categories": [
+        "UML Association",
+        "Multiplicity Error"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2246,
+  "tokens_out": 607,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Person {\n  +id: String\n}\nclass Crime {\n  +id: String\n}\nclass SearchService {\n  +id: String\n}\nclass PropertyRecord {\n  +id: String\n}\nPerson \"1\" --> \"0..*\" Crime\nCrime \"1\" --> \"1\" SearchService\nSearchService \"1\" *-- \"1..*\" PropertyRecord\nPerson \"0..*\" --> \"0..*\" PropertyRecord\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 12.113245700005791,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.5,
+    "reference_rel_multiplicity": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "crime",
+          "searchservice",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.25,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  }
+}

@@ -6,16 +6,16 @@ For the checkpoint delivery we keep rendering deterministic and offline: the
 API returns a valid SVG preview plus a valid PNG placeholder data URI, while
 the original PlantUML source remains the authoritative diagram definition.
 """
+
 import base64
 import html
-import re
 from typing import Dict, List, Tuple
 
 try:
-    from utils.plantuml_parser import parse_relationships
+    from utils.plantuml_parser import parse_relationships, parse_classes
     from plantuml_runtime import render_with_plantuml
 except ModuleNotFoundError:  # package import path: src.renderers.plantuml_renderer
-    from src.utils.plantuml_parser import parse_relationships
+    from src.utils.plantuml_parser import parse_relationships, parse_classes
     from src.plantuml_runtime import render_with_plantuml
 
 
@@ -26,7 +26,7 @@ TRANSPARENT_PNG_BASE64 = (
 
 def _parse_classes(plantuml_code: str) -> List[str]:
     # PlantUML icindeki class tanimlarini render yerlesimi icin cikarir.
-    return re.findall(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)", plantuml_code)
+    return sorted(parse_classes(plantuml_code))
 
 
 def _parse_relations(plantuml_code: str) -> List[Tuple[str, str]]:
@@ -62,10 +62,12 @@ def render_plantuml_svg(plantuml_code: str) -> str:
         y = 92 + (index // 2) * row_height
         positions[class_name] = (x, y)
         safe_name = html.escape(class_name)
-        svg_parts.extend([
-            f'<rect class="box" x="{x}" y="{y}" width="280" height="52" rx="6"/>',
-            f'<text class="title" x="{x + 16}" y="{y + 31}">{safe_name}</text>',
-        ])
+        svg_parts.extend(
+            [
+                f'<rect class="box" x="{x}" y="{y}" width="280" height="52" rx="6"/>',
+                f'<text class="title" x="{x + 16}" y="{y + 31}">{safe_name}</text>',
+            ]
+        )
 
     for source, target in relations:
         # Sadece SVG'de koordinati bilinen siniflar arasindaki iliskiler cizilir.
@@ -73,9 +75,7 @@ def render_plantuml_svg(plantuml_code: str) -> str:
             continue
         sx, sy = positions[source]
         tx, ty = positions[target]
-        svg_parts.append(
-            f'<line class="line" x1="{sx + 280}" y1="{sy + 26}" x2="{tx}" y2="{ty + 26}"/>'
-        )
+        svg_parts.append(f'<line class="line" x1="{sx + 280}" y1="{sy + 26}" x2="{tx}" y2="{ty + 26}"/>')
 
     if not classes:
         svg_parts.append('<text class="meta" x="32" y="110">No class declarations found.</text>')

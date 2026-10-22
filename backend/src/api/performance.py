@@ -2,6 +2,7 @@
 CP4 - Performans olcum altyapisi.
 Latency, SLA uyumu, basari orani ve P50/P95/P99 metriklerini hesaplar.
 """
+
 import statistics
 from typing import List, Optional
 from datetime import datetime
@@ -16,22 +17,34 @@ _olcumler: List[dict] = []
 
 def olcum_kaydet(endpoint: str, sure_saniye: float, basarili: bool):
     """Her API cagrisinin suresini kaydeder."""
-    _olcumler.append({
-        "endpoint": endpoint,
-        "sure": sure_saniye,
-        "basarili": basarili,
-        "zaman": datetime.now().isoformat(),
-        "sla_gecti": sure_saniye < SLA_LIMIT_SANIYE
-    })
+    _olcumler.append(
+        {
+            "endpoint": endpoint,
+            "sure": sure_saniye,
+            "basarili": basarili,
+            "zaman": datetime.now().isoformat(),
+            "sla_gecti": sure_saniye < SLA_LIMIT_SANIYE,
+        }
+    )
 
 
-def percentile_hesapla(veriler: List[float], p: float) -> float:
-    """P50/P95/P99 gibi yuzdelik dilim hesaplar."""
+def percentile_hesapla(veriler: List[float], p: float, legacy: bool = False) -> float:
+    """Linear quantile, equivalent to numpy.percentile(method='linear').
+
+    Position is (n-1)*p/100. At n=50, P99 interpolates between the top two
+    samples. Legacy nearest-rank indexing is available only for reproduction.
+    """
+    if not 0 <= p <= 100:
+        raise ValueError("percentile must be between 0 and 100")
     if not veriler:
         return 0.0
-    sirali = sorted(veriler)
-    index = int(len(sirali) * p / 100)
-    return round(sirali[min(index, len(sirali) - 1)], 3)
+    ordered = sorted(veriler)
+    if legacy:
+        return round(ordered[min(int(len(ordered) * p / 100), len(ordered) - 1)], 3)
+    position = (len(ordered) - 1) * p / 100
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
 
 
 def performans_raporu(endpoint: Optional[str] = None) -> dict:
@@ -64,7 +77,7 @@ def performans_raporu(endpoint: Optional[str] = None) -> dict:
             "max": round(max(sureler) * 1000, 1),
         },
         "sla_siniri_saniye": SLA_LIMIT_SANIYE,
-        "endpoint_filtresi": endpoint or "tumu"
+        "endpoint_filtresi": endpoint or "tumu",
     }
 
 

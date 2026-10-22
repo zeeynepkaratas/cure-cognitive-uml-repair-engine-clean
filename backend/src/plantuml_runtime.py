@@ -59,8 +59,8 @@ def validate_with_plantuml(plantuml_code: str, timeout_seconds: int = 20) -> dic
             timeout=timeout_seconds,
             check=False,
         )
-    stderr = (completed.stderr or "").strip()
-    stdout = (completed.stdout or "").strip()
+    stderr = (completed.stderr or "").replace(tmpdir, "<TEMP>").strip()
+    stdout = (completed.stdout or "").replace(tmpdir, "<TEMP>").strip()
     return {
         "available": True,
         "successful": completed.returncode == 0,
@@ -97,7 +97,9 @@ def render_with_plantuml(plantuml_code: str, timeout_seconds: int = 20) -> dict:
             return {
                 "available": True,
                 "successful": False,
-                "error": (completed.stderr or completed.stdout or "PlantUML render failed.").strip(),
+                "error": (completed.stderr or completed.stdout or "PlantUML render failed.")
+                .replace(tmpdir, "<TEMP>")
+                .strip(),
                 "returncode": completed.returncode,
             }
         svg = svg_path.read_text(encoding="utf-8")

@@ -37,8 +37,7 @@ def summarize(records: list[dict]) -> dict:
         return {"total": 0, "success_rate": 0.0, "average_duration": 0.0}
 
     success_values = [
-        str(item.get("basarili", item.get("success", ""))).lower() in {"true", "1", "yes"}
-        for item in records
+        str(item.get("basarili", item.get("success", ""))).lower() in {"true", "1", "yes"} for item in records
     ]
     durations = []
     for item in records:

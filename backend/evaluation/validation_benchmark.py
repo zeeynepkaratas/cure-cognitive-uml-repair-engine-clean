@@ -20,7 +20,7 @@ REPO_ROOT = BACKEND_ROOT.parent
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
-from src.evaluators.semantic_eval import calculate_semantic_fidelity
+from src.evaluators.semantic_eval import calculate_semantic_fidelity_legacy as calculate_semantic_fidelity
 from src.ocl_engine.ocl_validator import validate_ocl
 
 EVALUATION_ROOT = Path(__file__).resolve().parent
@@ -90,10 +90,7 @@ OCL_CASES = [
     {
         "id": "ocl_08_cycle",
         "description": "Cyclic dependency",
-        "plantuml": (
-            "@startuml\nclass Aaaa {}\nclass Bbbb {}\n"
-            "Aaaa --> Bbbb\nBbbb --> Aaaa\n@enduml"
-        ),
+        "plantuml": ("@startuml\nclass Aaaa {}\nclass Bbbb {}\nAaaa --> Bbbb\nBbbb --> Aaaa\n@enduml"),
         "expected_valid": True,
         "expected_error_contains": [],
         "expected_warning_contains": ["Dongusel bagimlilik"],
@@ -111,9 +108,7 @@ OCL_CASES = [
     {
         "id": "ocl_10_complexity",
         "description": "More than twenty classes",
-        "plantuml": "@startuml\n"
-        + "\n".join(f"class Class{i} {{}}" for i in range(21))
-        + "\n@enduml",
+        "plantuml": "@startuml\n" + "\n".join(f"class Class{i} {{}}" for i in range(21)) + "\n@enduml",
         "expected_valid": True,
         "expected_error_contains": [],
         "expected_warning_contains": ["Cok fazla sinif"],
@@ -178,10 +173,7 @@ SEMANTIC_CASES = [
     {
         "id": "sem_03_missing_class",
         "description": "SRS mentions two classes but UML contains one",
-        "srs": (
-            "The AuthenticationService handles login. "
-            "The SessionManager manages active sessions."
-        ),
+        "srs": ("The AuthenticationService handles login. The SessionManager manages active sessions."),
         "plantuml": "@startuml\nclass AuthenticationService {}\n@enduml",
         "expected_pass": True,
         "limitation_note": "Passes the current 0.75 threshold despite one missing class.",

@@ -1,0 +1,649 @@
+{
+  "case_id": "M17_1",
+  "scenario_id": "M17",
+  "srs": "The vehicle rental system records Driver, Rental, RentalService, and Vehicle; each has an id attribute. Each Driver can have zero or more Rental records, and each Rental belongs to exactly one Driver. Each Rental uses exactly one RentalService, and each RentalService serves zero or more Rental records. Each RentalService manages one or more Vehicle records by composition, and each Vehicle belongs to exactly one RentalService. Each Driver can reference zero or more Vehicle records, and each Vehicle can be referenced by zero or more Driver records.",
+  "gold": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nDriver \"1\" --> \"0..*\" Rental\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defective": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "defect_ids": [
+    "D3"
+  ],
+  "seed": 1899,
+  "injections": [
+    {
+      "defect_id": "D3",
+      "seed": 1899,
+      "selected_class": "Rental",
+      "original_relation": [
+        "Driver",
+        "Rental",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\nDriverVehicle \"0..*\" --> \"1\" Driver\nDriverVehicle \"0..*\" --> \"1\" Vehicle\n@enduml",
+  "output_sha256": "20b341bacf7886d6c0b993d4b3903e36ca6be8fef766943c2af4e9aa50dd493c",
+  "input_sha256": "5912f2c95f4b2bcc43c514c9b889a53fac74c99e3c54b912d85603d1ed275734",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b6b862dd9e4b83b52c737f98aa76c2ef73e29a26bc7a5f62553eed540e06e5d4",
+      "tokens_in": 370,
+      "tokens_out": 44,
+      "latency_s": 1.7498120999998719,
+      "diagram_hash": "5912f2c95f4b2bcc43c514c9b889a53fac74c99e3c54b912d85603d1ed275734",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_56c349db0da647afa556bca45a14c67a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the relationship between Driver and Rental correctly. It should indicate that each Rental belongs to exactly one Driver.\"],\"categories\":[\"UML Structure\",\"Relationship Constraints\"]}",
+      "critic_errors": [
+        "The UML does not represent the relationship between Driver and Rental correctly. It should indicate that each Rental belongs to exactly one Driver."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Constraints"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "818ea03847f582316a65a36692829c97b51ccf6228b5709217b30d8d766da923",
+      "tokens_in": 180,
+      "tokens_out": 101,
+      "latency_s": 2.087559699999474,
+      "diagram_hash": "d5e0641cb0b1a892d7fc1686cbf6af8544e77960d63bc4cf4b9e9176353d0e1d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_0ae4b284b92348529ff6c4069b438efc",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bb07a3c4c147515eeaffb981d60528ffd03f6ef738ca5a769a97a07a01b4eae6",
+      "tokens_in": 381,
+      "tokens_out": 54,
+      "latency_s": 1.7114672000006976,
+      "diagram_hash": "d5e0641cb0b1a892d7fc1686cbf6af8544e77960d63bc4cf4b9e9176353d0e1d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_84fa85abdbe849caacc8e5a465b5102d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Driver and Vehicle is incorrectly defined. It should be a many-to-many relationship, but it is represented as a zero or more to zero or more relationship without a proper association class.\"],\"categories\":[\"Association Errors\"]}",
+      "critic_errors": [
+        "The association between Driver and Vehicle is incorrectly defined. It should be a many-to-many relationship, but it is represented as a zero or more to zero or more relationship without a proper association class."
+      ],
+      "critic_categories": [
+        "Association Errors"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a400c7b8f487cb6cf5a5dd273ec70865bc86b9e995f3d0b7b0ddf2e9e208067a",
+      "tokens_in": 205,
+      "tokens_out": 134,
+      "latency_s": 3.1224443000000974,
+      "diagram_hash": "95389a2c0c7a6329d58563e450462d13b47c4cd316239d0c087e4bb7d2afe5c8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_91aae6c86bd44351a7c46a74e8cdb66f",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4acb456a5f9f91931bc85eb6b4df772ed8554356e82710254ce115b03f81795e",
+      "tokens_in": 414,
+      "tokens_out": 46,
+      "latency_s": 1.7172323000004326,
+      "diagram_hash": "95389a2c0c7a6329d58563e450462d13b47c4cd316239d0c087e4bb7d2afe5c8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_4c95aa205577481a967a2a1c4d324c57",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Driver and Vehicle through DriverVehicle is not correctly represented as it should allow for zero or more references from Driver to Vehicle and vice versa.\"],\"categories\":[\"Association\",\"Multiplicity\"]}",
+      "critic_errors": [
+        "The association between Driver and Vehicle through DriverVehicle is not correctly represented as it should allow for zero or more references from Driver to Vehicle and vice versa."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2d71b880ba83fe058d431311f65d6d20c50571173afd2f4b27b2d07e883a94d8",
+      "tokens_in": 229,
+      "tokens_out": 158,
+      "latency_s": 3.686478100000386,
+      "diagram_hash": "20b341bacf7886d6c0b993d4b3903e36ca6be8fef766943c2af4e9aa50dd493c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_01ca53b73a",
+      "request_id": "req_4798f602068e4052baad4be5698065aa",
+      "response_text": "```plantuml\n@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\nDriverVehicle \"0..*\" --> \"1\" Driver\nDriverVehicle \"0..*\" --> \"1\" Vehicle\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\nDriverVehicle \"0..*\" --> \"1\" Driver\nDriverVehicle \"0..*\" --> \"1\" Vehicle\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e0c4db0a9924caa5bfc128946aad75469f399f5fcaa009bee656657100c9e009",
+      "tokens_in": 438,
+      "tokens_out": 48,
+      "latency_s": 1.5771269000006214,
+      "diagram_hash": "20b341bacf7886d6c0b993d4b3903e36ca6be8fef766943c2af4e9aa50dd493c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c04c1959682a490891a20e8637217ecf",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The association between Driver and Vehicle through DriverVehicle is not correctly represented as it should allow for zero or more references from Driver to Vehicle and vice versa.\"],\"categories\":[\"Association\",\"Multiplicity\",\"Composition\"]}",
+      "critic_errors": [
+        "The association between Driver and Vehicle through DriverVehicle is not correctly represented as it should allow for zero or more references from Driver to Vehicle and vice versa."
+      ],
+      "critic_categories": [
+        "Association",
+        "Multiplicity",
+        "Composition"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2217,
+  "tokens_out": 585,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Driver, DriverVehicle, Rental, RentalService, Vehicle}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Driver, DriverVehicle, Rental, RentalService, Vehicle}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Driver {\n  +id: String\n}\nclass Rental {\n  +id: String\n}\nclass RentalService {\n  +id: String\n}\nclass Vehicle {\n  +id: String\n}\nclass DriverVehicle {\n  +driverId: String\n  +vehicleId: String\n}\n\nRental \"0..*\" --> \"1\" RentalService\nRentalService \"1\" *-- \"1..*\" Vehicle\nDriver \"1\" --> \"0..*\" Rental\nDriver \"0..*\" --> \"0..*\" DriverVehicle\nVehicle \"0..*\" --> \"0..*\" DriverVehicle\nDriverVehicle \"0..*\" --> \"1\" Driver\nDriverVehicle \"0..*\" --> \"1\" Vehicle\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.809318900000108,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "drivervehicle"
+      ]
+    },
+    "delta_class_f1": -0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "driver",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle"
+        ],
+        [
+          "drivervehicle",
+          "vehicle"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19047619047619058,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle"
+        ],
+        [
+          "drivervehicle",
+          "driver"
+        ],
+        [
+          "drivervehicle",
+          "vehicle"
+        ],
+        [
+          "vehicle",
+          "drivervehicle"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.3116883116883117,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle",
+          "association"
+        ],
+        [
+          "drivervehicle",
+          "driver",
+          "association"
+        ],
+        [
+          "drivervehicle",
+          "vehicle",
+          "association"
+        ],
+        [
+          "vehicle",
+          "drivervehicle",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3116883116883117,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "drivervehicle",
+          "driver",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "drivervehicle",
+          "vehicle",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "vehicle",
+          "drivervehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3116883116883117,
+    "reference_attribute": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "drivervehicle",
+          "driverid"
+        ],
+        [
+          "drivervehicle",
+          "vehicleid"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19999999999999996
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "drivervehicle"
+      ]
+    },
+    "delta_class_f1": -0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "driver",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle"
+        ],
+        [
+          "drivervehicle",
+          "vehicle"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.19047619047619058,
+    "reference_rel_directed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle"
+        ],
+        [
+          "drivervehicle",
+          "driver"
+        ],
+        [
+          "drivervehicle",
+          "vehicle"
+        ],
+        [
+          "vehicle",
+          "drivervehicle"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.3116883116883117,
+    "reference_rel_typed": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle",
+          "association"
+        ],
+        [
+          "drivervehicle",
+          "driver",
+          "association"
+        ],
+        [
+          "drivervehicle",
+          "vehicle",
+          "association"
+        ],
+        [
+          "vehicle",
+          "drivervehicle",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3116883116883117,
+    "reference_rel_multiplicity": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "driver",
+          "vehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "driver",
+          "drivervehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "drivervehicle",
+          "driver",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "drivervehicle",
+          "vehicle",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "vehicle",
+          "drivervehicle",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3116883116883117,
+    "reference_attribute": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "drivervehicle",
+          "driverid"
+        ],
+        [
+          "drivervehicle",
+          "vehicleid"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19999999999999996
+  },
+  "end_to_end_seconds": 17.816127799999776,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

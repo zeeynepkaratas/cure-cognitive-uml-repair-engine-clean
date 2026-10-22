@@ -1,0 +1,508 @@
+{
+  "case_id": "M27_2",
+  "scenario_id": "M27",
+  "srs": "The sports registration system records Athlete, Registration, TournamentService, and Event; each has an id attribute. Each Athlete can have zero or more Registration records, and each Registration belongs to exactly one Athlete. Each Registration uses exactly one TournamentService, and each TournamentService serves zero or more Registration records. Each TournamentService manages one or more Event records by composition, and each Event belongs to exactly one TournamentService. Each Athlete can reference zero or more Event records, and each Event can be referenced by zero or more Athlete records.",
+  "gold": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "defective": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 2000,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 2000,
+      "selected_class": "Event",
+      "original_relation": [
+        "Athlete",
+        "Registration",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\nAthlete \"0..*\" --> \"0..*\" Event\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"0..*\" Event\n@enduml",
+  "output_sha256": "f48a3160e3f3661544407940d0915372c2f75094009a9551665574b6429d930d",
+  "input_sha256": "af2c77dd12c0b37c205265e4cbd609fa69da3a147eea316397955ab9c81fb1c8",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": true,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "accepted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "47f33ce5ddc981d3c3642a58a0cb9ee0518bb8d5aa65811978171d7f41c484ee",
+      "tokens_in": 383,
+      "tokens_out": 39,
+      "latency_s": 1.6450932000002467,
+      "diagram_hash": "af2c77dd12c0b37c205265e4cbd609fa69da3a147eea316397955ab9c81fb1c8",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_32573636c8484e04913bd27cf4f8b42c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Athlete and Registration is missing. Each Athlete should have a one-to-many relationship with Registration.\"],\"categories\":[\"Structural Integrity\",\"Relationship Mapping\"]}",
+      "critic_errors": [
+        "The relationship between Athlete and Registration is missing. Each Athlete should have a one-to-many relationship with Registration."
+      ],
+      "critic_categories": [
+        "Structural Integrity",
+        "Relationship Mapping"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "44e4f58c1106e51197f738451e01c73eb20668e9a7752dea99002f82998d5fb2",
+      "tokens_in": 189,
+      "tokens_out": 102,
+      "latency_s": 2.0356344000001627,
+      "diagram_hash": "db0380641389163681150537114d0a5015c702e373dcf4d48d360b294c1d8264",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_32a0affdabeb4a18859d904b96dd8a44",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"0..*\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4788c04bf82793d1ad559c96ee0413093e68fd6379505b7ea330db40347e8fbe",
+      "tokens_in": 382,
+      "tokens_out": 59,
+      "latency_s": 1.6411513999996714,
+      "diagram_hash": "db0380641389163681150537114d0a5015c702e373dcf4d48d360b294c1d8264",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_c2db9bba39134150ac9f68b46bdc1a1b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Registration and TournamentService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Registration uses exactly one TournamentService.\"],\"categories\":[\"UML Structure\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The relationship between Registration and TournamentService is incorrectly defined as '0..* --> 1'. It should be '1 --> 1' to indicate that each Registration uses exactly one TournamentService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Multiplicity"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "debcc5ec0f9e9cf5a0d9f52e718a4852098b3f0d439dbba758ad2073abb7cf50",
+      "tokens_in": 206,
+      "tokens_out": 101,
+      "latency_s": 1.9623004999998557,
+      "diagram_hash": "744c33baacfc33ae0a6affe8dc03dd3c29ab305bff7d16a67a3d999701d008c7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_b07976187a7a4068a467eec31a2b192b",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"1..*\" Event\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e9099c02405fc9c708d4b3360f39b94e9820501511cdbff787b6563a02a38eb7",
+      "tokens_in": 381,
+      "tokens_out": 42,
+      "latency_s": 1.3870277999999416,
+      "diagram_hash": "744c33baacfc33ae0a6affe8dc03dd3c29ab305bff7d16a67a3d999701d008c7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a29a59ad84a1454fb23647467f0b4ac0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not specify that each Athlete can reference zero or more Event records, which is required by the requirement.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The UML does not specify that each Athlete can reference zero or more Event records, which is required by the requirement."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "57ef7a58b0220e98820c3501e9ff59820e7a21e3f04d5af1c132423741b6b185",
+      "tokens_in": 189,
+      "tokens_out": 101,
+      "latency_s": 2.2570190000001276,
+      "diagram_hash": "f48a3160e3f3661544407940d0915372c2f75094009a9551665574b6429d930d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_e1bfc21c4a62497dba9c94533331b6a3",
+      "response_text": "```plantuml\n@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"0..*\" Event\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"0..*\" Event\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "9b3a0bcb566de79d8613d376a17dd18f2c4f97b09d396e4e9baf36fa4388de24",
+      "tokens_in": 381,
+      "tokens_out": 12,
+      "latency_s": 1.0129628999998204,
+      "diagram_hash": "f48a3160e3f3661544407940d0915372c2f75094009a9551665574b6429d930d",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": true,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_fb8ace38bc244db6a42acdc43f836a67",
+      "response_text": "{\"is_valid\":true,\"errors\":[],\"categories\":[]}",
+      "critic_errors": [],
+      "critic_categories": []
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2111,
+  "tokens_out": 456,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Athlete {\n  +id: String\n}\nclass Registration {\n  +id: String\n}\nclass TournamentService {\n  +id: String\n}\nclass Event {\n  +id: String\n}\nAthlete \"1\" --> \"0..*\" Registration\nAthlete \"1\" --> \"0..*\" Event\nRegistration \"1\" --> \"1\" TournamentService\nTournamentService \"1\" *-- \"0..*\" Event\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 15.91737030000013,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "registration",
+          "tournamentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "tournamentservice",
+          "event",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registration",
+          "tournamentservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "tournamentservice",
+          "event",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.1428571428571429,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.1428571428571429,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.1428571428571429,
+    "reference_rel_multiplicity": {
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "registration",
+          "tournamentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "tournamentservice",
+          "event",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "athlete",
+          "event",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "registration",
+          "tournamentservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "tournamentservice",
+          "event",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.5,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 15.929968899999949,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

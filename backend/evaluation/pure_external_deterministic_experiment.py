@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import csv
 import json
-import platform
 import sys
 import time
 import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -117,11 +115,19 @@ def build_report() -> dict:
             "project_defined_success_rate": round(project_successes / total, 4),
             "project_defined_success_rate_percent": round(project_successes / total * 100, 1),
             "plantuml_validated_successful_repairs": plantuml_successes,
-            "plantuml_validated_failed_repairs": (total - plantuml_successes) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate": round(plantuml_successes / total, 4) if plantuml_successes is not None else None,
-            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1) if plantuml_successes is not None else None,
+            "plantuml_validated_failed_repairs": (total - plantuml_successes)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate": round(plantuml_successes / total, 4)
+            if plantuml_successes is not None
+            else None,
+            "plantuml_validated_success_rate_percent": round(plantuml_successes / total * 100, 1)
+            if plantuml_successes is not None
+            else None,
             "mean_class_f1": round(sum(row["reference_metrics"]["class_f1"] for row in rows) / total, 3),
-            "mean_relationship_f1": round(sum(row["reference_metrics"]["relationship_f1"] for row in rows) / total, 3),
+            "mean_relationship_f1": round(
+                sum(row["reference_metrics"]["relationship_f1"] for row in rows) / total, 3
+            ),
             "relationship_metric_definition": "source-target endpoint-pair F1; relation type, multiplicity, and labels are not scored",
         },
         "project_defined_wilson_95_ci": {
@@ -204,7 +210,9 @@ def write_outputs(report: dict) -> None:
                     "relationship_f1": metrics["relationship_f1"],
                     "missing_classes": "; ".join(metrics["missing_classes"]),
                     "extra_classes": "; ".join(metrics["extra_classes"]),
-                    "missing_relationships": "; ".join(f"{a}->{b}" for a, b in metrics["missing_relationships"]),
+                    "missing_relationships": "; ".join(
+                        f"{a}->{b}" for a, b in metrics["missing_relationships"]
+                    ),
                     "extra_relationships": "; ".join(f"{a}->{b}" for a, b in metrics["extra_relationships"]),
                     "final_errors": "; ".join(row["final_errors"]),
                 }

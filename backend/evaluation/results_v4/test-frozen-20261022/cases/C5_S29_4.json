@@ -1,0 +1,347 @@
+{
+  "case_id": "S29",
+  "dataset": "shared",
+  "srs": "The SyncService exchanges data with BackupService.",
+  "input_plantuml": "class SyncService {}\nclass BackupService {}\nSyncService --> BackupService\nBackupService --> SyncService\n@enduml",
+  "gold": null,
+  "defect_ids": [
+    "missing_start_cycle"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 4,
+  "output_plantuml": "@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n    + getAge(): int\n}\n\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        if (item == null) {\n            throw new IllegalArgumentException(\"OrderItem cannot be null\")\n        }\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml",
+  "output_sha256": "3fe057c919aa7c6163f6396933d0783b4f3c3d24daa7976aa22eede5d6d391d4",
+  "input_sha256": "e57234e0a27ce27ce6d860191426ef34ec9fbc0ac730cc044d7f0a91d3433758",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b30ceb2e8a8eaf6ba2400c593ad0173cfda8f1dd58c23e8da471fbf4dd79a97a",
+      "tokens_in": 291,
+      "tokens_out": 83,
+      "latency_s": 2.205977300000086,
+      "diagram_hash": "e57234e0a27ce27ce6d860191426ef34ec9fbc0ac730cc044d7f0a91d3433758",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_399f1240061c488da6c215296bb3f5cc",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1: User nesnesinin age özelliği ile ilgili bir tanım veya ilişki bulunmamaktadır.\",\"OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamıştır.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Kural İhlalleri\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1: User nesnesinin age özelliği ile ilgili bir tanım veya ilişki bulunmamaktadır.",
+        "OCL Kuralı 2: Order nesnesinin OrderItem ile olan bağıntısı tanımlanmamıştır."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Kural İhlalleri"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "cde6b8d38b94527b11c9cd9f5c7eb8f2b3c9a70ba33e70b40e0ef68f4c0804dc",
+      "tokens_in": 193,
+      "tokens_out": 56,
+      "latency_s": 1.582563700000719,
+      "diagram_hash": "71ea61cac5f10f3d877fcde6cfcded8d23a2580a332cbc6baa46b90f023bbec0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_98f16c2fd12c452f8b95cab9c418d160",
+      "response_text": "```plantuml\n@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n}\nclass Order {\n}\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a74ee49fb3a877b3b23e3e1960a4c11fa45dedd7361e4a6e355fe8cb95966594",
+      "tokens_in": 319,
+      "tokens_out": 50,
+      "latency_s": 1.8990675000004558,
+      "diagram_hash": "71ea61cac5f10f3d877fcde6cfcded8d23a2580a332cbc6baa46b90f023bbec0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.13333333333333333
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.125
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_099c981747dc446bb5fe07f9355aaac1",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce the age constraint (age >= 18).\",\"Order class does not enforce the constraint of having at least one OrderItem.\"],\"categories\":[\"UML Constraints\",\"Business Rules Compliance\"]}",
+      "critic_errors": [
+        "User class does not enforce the age constraint (age >= 18).",
+        "Order class does not enforce the constraint of having at least one OrderItem."
+      ],
+      "critic_categories": [
+        "UML Constraints",
+        "Business Rules Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "338ff9bbf44de5d57adecca4cd29bde732d531b91a41159aacaaed51ce663437",
+      "tokens_in": 152,
+      "tokens_out": 116,
+      "latency_s": 2.9453660999997737,
+      "diagram_hash": "9a5b71a72a56fa51a0c40bcfcce37bdae7b7610904cd9000f2fc47c48f6ffe55",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8284007ad9",
+      "request_id": "req_b45579b53e3b44a8a5456e85d15ba6b6",
+      "response_text": "```plantuml\n@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n}\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n}\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "623271dfb9787cd622fa4f9c36e2c04a6027f9a6930c1878fc9081309929386e",
+      "tokens_in": 379,
+      "tokens_out": 137,
+      "latency_s": 2.993054500000653,
+      "diagram_hash": "9a5b71a72a56fa51a0c40bcfcce37bdae7b7610904cd9000f2fc47c48f6ffe55",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.30434782608695654
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.19230769230769232
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_4c0bd43e46c94e499d4642594bac454b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kontrol var, ancak UML'de bu kontrolün uygulanması yeterli değil. UML'de age özelliği için bir kısıtlama veya açıklama yok.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak Order sınıfında bu durum kontrol edilmiyor ve Order nesnesi oluşturulurken OrderItem nesnesinin eklenmesi zorunlu değil.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kontrol var, ancak UML'de bu kontrolün uygulanması yeterli değil. UML'de age özelliği için bir kısıtlama veya açıklama yok.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesinin en az bir OrderItem nesnesine bağıntısı olmalıdır, ancak Order sınıfında bu durum kontrol edilmiyor ve Order nesnesi oluşturulurken OrderItem nesnesinin eklenmesi zorunlu değil."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9ceaa8cc6e80742ab920fec3935d2c7272e04b16737ee924dc5848472e6cadad",
+      "tokens_in": 387,
+      "tokens_out": 146,
+      "latency_s": 3.194930999999997,
+      "diagram_hash": "3fe057c919aa7c6163f6396933d0783b4f3c3d24daa7976aa22eede5d6d391d4",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d26dee3504",
+      "request_id": "req_d0b9017df3e44ec8a201f32e5759af6f",
+      "response_text": "```plantuml\n@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n    + getAge(): int\n}\n\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        if (item == null) {\n            throw new IllegalArgumentException(\"OrderItem cannot be null\")\n        }\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n    + getAge(): int\n}\n\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        if (item == null) {\n            throw new IllegalArgumentException(\"OrderItem cannot be null\")\n        }\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8d4098c33df6d453f2114cfcba0759ea43bf3df89d447e4412bdf142416367e3",
+      "tokens_in": 409,
+      "tokens_out": 48,
+      "latency_s": 1.535581799999818,
+      "diagram_hash": "3fe057c919aa7c6163f6396933d0783b4f3c3d24daa7976aa22eede5d6d391d4",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.2692307692307692
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.1724137931034483
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_3e1dcebbf5c0449695ead657389651c0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2130,
+  "tokens_out": 636,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@startuml etiketi eksik",
+      "@startuml etiketi eksik"
+    ],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {BackupService, SyncService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "IHLAL",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {BackupService, SyncService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User']",
+      "Dongusel bagimlilik tespit edildi: ['SCC: {BackupService, SyncService}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User']",
+      "OCL-07": "UYARI: ['SCC: {BackupService, SyncService}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass SyncService {}\nclass BackupService {}\nclass User {\n    - age: int\n    + User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n    }\n    + getAge(): int\n}\n\nclass Order {\n    - items: List<OrderItem>\n    + Order(item: OrderItem) {\n        if (item == null) {\n            throw new IllegalArgumentException(\"OrderItem cannot be null\")\n        }\n        items.add(item)\n    }\n}\n\nclass OrderItem {\n}\n\nSyncService --> BackupService\nBackupService --> SyncService\nOrder --> OrderItem\n@enduml",
+  "compiler_valid_if_reverted": false,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 19.805256399999962,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 19.805313200000455,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

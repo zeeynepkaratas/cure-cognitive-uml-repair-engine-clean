@@ -1,0 +1,575 @@
+{
+  "case_id": "M07_2",
+  "scenario_id": "M07",
+  "srs": "The prosecution records system records CourtInteraction, Entry, ProsecutionModule, and CaseFile; each has an id attribute. Each CourtInteraction can have zero or more Entry records, and each Entry belongs to exactly one CourtInteraction. Each Entry uses exactly one ProsecutionModule, and each ProsecutionModule serves zero or more Entry records. Each ProsecutionModule manages one or more CaseFile records by composition, and each CaseFile belongs to exactly one ProsecutionModule. Each CourtInteraction can reference zero or more CaseFile records, and each CaseFile can be referenced by zero or more CourtInteraction records.",
+  "gold": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" Entry\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "defective": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1800,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1800,
+      "selected_class": "ProsecutionModule",
+      "original_relation": [
+        "CourtInteraction",
+        "Entry",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nEntry \"0..*\" --> \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "output_sha256": "84bbf936a7daca5f1a93eebb5f19c88aebfb04c41cc66b4020bd8e9542ae3022",
+  "input_sha256": "b8ade11304f8406a753b2d2155e140cc324751f78911bc1f92eec869f411a343",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bc1077fd29b6ca9892f0ed8a2d9f6516675cfc240160dc3a4bb76007d306ebc1",
+      "tokens_in": 407,
+      "tokens_out": 60,
+      "latency_s": 1.2208810000011,
+      "diagram_hash": "b8ade11304f8406a753b2d2155e140cc324751f78911bc1f92eec869f411a343",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_5f414f6c503d4cc3b26d29b7330e66c2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"CourtInteraction should have a relationship with Entry, but it is missing in the UML diagram.\",\"The relationship between Entry and ProsecutionModule is incorrectly represented; it should be a composition relationship instead of an association.\"],\"categories\":[\"UML Structure\",\"Relationship Integrity\"]}",
+      "critic_errors": [
+        "CourtInteraction should have a relationship with Entry, but it is missing in the UML diagram.",
+        "The relationship between Entry and ProsecutionModule is incorrectly represented; it should be a composition relationship instead of an association."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Integrity"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "60316ce4bb6ac0e369c239bc6010cc5dd041dcc4fe8cbe38aebb899712ab0108",
+      "tokens_in": 219,
+      "tokens_out": 125,
+      "latency_s": 1.6913600000116276,
+      "diagram_hash": "299c9e550a0f4097d9f53a5d0c03b41dafdbf57d9a179246a7186e2b027bc51a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_89ea449874",
+      "request_id": "req_845c3c7cef5a433bbb55eb9da7520d26",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nCourtInteraction \"1\" --> \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" --> \"0..*\" ProsecutionModule\nCourtInteraction \"1\" --> \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "2fa4571f182e2acf3145de4f493c264b2669f79d15717acc34f662e03950e707",
+      "tokens_in": 420,
+      "tokens_out": 68,
+      "latency_s": 1.6302674999897135,
+      "diagram_hash": "299c9e550a0f4097d9f53a5d0c03b41dafdbf57d9a179246a7186e2b027bc51a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_f021b01ffe6c46479023dc99bd8ca279",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"CourtInteraction should have a composition relationship with Entry, not just an association.\",\"ProsecutionModule should have a composition relationship with CaseFile, which is correctly represented, but the multiplicity on the CourtInteraction to ProsecutionModule relationship is incorrect.\"],\"categories\":[\"UML Structure\",\"Relationship Multiplicity\"]}",
+      "critic_errors": [
+        "CourtInteraction should have a composition relationship with Entry, not just an association.",
+        "ProsecutionModule should have a composition relationship with CaseFile, which is correctly represented, but the multiplicity on the CourtInteraction to ProsecutionModule relationship is incorrect."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Multiplicity"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "514f4feb7f606bc340bf3aa34ff26aa12fd987cd5fc36848de6cbcb527aae342",
+      "tokens_in": 239,
+      "tokens_out": 127,
+      "latency_s": 1.8820782999973744,
+      "diagram_hash": "84bbf936a7daca5f1a93eebb5f19c88aebfb04c41cc66b4020bd8e9542ae3022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_89ea449874",
+      "request_id": "req_ee7731da6051422fbc763b732d003b79",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4864afbd4e95619cfdd9c9b9f8a2c672fe49bd8fa7fd4066a675bfcbc46b8580",
+      "tokens_in": 422,
+      "tokens_out": 59,
+      "latency_s": 1.1636508000083268,
+      "diagram_hash": "84bbf936a7daca5f1a93eebb5f19c88aebfb04c41cc66b4020bd8e9542ae3022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_dd724fc3af6e4cbfb93798f13658749f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"CourtInteraction should have a composition relationship with Entry, not just an association.\",\"ProsecutionModule should have a composition relationship with CaseFile, but the UML indicates a one-to-many relationship without specifying composition.\"],\"categories\":[\"UML Structure\",\"Relationship Types\"]}",
+      "critic_errors": [
+        "CourtInteraction should have a composition relationship with Entry, not just an association.",
+        "ProsecutionModule should have a composition relationship with CaseFile, but the UML indicates a one-to-many relationship without specifying composition."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Types"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c2fe53241ab2f173d4b44cc3c618e138c29fd1ba563538eb852d3a64c585ee3b",
+      "tokens_in": 233,
+      "tokens_out": 127,
+      "latency_s": 1.660070199999609,
+      "diagram_hash": "84bbf936a7daca5f1a93eebb5f19c88aebfb04c41cc66b4020bd8e9542ae3022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0e7150ae59",
+      "request_id": "req_51a3017716c1479fb394be1cf5bc6fca",
+      "response_text": "```plantuml\n@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4864afbd4e95619cfdd9c9b9f8a2c672fe49bd8fa7fd4066a675bfcbc46b8580",
+      "tokens_in": 422,
+      "tokens_out": 49,
+      "latency_s": 1.2196253000001889,
+      "diagram_hash": "84bbf936a7daca5f1a93eebb5f19c88aebfb04c41cc66b4020bd8e9542ae3022",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_4d72995de70942549df7d73ccdb4b101",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"CourtInteraction should have a composition relationship with Entry, not an aggregation.\",\"ProsecutionModule should have a composition relationship with CaseFile, not an aggregation.\"],\"categories\":[\"UML Structure\",\"Relationship Types\"]}",
+      "critic_errors": [
+        "CourtInteraction should have a composition relationship with Entry, not an aggregation.",
+        "ProsecutionModule should have a composition relationship with CaseFile, not an aggregation."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Types"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2362,
+  "tokens_out": 615,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass CourtInteraction {\n  +id: String\n}\nclass Entry {\n  +id: String\n}\nclass ProsecutionModule {\n  +id: String\n}\nclass CaseFile {\n  +id: String\n}\nCourtInteraction \"1\" *-- \"0..*\" ProsecutionModule\nCourtInteraction \"1\" *-- \"0..*\" Entry\nEntry \"0..*\" *-- \"1\" ProsecutionModule\nProsecutionModule \"1\" *-- \"1..*\" CaseFile\nCourtInteraction \"0..*\" --> \"0..*\" CaseFile\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 11.55664209999668,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.13888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.13888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "entry",
+          "composition"
+        ],
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "composition"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3055555555555555,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "entry",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "composition",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.13888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "courtinteraction",
+          "prosecutionmodule"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.13888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "entry",
+          "composition"
+        ],
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "composition"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.3055555555555555,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "courtinteraction",
+          "entry",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "courtinteraction",
+          "entry",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "courtinteraction",
+          "prosecutionmodule",
+          "composition",
+          "1",
+          "0..*"
+        ],
+        [
+          "entry",
+          "prosecutionmodule",
+          "composition",
+          "0..*",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

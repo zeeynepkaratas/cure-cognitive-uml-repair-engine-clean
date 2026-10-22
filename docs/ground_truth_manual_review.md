@@ -1,5 +1,7 @@
 # CURE Backend Manual Review Sample
 
+**Current qualification:** This table is an internal consistency review only. It may be described as internal methodology, but must not support independent expert accuracy or externally validated semantic correctness claims. The historical note below is superseded by this qualification.
+
 Bu iç doküman, Backend doğrulama kapsamındaki `backend/src/ocl_engine/`
 ve `backend/src/evaluators/` çıktılarının küçük bir elle doğrulama örneklemiyle
 gözden geçirilmesi için hazırlanmıştır. Makale metnine eklenmemelidir; yalnızca

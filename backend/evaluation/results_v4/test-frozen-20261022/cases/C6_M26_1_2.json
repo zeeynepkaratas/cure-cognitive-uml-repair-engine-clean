@@ -1,0 +1,524 @@
+{
+  "case_id": "M26_1",
+  "scenario_id": "M26",
+  "srs": "The laboratory testing system records Scientist, TestRequest, LabService, and Sample; each has an id attribute. Each Scientist can have zero or more TestRequest records, and each TestRequest belongs to exactly one Scientist. Each TestRequest uses exactly one LabService, and each LabService serves zero or more TestRequest records. Each LabService manages one or more Sample records by composition, and each Sample belongs to exactly one LabService. Each Scientist can reference zero or more Sample records, and each Sample can be referenced by zero or more Scientist records.",
+  "gold": "@startuml\nclass Scientist {\n  +id: String\n}\nclass TestRequest {\n  +id: String\n}\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nScientist \"1\" --> \"0..*\" TestRequest\nTestRequest \"0..*\" --> \"1\" LabService\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "defective": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "defect_ids": [
+    "D1"
+  ],
+  "seed": 1989,
+  "injections": [
+    {
+      "defect_id": "D1",
+      "seed": 1989,
+      "selected_class": "TestRequest"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\nclass Sample {\n  +id: String\n}\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1\" --> \"0..*\" Scientist\n@enduml",
+  "output_sha256": "a0f2292be3fc16c7a1e6a12a255b2e788c20b1f8999e3539a42ff1c433dbf5d7",
+  "input_sha256": "667b0b721fbe6a4dc5e49e71ab0867a411a516d8e440b3b0723ec0ce88838d01",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "c97df3fb5d2b44fb3e7262410dc58604219a73c96a196a4814818cddbe78a90c",
+      "tokens_in": 354,
+      "tokens_out": 60,
+      "latency_s": 2.645122700000684,
+      "diagram_hash": "667b0b721fbe6a4dc5e49e71ab0867a411a516d8e440b3b0723ec0ce88838d01",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_6d5d7f5d2ec2452595a00ab7d4834ef5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"TestRequest class is missing from the UML diagram.\",\"The relationship between Scientist and TestRequest is not represented in the UML diagram.\",\"The relationship between TestRequest and LabService is not represented in the UML diagram.\"],\"categories\":[\"UML Structure\",\"Class Relationships\"]}",
+      "critic_errors": [
+        "TestRequest class is missing from the UML diagram.",
+        "The relationship between Scientist and TestRequest is not represented in the UML diagram.",
+        "The relationship between TestRequest and LabService is not represented in the UML diagram."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Class Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "8c07a822c4e076ffaf36ce9994440bc8346391dde1fa65f551b342eee5401b93",
+      "tokens_in": 177,
+      "tokens_out": 105,
+      "latency_s": 2.9966864999996687,
+      "diagram_hash": "648b69ada5fc16ea8be02422b8c8f4aa71b20caaeb1c33500760c7ce3905a446",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_4e9310d564ea4cacb3fa5af9d9d4401e",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"0..*\" --> \"0..*\" Scientist\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"0..*\" --> \"0..*\" Scientist\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "4259161eb478968423a8d6ae22d7fffb8c2df19a5b60d31d70c22a4683c082bb",
+      "tokens_in": 390,
+      "tokens_out": 52,
+      "latency_s": 2.327965999999833,
+      "diagram_hash": "648b69ada5fc16ea8be02422b8c8f4aa71b20caaeb1c33500760c7ce3905a446",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_6e81d48015164eb297e13f03d6435c0f",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between TestRequest and Scientist is incorrectly defined as '0..*' instead of '1..*'. Each TestRequest must belong to exactly one Scientist.\"],\"categories\":[\"UML Structure\",\"Association Rules\"]}",
+      "critic_errors": [
+        "The relationship between TestRequest and Scientist is incorrectly defined as '0..*' instead of '1..*'. Each TestRequest must belong to exactly one Scientist."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Rules"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "003a564bdb9c7e4b7244f0e22fa7a66e3707916e6798a5297ac9bdfa9bcd9000",
+      "tokens_in": 203,
+      "tokens_out": 104,
+      "latency_s": 2.8138396999993347,
+      "diagram_hash": "d2733c87bf74f7cf78c88ce0e44b3d5a77a47cd970b9b2e55b838d8b03a21dce",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_22c5b2e988694aa98c53cae9597333b2",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1..*\" --> \"1\" Scientist\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1..*\" --> \"1\" Scientist\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6ad690c9c495301ffbae2f566db0b694898296b547d86f2657d95d57b0955063",
+      "tokens_in": 389,
+      "tokens_out": 93,
+      "latency_s": 2.0499748000002,
+      "diagram_hash": "d2733c87bf74f7cf78c88ce0e44b3d5a77a47cd970b9b2e55b838d8b03a21dce",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_b48308e3bbb44d57b8bdf84a8b1eec62",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Scientist and Sample is incorrectly defined as '0..*' instead of '0..*' with a clear indication of the referencing nature.\",\"The relationship between TestRequest and LabService is correct, but the multiplicity on TestRequest to Scientist should be '1' to '0..*' instead of '1..*' to '1'.\"],\"categories\":[\"UML Relationships\",\"Multiplicity Constraints\"]}",
+      "critic_errors": [
+        "The relationship between Scientist and Sample is incorrectly defined as '0..*' instead of '0..*' with a clear indication of the referencing nature.",
+        "The relationship between TestRequest and LabService is correct, but the multiplicity on TestRequest to Scientist should be '1' to '0..*' instead of '1..*' to '1'."
+      ],
+      "critic_categories": [
+        "UML Relationships",
+        "Multiplicity Constraints"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "998a8bc804ce8d582249efcb1c292e3a8de0f01bda492a4653c8cc4e42d7a4f4",
+      "tokens_in": 244,
+      "tokens_out": 104,
+      "latency_s": 2.6667107000002943,
+      "diagram_hash": "a0f2292be3fc16c7a1e6a12a255b2e788c20b1f8999e3539a42ff1c433dbf5d7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_84e17e8f6a034b79bc35dfdda27f4f30",
+      "response_text": "```plantuml\n@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1\" --> \"0..*\" Scientist\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1\" --> \"0..*\" Scientist\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "8942530f2d03cf631d7888c39dde92f859131a6b7b5c147cd34f6f48d180fd1c",
+      "tokens_in": 389,
+      "tokens_out": 61,
+      "latency_s": 1.6189162000000579,
+      "diagram_hash": "a0f2292be3fc16c7a1e6a12a255b2e788c20b1f8999e3539a42ff1c433dbf5d7",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_325f8ad1b093489b85019a32d2f8cc92",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between TestRequest and Scientist is incorrectly defined as '1 --> 0..*'. It should be '0..* --> 1' to indicate that each TestRequest belongs to exactly one Scientist.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between TestRequest and Scientist is incorrectly defined as '1 --> 0..*'. It should be '0..* --> 1' to indicate that each TestRequest belongs to exactly one Scientist."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2146,
+  "tokens_out": 579,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Scientist {\n  +id: String\n}\n\nclass LabService {\n  +id: String\n}\n\nclass Sample {\n  +id: String\n}\n\nclass TestRequest {\n  +id: String\n}\n\nLabService \"1\" *-- \"1..*\" Sample\nScientist \"0..*\" --> \"0..*\" Sample\nTestRequest \"1\" --> \"1\" LabService\nTestRequest \"1\" --> \"0..*\" Scientist\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 20.328290899999956,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "scientist"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.08333333333333337,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "scientist",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.08333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "testrequest",
+          "scientist",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.16666666666666663,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.1428571428571429,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.33333333333333337,
+    "reference_rel_directed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "scientist"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.08333333333333337,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "scientist",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.08333333333333337,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "scientist",
+          "testrequest",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "testrequest",
+          "labservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "testrequest",
+          "scientist",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.16666666666666663,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.1428571428571429
+  },
+  "end_to_end_seconds": 20.33471009999994,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

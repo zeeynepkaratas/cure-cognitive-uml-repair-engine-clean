@@ -1,0 +1,538 @@
+{
+  "case_id": "M10_1",
+  "scenario_id": "M10",
+  "srs": "The search result view system records User, ResultView, ViewService, and CaseSummary; each has an id attribute. Each User can have zero or more ResultView records, and each ResultView belongs to exactly one User. Each ResultView uses exactly one ViewService, and each ViewService serves zero or more ResultView records. Each ViewService manages one or more CaseSummary records by composition, and each CaseSummary belongs to exactly one ViewService. Each User can reference zero or more CaseSummary records, and each CaseSummary can be referenced by zero or more User records.",
+  "gold": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml",
+  "defective": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nclass ViewService {}\n@enduml",
+  "defect_ids": [
+    "D9"
+  ],
+  "seed": 1829,
+  "injections": [
+    {
+      "defect_id": "D9",
+      "seed": 1829,
+      "selected_class": "ViewService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass User {\n  +id: String\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nclass ViewService {}\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nclass Account {\n  +balance: Double [0.0..*] // Balance must be greater than or equal to 0.0\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nUser \"1\" --> \"1\" Account\n@enduml",
+  "output_sha256": "207d209fa5c196237276d1f5d072870f979a13d43f52d1c755a096ebce2f6894",
+  "input_sha256": "fc3bb843c02ab886454555e063af03812bc40385a78bcd1be2cde56401e32335",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a4733534a854e151ac6fbc90ccb75ae1a1c4178c7322484d3c31006ad79e15aa",
+      "tokens_in": 480,
+      "tokens_out": 56,
+      "latency_s": 1.5779547999991337,
+      "diagram_hash": "fc3bb843c02ab886454555e063af03812bc40385a78bcd1be2cde56401e32335",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.058823529411764705
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e1266f8449e24f81a27a5fa270636fc3",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not have an age attribute to enforce OCL Rule 1.\",\"Order class is not defined in the UML, making it impossible to validate OCL Rule 2.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "User class does not have an age attribute to enforce OCL Rule 1.",
+        "Order class is not defined in the UML, making it impossible to validate OCL Rule 2."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "40823c1deab7df88c76732658086b1d33da8f72db5674c64616dc0036d0b4f4d",
+      "tokens_in": 213,
+      "tokens_out": 113,
+      "latency_s": 1.6560163000103785,
+      "diagram_hash": "db52a991e3420d595e7a63d2c447c311ea90b3c7d35ac95bcdbbc127a474becf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0f86f2b5a2",
+      "request_id": "req_6a1c2da2feb64e31b910e8ea37694dfb",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6dcb534971c890ab1d5b78631908fa6d68933ded414f5f2999632664dcbcea08",
+      "tokens_in": 482,
+      "tokens_out": 48,
+      "latency_s": 1.1945887000038056,
+      "diagram_hash": "db52a991e3420d595e7a63d2c447c311ea90b3c7d35ac95bcdbbc127a474becf",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1111111111111111
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e99488bbddf74b3ba218a1b4c3808ae4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "27ecf7637dd2ce0350bd2cb5cb505a1eda1a79d555c195bf02772ace9e9c4546",
+      "tokens_in": 226,
+      "tokens_out": 128,
+      "latency_s": 1.6558033999899635,
+      "diagram_hash": "ce78c8296ad5d002adfedf619f26fd7ad9e4df533e6dffee4faa3e390993af9c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_e3af1ca7c9",
+      "request_id": "req_215873d7a98d463c84333f391fa4ee1e",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer [0..120] // Age must be between 0 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a032527edb5dc1bf5487d419552b903dd6df0bcb51706a19c0f07aa5e75c2571",
+      "tokens_in": 499,
+      "tokens_out": 69,
+      "latency_s": 1.3591873999976087,
+      "diagram_hash": "ce78c8296ad5d002adfedf619f26fd7ad9e4df533e6dffee4faa3e390993af9c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-04"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.19047619047619047
+        },
+        {
+          "id": "DOMAIN-04",
+          "score": 0.08695652173913043
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_cd4077df87574270beeb48ce75808a84",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce age >= 18 constraint as per OCL Rule 1.\",\"Balance attribute is missing in the UML model to enforce balance >= 0.0 constraint as per OCL Rule 4.\"],\"categories\":[\"OCL Rule Violation\",\"UML Model Incompleteness\"]}",
+      "critic_errors": [
+        "User class does not enforce age >= 18 constraint as per OCL Rule 1.",
+        "Balance attribute is missing in the UML model to enforce balance >= 0.0 constraint as per OCL Rule 4."
+      ],
+      "critic_categories": [
+        "OCL Rule Violation",
+        "UML Model Incompleteness"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a48a319f83b16b6a1833fd4210d677a660412d9e71d0e644939a423d6fea18c8",
+      "tokens_in": 237,
+      "tokens_out": 168,
+      "latency_s": 2.1414212999952724,
+      "diagram_hash": "207d209fa5c196237276d1f5d072870f979a13d43f52d1c755a096ebce2f6894",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_a6aa494a0ed24a06abfc7be7638c8f39",
+      "response_text": "```plantuml\n@startuml\nclass User {\n  +id: String\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nclass Account {\n  +balance: Double [0.0..*] // Balance must be greater than or equal to 0.0\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nUser \"1\" --> \"1\" Account\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n  +id: String\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nclass Account {\n  +balance: Double [0.0..*] // Balance must be greater than or equal to 0.0\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nUser \"1\" --> \"1\" Account\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "7b6e929d70b0d583d8279bc1dc9df9c4c793da02f52b34e94b0735b720661404",
+      "tokens_in": 539,
+      "tokens_out": 104,
+      "latency_s": 1.5546808999934,
+      "diagram_hash": "207d209fa5c196237276d1f5d072870f979a13d43f52d1c755a096ebce2f6894",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-04"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.1724137931034483
+        },
+        {
+          "id": "DOMAIN-04",
+          "score": 0.13333333333333333
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_efe02e4d8c69444eaa5e30050f10136b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için 18'den büyük veya eşit olma kuralı UML'de belirtilmemiş.\",\"OCL Kuralı 4 ihlal ediliyor: Account nesnesinin balance özelliği için 0.0'dan büyük veya eşit olma kuralı UML'de belirtilmemiş.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için 18'den büyük veya eşit olma kuralı UML'de belirtilmemiş.",
+        "OCL Kuralı 4 ihlal ediliyor: Account nesnesinin balance özelliği için 0.0'dan büyük veya eşit olma kuralı UML'de belirtilmemiş."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2676,
+  "tokens_out": 686,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['ViewService']"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['ViewService', 'ViewService']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass User {\n  +id: String\n  +age: Integer [18..120] // Age must be between 18 and 120\n}\nclass ResultView {\n  +id: String\n}\nclass ViewService {\n  +id: String\n}\nclass CaseSummary {\n  +id: String\n}\nclass Account {\n  +balance: Double [0.0..*] // Balance must be greater than or equal to 0.0\n}\nUser \"1\" --> \"0..*\" ResultView\nResultView \"0..*\" --> \"1\" ViewService\nViewService \"1\" *-- \"1..*\" CaseSummary\nUser \"0..*\" --> \"0..*\" CaseSummary\nUser \"1\" --> \"1\" Account\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.711900099995546,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "account"
+      ]
+    },
+    "delta_class_f1": -0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "account",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.11111111111111105,
+    "reference_rel_multiplicity": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.11111111111111105,
+    "reference_attribute": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "account",
+          "balance"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19999999999999996
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "account"
+      ]
+    },
+    "delta_class_f1": -0.11111111111111105,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "account",
+          "user"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.11111111111111105,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.11111111111111105,
+    "reference_rel_multiplicity": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "user",
+          "account",
+          "association",
+          "1",
+          "1"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.11111111111111105,
+    "reference_attribute": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [],
+      "spurious": [
+        [
+          "account",
+          "balance"
+        ],
+        [
+          "user",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.19999999999999996
+  }
+}

@@ -1,0 +1,533 @@
+{
+  "case_id": "M12_2",
+  "scenario_id": "M12",
+  "srs": "The clinic booking system records Patient, Appointment, BookingService, and Clinician; each has an id attribute. Each Patient can have zero or more Appointment records, and each Appointment belongs to exactly one Patient. Each Appointment uses exactly one BookingService, and each BookingService serves zero or more Appointment records. Each BookingService manages one or more Clinician records by composition, and each Clinician belongs to exactly one BookingService. Each Patient can reference zero or more Clinician records, and each Clinician can be referenced by zero or more Patient records.",
+  "gold": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" BookingService\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defective": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "defect_ids": [
+    "D4"
+  ],
+  "seed": 1850,
+  "injections": [
+    {
+      "defect_id": "D4",
+      "seed": 1850,
+      "selected_class": "Patient",
+      "original_relation": [
+        "Appointment",
+        "BookingService",
+        "association",
+        "0..*",
+        "1",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"0..*\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "output_sha256": "9e2fcf309af0589a1296071faf5cfc1d0109582573eea766da7c6226da099111",
+  "input_sha256": "cdcee8d7db70ac2fed1926f104c78b779b65029b81d6bb7a22bc34019bdfd8a2",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "41f94828b2c7fb22f6dc4734297808d73a23eef5707c2f2320c2539ba0553c6e",
+      "tokens_in": 389,
+      "tokens_out": 38,
+      "latency_s": 1.5779002999997829,
+      "diagram_hash": "cdcee8d7db70ac2fed1926f104c78b779b65029b81d6bb7a22bc34019bdfd8a2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_613221e520414dceaef3a5176a6a5120",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Appointment and BookingService is missing. Each Appointment should use exactly one BookingService.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Appointment and BookingService is missing. Each Appointment should use exactly one BookingService."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "262df3bf4094046118394b326a4cf6bd8a80c2fa3781f0873d1d28842c21b697",
+      "tokens_in": 188,
+      "tokens_out": 115,
+      "latency_s": 3.5569360999998025,
+      "diagram_hash": "c5d96f24bfbb0288ae28dbe82924543c28e7f873ea40548bb5931b01107b6ed9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b11ef98e16",
+      "request_id": "req_ddbd32fad329492c86c25b51667075c7",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"0..*\" --> \"1\" Clinician\nBookingService \"1\" *-- \"1..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "464fd8c610f079cc5de0bbdcb6d3d958eb25f5c559ab55b2814b2e8cf945aee9",
+      "tokens_in": 400,
+      "tokens_out": 104,
+      "latency_s": 2.5441297999996095,
+      "diagram_hash": "c5d96f24bfbb0288ae28dbe82924543c28e7f873ea40548bb5931b01107b6ed9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_eda59136f9f64a3b8a74d8d54c6b450a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Appointment and Clinician is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Appointment belongs to exactly one Clinician.\",\"The relationship between BookingService and Clinician is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' since each BookingService can manage zero or more Clinicians.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Appointment and Clinician is incorrectly defined as '0..*' to '1'. It should be '1' to '1' since each Appointment belongs to exactly one Clinician.",
+        "The relationship between BookingService and Clinician is incorrectly defined as '1' to '1..*'. It should be '1' to '0..*' since each BookingService can manage zero or more Clinicians."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "213dc34f5ba4ee72515116f6682d6da8e313299b8dd3c5ac979d6b2a66ec0d5f",
+      "tokens_in": 266,
+      "tokens_out": 114,
+      "latency_s": 2.8532728000000134,
+      "diagram_hash": "4f2e654ca8a7737086340a2f19df833b981c1da2557df257cfe05ff2e96099d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b11ef98e16",
+      "request_id": "req_36f1fde45e39478fa31bffaff48f5981",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"1\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e27e23fd7b6833dabe1bd01eca3135815f915791d842c6a365a67d66e9f21a52",
+      "tokens_in": 399,
+      "tokens_out": 104,
+      "latency_s": 2.5277577000006204,
+      "diagram_hash": "4f2e654ca8a7737086340a2f19df833b981c1da2557df257cfe05ff2e96099d2",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_468e60d6641b4323b5a1e2a932a3441c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Appointment and Clinician is incorrectly defined as '1' to '1'. It should be '1' to '0..*' to allow for multiple appointments per clinician.\",\"The relationship between BookingService and Clinician is defined as '1' to '0..*', which is correct, but the cardinality should be checked against the requirement that each BookingService manages one or more Clinician records.\"],\"categories\":[\"UML Structure\",\"Cardinality Issues\"]}",
+      "critic_errors": [
+        "The relationship between Appointment and Clinician is incorrectly defined as '1' to '1'. It should be '1' to '0..*' to allow for multiple appointments per clinician.",
+        "The relationship between BookingService and Clinician is defined as '1' to '0..*', which is correct, but the cardinality should be checked against the requirement that each BookingService manages one or more Clinician records."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Cardinality Issues"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "03eeee7eac58bd76b6b67b7fb0f4db38ec13e89e81e69268d96ba92c1dd51976",
+      "tokens_in": 264,
+      "tokens_out": 115,
+      "latency_s": 2.8666517000001477,
+      "diagram_hash": "9e2fcf309af0589a1296071faf5cfc1d0109582573eea766da7c6226da099111",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b11ef98e16",
+      "request_id": "req_61f0ef5c03af4f858320d19806540cdf",
+      "response_text": "```plantuml\n@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"0..*\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"0..*\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "5d439981ca917647fae9731f866805c2c9e485897f67713ec4590c58c65177d2",
+      "tokens_in": 400,
+      "tokens_out": 51,
+      "latency_s": 1.7401511999996728,
+      "diagram_hash": "9e2fcf309af0589a1296071faf5cfc1d0109582573eea766da7c6226da099111",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_e215cc1b4d514f629fddbd4103c34523",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Appointment and Clinician is incorrectly defined as '0..*' instead of '1'. Each Appointment should belong to exactly one Clinician.\"],\"categories\":[\"UML Structure\",\"Association Multiplicity\"]}",
+      "critic_errors": [
+        "The relationship between Appointment and Clinician is incorrectly defined as '0..*' instead of '1'. Each Appointment should belong to exactly one Clinician."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Multiplicity"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2306,
+  "tokens_out": 641,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Patient {\n  +id: String\n}\nclass Appointment {\n  +id: String\n}\nclass BookingService {\n  +id: String\n}\nclass Clinician {\n  +id: String\n}\nPatient \"1\" --> \"0..*\" Appointment\nAppointment \"1\" --> \"0..*\" Clinician\nBookingService \"1\" *-- \"0..*\" Clinician\nAppointment \"1\" --> \"1\" BookingService\nPatient \"0..*\" --> \"0..*\" Clinician\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.713099100000363,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.13888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.13888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.13888888888888895,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "bookingservice",
+          "clinician",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "appointment",
+          "clinician",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "bookingservice",
+          "clinician",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.13888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.13888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "appointment",
+          "clinician",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.13888888888888895,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "bookingservice",
+          "clinician",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "appointment",
+          "bookingservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "appointment",
+          "clinician",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "bookingservice",
+          "clinician",
+          "composition",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "end_to_end_seconds": 17.721685999999863,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

@@ -1,0 +1,625 @@
+{
+  "case_id": "M04_1",
+  "scenario_id": "M04",
+  "srs": "The investigation workflow system records Investigation, Task, InvestigationModule, and CaseRecord; each has an id attribute. Each Investigation can have zero or more Task records, and each Task belongs to exactly one Investigation. Each Task uses exactly one InvestigationModule, and each InvestigationModule serves zero or more Task records. Each InvestigationModule manages one or more CaseRecord records by composition, and each CaseRecord belongs to exactly one InvestigationModule. Each Investigation can reference zero or more CaseRecord records, and each CaseRecord can be referenced by zero or more Investigation records.",
+  "gold": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nInvestigation \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defective": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1769,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1769,
+      "selected_class": "Investigation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"0..*\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml",
+  "output_sha256": "a58bbe3c814f937f2c931bf409f59e7b4ad452ebc3097a3809cbf47604e95193",
+  "input_sha256": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a743f7fb03fdc81d12911ffba44223c59a04d520a69a7c5a06eec4cff312a5a6",
+      "tokens_in": 396,
+      "tokens_out": 66,
+      "latency_s": 1.3922144999960437,
+      "diagram_hash": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_08fa28618d7d4e0fb69a374b539e4ff9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not correctly represent the relationship between Investigation and Task. The UML shows UnspecifiedEntity instead of Investigation.\",\"The UML does not correctly represent the relationship between Investigation and CaseRecord. The UML shows UnspecifiedEntity instead of Investigation.\"],\"categories\":[\"UML Structure\",\"Relationship Representation\"]}",
+      "critic_errors": [
+        "The UML does not correctly represent the relationship between Investigation and Task. The UML shows UnspecifiedEntity instead of Investigation.",
+        "The UML does not correctly represent the relationship between Investigation and CaseRecord. The UML shows UnspecifiedEntity instead of Investigation."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Representation"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "63018fd69ad220451288c6140fa3a146c892a8d7fe30e1c3384db40f3fbcb4aa",
+      "tokens_in": 224,
+      "tokens_out": 120,
+      "latency_s": 1.6302368000033312,
+      "diagram_hash": "6462f0cfc7efff06d9a81c20f6b2874e368928c1af95024fdd1ab95b3a8f9a7b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d91fb09e94",
+      "request_id": "req_ff14d4aea577480dbe8640a05db3e059",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nInvestigation \"0..*\" --> \"1\" Task\nInvestigation \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nInvestigation \"0..*\" --> \"1\" Task\nInvestigation \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "6e8d4d70acad8cdb3142973089948d4ee1ddf43c772d1dda88ee0d840f1cd0e5",
+      "tokens_in": 405,
+      "tokens_out": 112,
+      "latency_s": 1.728950700009591,
+      "diagram_hash": "6462f0cfc7efff06d9a81c20f6b2874e368928c1af95024fdd1ab95b3a8f9a7b",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_4327763ba471473384d2f2043339317a",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Investigation and Task is incorrectly defined as 'Investigation \\\"0..*\\\" --> \\\"1\\\" Task'. It should be 'Investigation \\\"1\\\" --> \\\"0..*\\\" Task' to indicate that each Investigation can have zero or more Tasks, but each Task must belong to exactly one Investigation.\",\"The relationship between InvestigationModule and Task is missing. It should indicate that each Task uses exactly one InvestigationModule, which is not represented in the UML.\"],\"categories\":[\"UML Structure\",\"Relationship Definitions\"]}",
+      "critic_errors": [
+        "The relationship between Investigation and Task is incorrectly defined as 'Investigation \"0..*\" --> \"1\" Task'. It should be 'Investigation \"1\" --> \"0..*\" Task' to indicate that each Investigation can have zero or more Tasks, but each Task must belong to exactly one Investigation.",
+        "The relationship between InvestigationModule and Task is missing. It should indicate that each Task uses exactly one InvestigationModule, which is not represented in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Definitions"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "932df3d5bfd17e07d09bbe7278eb4ae6dbc453440db85f754d12692633d8dd0f",
+      "tokens_in": 279,
+      "tokens_out": 131,
+      "latency_s": 1.6459117999911541,
+      "diagram_hash": "b52d8135dbb4a5eb6ff2d89b53381012ff70420c0209901583a37172fde87f7c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_4c55ec580f",
+      "request_id": "req_6aadccec92c74f2fbf6cf6737e6d1b30",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "aa66469f73799e7b5b59744b2c6df407fe8fe1caad3a50ef0e2012fd98fe29d4",
+      "tokens_in": 416,
+      "tokens_out": 94,
+      "latency_s": 1.7088026999990689,
+      "diagram_hash": "b52d8135dbb4a5eb6ff2d89b53381012ff70420c0209901583a37172fde87f7c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_e5ec4e2f22e54a618dd67f14c4cf9a47",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Investigation and CaseRecord is incorrectly defined as composition (1 *-- 1..*), which implies that CaseRecords cannot exist independently of Investigation. It should be a simple association (1 --> 0..*) instead.\",\"The relationship between UnspecifiedEntity and Task is not clearly defined in the requirement. It is unclear what UnspecifiedEntity represents in this context.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Investigation and CaseRecord is incorrectly defined as composition (1 *-- 1..*), which implies that CaseRecords cannot exist independently of Investigation. It should be a simple association (1 --> 0..*) instead.",
+        "The relationship between UnspecifiedEntity and Task is not clearly defined in the requirement. It is unclear what UnspecifiedEntity represents in this context."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "57c7fa019bb73703567cdbce7a199f192f5269551041d336e2fd25162d9885a9",
+      "tokens_in": 272,
+      "tokens_out": 131,
+      "latency_s": 1.7169922000030056,
+      "diagram_hash": "a58bbe3c814f937f2c931bf409f59e7b4ad452ebc3097a3809cbf47604e95193",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_4c55ec580f",
+      "request_id": "req_c17e5851129a47c092cb44f1a2291c7a",
+      "response_text": "```plantuml\n@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"0..*\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"0..*\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "03b1a8228412cf4beaccae6ee254e0b2664ca390bf68faa1844a7a917b91e3ec",
+      "tokens_in": 416,
+      "tokens_out": 63,
+      "latency_s": 1.1479144999902928,
+      "diagram_hash": "a58bbe3c814f937f2c931bf409f59e7b4ad452ebc3097a3809cbf47604e95193",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_2bf728e327bb4ac08c43faa9feb9fbf8",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between UnspecifiedEntity and Task is incorrect; it should be Investigation instead of UnspecifiedEntity.\",\"The relationship between UnspecifiedEntity and CaseRecord is incorrect; it should be InvestigationModule instead of UnspecifiedEntity.\"],\"categories\":[\"UML Structure\",\"Relationship Errors\"]}",
+      "critic_errors": [
+        "The relationship between UnspecifiedEntity and Task is incorrect; it should be Investigation instead of UnspecifiedEntity.",
+        "The relationship between UnspecifiedEntity and CaseRecord is incorrect; it should be InvestigationModule instead of UnspecifiedEntity."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Errors"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2408,
+  "tokens_out": 717,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nUnspecifiedEntity \"0..*\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" Task\nInvestigation \"1\" --> \"0..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\nTask \"1\" --> \"1\" InvestigationModule\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 12.662467800008017,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": 0.13888888888888895,
+    "reference_rel_undirected": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "caserecord",
+          "investigationmodule"
+        ]
+      ],
+      "spurious": [
+        [
+          "caserecord",
+          "unspecifiedentity"
+        ],
+        [
+          "task",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.16666666666666652,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "caserecord"
+        ],
+        [
+          "unspecifiedentity",
+          "task"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.16666666666666652,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.16666666666666652,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "task",
+          "investigationmodule",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "task",
+          "investigationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.2777777777777778,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": 0.13888888888888895
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 5,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": 0.13888888888888895,
+    "reference_rel_undirected": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "caserecord",
+          "investigationmodule"
+        ]
+      ],
+      "spurious": [
+        [
+          "caserecord",
+          "unspecifiedentity"
+        ],
+        [
+          "task",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.16666666666666652,
+    "reference_rel_directed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "caserecord"
+        ],
+        [
+          "unspecifiedentity",
+          "task"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.16666666666666652,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.16666666666666652,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "task",
+          "investigationmodule",
+          "association",
+          "0..*",
+          "1"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "task",
+          "investigationmodule",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "unspecifiedentity",
+          "task",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.2777777777777778,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "unspecifiedentity",
+          "id"
+        ]
+      ]
+    },
+    "delta_attribute_f1": 0.13888888888888895
+  }
+}

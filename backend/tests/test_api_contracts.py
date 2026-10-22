@@ -17,7 +17,9 @@ try:
     )
 except ModuleNotFoundError as exc:
     if exc.name == "fastapi":
-        print("SKIP: fastapi paketi bu ortamda kurulu degil; requirements.txt ile kurulunca API kontrat testi calisir.")
+        print(
+            "SKIP: fastapi paketi bu ortamda kurulu degil; requirements.txt ile kurulunca API kontrat testi calisir."
+        )
         sys.exit(0)
     raise
 
@@ -47,7 +49,24 @@ def test_render_endpoint_contract():
     print("PASS: /api/render compile + render contract")
 
 
-def test_autonomous_repair_final_flow():
+def test_autonomous_repair_final_flow(monkeypatch):
+    from ai_core.src.ai.repair_agent import UMLRepairAgent, RepairConfig
+    from tests.test_repair_agent import ScriptedClient, decision
+
+    model = ScriptedClient([decision(False), "@startuml\nclass UserManager {}\n@enduml", decision(True)])
+
+    def validator(code):
+        valid = code.startswith("@startuml")
+        return {"project_valid": valid, "compiler_valid": valid, "compiler_errors": []}
+
+    agent = UMLRepairAgent(RepairConfig(), model, validator)
+    monkeypatch.setitem(autonomous_repair.__globals__, "UMLRepairAgent", lambda *a: agent)
+    monkeypatch.setitem(
+        autonomous_repair.__globals__,
+        "_compile_test",
+        lambda code: {**validator(code), "basarili": validator(code)["project_valid"]},
+    )
+    monkeypatch.setitem(autonomous_repair.__globals__, "render_plantuml", lambda code: {"svg": "<svg/>"})
     response = autonomous_repair(AutonomousRepairRequest(plantuml_kodu="class UserManager {}"))
     assert response["basarili"] is True
     assert response["final_plantuml"].startswith("@startuml")
@@ -57,9 +76,7 @@ def test_autonomous_repair_final_flow():
 
 
 def test_performance_report_flow():
-    performans_olcum_kaydet(
-        PerformansOlcumGirdisi(endpoint="/api/analyze", sure_saniye=0.01, basarili=True)
-    )
+    performans_olcum_kaydet(PerformansOlcumGirdisi(endpoint="/api/analyze", sure_saniye=0.01, basarili=True))
     report = performans_getir("/api/analyze")
     assert report["toplam_istek"] >= 1
     assert report["latency_ms"]["P95"] < 15000

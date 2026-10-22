@@ -1,4 +1,6 @@
-# Final Experiment Report
+# Historical v2/v3 Experiment Report
+
+This report retains the original single-run measurements. It is not the new v4 evaluation. See docs/revision-report.md and the results_v4 run manifests for current execution status.
 
 ## 1. Final Status
 

@@ -1,0 +1,779 @@
+{
+  "case_id": "M19_1",
+  "scenario_id": "M19",
+  "srs": "The museum tickets system records Visitor, Ticket, TicketService, and Exhibition; each has an id attribute. Each Visitor can have zero or more Ticket records, and each Ticket belongs to exactly one Visitor. Each Ticket uses exactly one TicketService, and each TicketService serves zero or more Ticket records. Each TicketService manages one or more Exhibition records by composition, and each Exhibition belongs to exactly one TicketService. Each Visitor can reference zero or more Exhibition records, and each Exhibition can be referenced by zero or more Visitor records.",
+  "gold": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass TicketService {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" TicketService\nTicketService \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defective": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1919,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1919,
+      "selected_class": "TicketService"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Visitor {\n  +id: String\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\n@enduml",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml",
+  "output_sha256": "f1856b33b24d4b7362a1cc83f91566c0900e421f1c2969eb8bcb5022e5d8580a",
+  "input_sha256": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "86f00cc02f6f2b970abfc4a42b67efb85ab4e33d4191f0517ea269fe234c7bb6",
+      "tokens_in": 462,
+      "tokens_out": 82,
+      "latency_s": 2.305927800000063,
+      "diagram_hash": "eb21c2cc3c39ec90fa16373b23d797991e0217b4f23be1a08d22ede95b0d7bad",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_d8591e20d8324a4e989d498987657ff5",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: Visitor nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Yapısal Hatalar\",\"OCL Uygunluğu\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: Visitor nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısal Hatalar",
+        "OCL Uygunluğu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "51d229178684df44dad2801d35d7782310cac29b8fe22883b9ea1c8695992e7b",
+      "tokens_in": 251,
+      "tokens_out": 143,
+      "latency_s": 3.0653754999998455,
+      "diagram_hash": "ce1dbb8df25793c247ee30017953567ae29f2dcdaaf90d37ddeae3dc298ef6ea",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dca2fd68b3",
+      "request_id": "req_d75ba8ab648e4f858e42def6f61f0267",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "e36fdf795ad2438aab7f70ac4c158eb44347cd58a1d4032d71c4b3d508168a7a",
+      "tokens_in": 501,
+      "tokens_out": 46,
+      "latency_s": 1.3403032999999596,
+      "diagram_hash": "ce1dbb8df25793c247ee30017953567ae29f2dcdaaf90d37ddeae3dc298ef6ea",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_288b1bf0d0394f57acf23b40e620b1f9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML\",\"OCL\",\"Model Validation\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML",
+        "OCL",
+        "Model Validation"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "3568690885d26175d1e7cd20512be8f1629ec9fa921ea4bd37c2b590413837d2",
+      "tokens_in": 247,
+      "tokens_out": 154,
+      "latency_s": 3.0182387999998355,
+      "diagram_hash": "74fbb9047da9bf7672f7c3bf56e5462395e9f76a8aaebc4885ad56626d652e5f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_da50871b3ec84c52b15d83ceb46bd5a8",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "21a5457ec49d1e6eb12915b7c9bdbdb9b16e079b474f3978f912504524d07398",
+      "tokens_in": 512,
+      "tokens_out": 45,
+      "latency_s": 1.4264501000002383,
+      "diagram_hash": "74fbb9047da9bf7672f7c3bf56e5462395e9f76a8aaebc4885ad56626d652e5f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9889f3fb44754940a010dc55fdf04bbd",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "ac8bafe36ec059a686f6ed5380ab021b0eb440fddbecc737f403089f24707660",
+      "tokens_in": 258,
+      "tokens_out": 166,
+      "latency_s": 2.9397727999999006,
+      "diagram_hash": "f1856b33b24d4b7362a1cc83f91566c0900e421f1c2969eb8bcb5022e5d8580a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_b66135669be94316af49d4f9e6120fae",
+      "response_text": "```plantuml\n@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b8f817881db44971570eafaf7a9875bb6733a400c10ec7ec94a97beeca14b321",
+      "tokens_in": 524,
+      "tokens_out": 45,
+      "latency_s": 1.2011520000000928,
+      "diagram_hash": "f1856b33b24d4b7362a1cc83f91566c0900e421f1c2969eb8bcb5022e5d8580a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-02",
+        "DOMAIN-01"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-02",
+          "score": 0.09523809523809523
+        },
+        {
+          "id": "DOMAIN-01",
+          "score": 0.047619047619047616
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_a6157c5cecfb4b4cb85622d36ba5431c",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 2 ihlal edildi: Order nesnesinin OrderItem nesnesine bağıntısı yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2755,
+  "tokens_out": 681,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Visitor {\n  +id: String\n  +age: Integer\n}\nclass Ticket {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Exhibition {\n  +id: String\n}\nclass Order {\n  +id: String\n}\nclass OrderItem {\n  +id: String\n}\nVisitor \"1\" --> \"0..*\" Ticket\nTicket \"0..*\" --> \"1\" UnspecifiedEntity\nUnspecifiedEntity \"1\" *-- \"1..*\" Exhibition\nVisitor \"0..*\" --> \"0..*\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\nOrderItem \"1\" --> \"1\" Exhibition\nOrder \"1\" --> \"0..*\" OrderItem\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 18.422347600000194,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        "ticketservice"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": -0.15000000000000002,
+    "reference_rel_undirected": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "exhibition",
+          "ticketservice"
+        ],
+        [
+          "ticket",
+          "ticketservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "exhibition",
+          "orderitem"
+        ],
+        [
+          "exhibition",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.09999999999999998,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice"
+        ],
+        [
+          "ticketservice",
+          "exhibition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "exhibition"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "exhibition",
+          "association"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "orderitem",
+          "exhibition",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "ticketservice",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "visitor",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 6,
+    "output_relationship_count": 7,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1": 0.6,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        "ticketservice"
+      ],
+      "spurious": [
+        "order",
+        "orderitem",
+        "unspecifiedentity"
+      ]
+    },
+    "delta_class_f1": -0.15000000000000002,
+    "reference_rel_undirected": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "exhibition",
+          "ticketservice"
+        ],
+        [
+          "ticket",
+          "ticketservice"
+        ]
+      ],
+      "spurious": [
+        [
+          "exhibition",
+          "orderitem"
+        ],
+        [
+          "exhibition",
+          "unspecifiedentity"
+        ],
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": -0.09999999999999998,
+    "reference_rel_directed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice"
+        ],
+        [
+          "ticketservice",
+          "exhibition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem"
+        ],
+        [
+          "orderitem",
+          "exhibition"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.09999999999999998,
+    "reference_rel_typed": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association"
+        ],
+        [
+          "orderitem",
+          "exhibition",
+          "association"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.09999999999999998,
+    "reference_rel_multiplicity": {
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "reference_count": 4,
+      "predicted_count": 6,
+      "missing": [
+        [
+          "ticket",
+          "ticketservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "ticketservice",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "orderitem",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "orderitem",
+          "exhibition",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "ticket",
+          "unspecifiedentity",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "unspecifiedentity",
+          "exhibition",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.09999999999999998,
+    "reference_attribute": {
+      "precision": 0.42857142857142855,
+      "recall": 0.75,
+      "f1": 0.5454545454545454,
+      "reference_count": 4,
+      "predicted_count": 7,
+      "missing": [
+        [
+          "ticketservice",
+          "id"
+        ]
+      ],
+      "spurious": [
+        [
+          "order",
+          "id"
+        ],
+        [
+          "orderitem",
+          "id"
+        ],
+        [
+          "unspecifiedentity",
+          "id"
+        ],
+        [
+          "visitor",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.20454545454545459
+  },
+  "end_to_end_seconds": 19.772220999999718,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

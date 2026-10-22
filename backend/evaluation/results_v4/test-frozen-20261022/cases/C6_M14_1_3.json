@@ -1,0 +1,578 @@
+{
+  "case_id": "M14_1",
+  "scenario_id": "M14",
+  "srs": "The course enrollment system records Student, Enrollment, EnrollmentService, and Course; each has an id attribute. Each Student can have zero or more Enrollment records, and each Enrollment belongs to exactly one Student. Each Enrollment uses exactly one EnrollmentService, and each EnrollmentService serves zero or more Enrollment records. Each EnrollmentService manages one or more Course records by composition, and each Course belongs to exactly one EnrollmentService. Each Student can reference zero or more Course records, and each Course can be referenced by zero or more Student records.",
+  "gold": "@startuml\nclass Student {\n  +id: String\n}\nclass Enrollment {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defective": "@startuml\nclass Student {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1869,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1869,
+      "selected_class": "Enrollment"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Student {\n  +id: String\n}\nclass UnspecifiedEntity {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"1\" --> \"0..*\" UnspecifiedEntity\nUnspecifiedEntity \"0..*\" --> \"1\" EnrollmentService\nEnrollmentService \"1\" *-- \"1..*\" Course\nStudent \"0..*\" --> \"0..*\" Course\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\nEnrollmentService \"1\" --> \"0..*\" Course\nStudent \"1\" --> \"0..*\" Course\n@enduml",
+  "output_sha256": "cf88ba0fd1ea12ef67d347e0a2ad096aa82989fa7f0a8d6ddd0461cb6ffd29fc",
+  "input_sha256": "9eb67bab31398b38e86611acaf776d56e9029667baa685fd5180edf41fba42db",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "f4de82bfea024e721fce7686dcd98cbd82cfac94f80810012a0d59f1995cb671",
+      "tokens_in": 387,
+      "tokens_out": 98,
+      "latency_s": 2.951274000000012,
+      "diagram_hash": "9eb67bab31398b38e86611acaf776d56e9029667baa685fd5180edf41fba42db",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_bcad866193",
+      "request_id": "req_b4cac70049054d0993906ecb5173a202",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML diagram includes an 'UnspecifiedEntity' class which is not mentioned in the requirements and does not have a defined role in the system.\",\"The relationship between 'Student' and 'UnspecifiedEntity' is not specified in the requirements, leading to ambiguity.\",\"The relationship between 'UnspecifiedEntity' and 'EnrollmentService' is not defined in the requirements, making it unclear how they interact.\"],\"categories\":[\"UML Structure\",\"Requirement Compliance\"]}",
+      "critic_errors": [
+        "The UML diagram includes an 'UnspecifiedEntity' class which is not mentioned in the requirements and does not have a defined role in the system.",
+        "The relationship between 'Student' and 'UnspecifiedEntity' is not specified in the requirements, leading to ambiguity.",
+        "The relationship between 'UnspecifiedEntity' and 'EnrollmentService' is not defined in the requirements, making it unclear how they interact."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Requirement Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7988d6084a40da888d630b52197e99fa97070644c1d73977730468c13647ae8c",
+      "tokens_in": 253,
+      "tokens_out": 68,
+      "latency_s": 1.9116165999994337,
+      "diagram_hash": "192f676403d63bdd8473c73805fa57952f43be684f0542dfff69291e7f75b2b9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_80635fa615874b2b82aa817bc69228a5",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"0..*\" --> \"0..*\" Course\nEnrollmentService \"1\" *-- \"1..*\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n}\nclass EnrollmentService {\n  +id: String\n}\nclass Course {\n  +id: String\n}\nStudent \"0..*\" --> \"0..*\" Course\nEnrollmentService \"1\" *-- \"1..*\" Course\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "915af0474f05a7fe3ef5c4366eba917c3d1e59e3cc8e492308a395079a6b8f98",
+      "tokens_in": 348,
+      "tokens_out": 77,
+      "latency_s": 2.1821086999998442,
+      "diagram_hash": "192f676403d63bdd8473c73805fa57952f43be684f0542dfff69291e7f75b2b9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_dfc829e7ce",
+      "request_id": "req_f437e757336b477aa5c5d0676f598ec7",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not include the Enrollment class which is essential for the course enrollment system as per the requirement.\",\"The relationship between Enrollment and Student is missing; each Enrollment must belong to exactly one Student.\",\"The relationship between Enrollment and EnrollmentService is not represented; each Enrollment must use exactly one EnrollmentService.\"],\"categories\":[\"Missing Classes\",\"Missing Relationships\"]}",
+      "critic_errors": [
+        "The UML does not include the Enrollment class which is essential for the course enrollment system as per the requirement.",
+        "The relationship between Enrollment and Student is missing; each Enrollment must belong to exactly one Student.",
+        "The relationship between Enrollment and EnrollmentService is not represented; each Enrollment must use exactly one EnrollmentService."
+      ],
+      "critic_categories": [
+        "Missing Classes",
+        "Missing Relationships"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "eb8fc0d4a7de6dd74ff07db4de151aad528c6a8ef90e7694e04df3b647fd2538",
+      "tokens_in": 194,
+      "tokens_out": 85,
+      "latency_s": 3.5162304999994376,
+      "diagram_hash": "0004509ddf724bfeed039458da3e73c8dce2f2aa0cdb77c6aa7741024d4f7ae3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fbfbfe4157",
+      "request_id": "req_0fea9cb4b32046ed9bfe5d5e0dda3180",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ab4e820f398fa48d728cfc421647a173c007b18e96dfb93d218f7c53695051a1",
+      "tokens_in": 365,
+      "tokens_out": 73,
+      "latency_s": 1.9975618999997096,
+      "diagram_hash": "0004509ddf724bfeed039458da3e73c8dce2f2aa0cdb77c6aa7741024d4f7ae3",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_8c3cdc6fae04428a8bb568fad9dc6f63",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the relationship between EnrollmentService and Course correctly. It should indicate that EnrollmentService manages one or more Course records by composition.\",\"The UML does not show the relationship between Student and Course, which states that each Student can reference zero or more Course records.\"],\"categories\":[\"UML Structure\",\"Relationship Representation\"]}",
+      "critic_errors": [
+        "The UML does not represent the relationship between EnrollmentService and Course correctly. It should indicate that EnrollmentService manages one or more Course records by composition.",
+        "The UML does not show the relationship between Student and Course, which states that each Student can reference zero or more Course records."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Representation"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "a7206c5bbcb5e058eaa858df0dc78abb0d1c036a92925dec1538708af9ada13a",
+      "tokens_in": 205,
+      "tokens_out": 108,
+      "latency_s": 3.98056699999961,
+      "diagram_hash": "cf88ba0fd1ea12ef67d347e0a2ad096aa82989fa7f0a8d6ddd0461cb6ffd29fc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_c1ed72a7a6",
+      "request_id": "req_4b4fabec0baa4c7b86dfcb1fe9ca1bd6",
+      "response_text": "```plantuml\n@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\nEnrollmentService \"1\" --> \"0..*\" Course\nStudent \"1\" --> \"0..*\" Course\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\nEnrollmentService \"1\" --> \"0..*\" Course\nStudent \"1\" --> \"0..*\" Course\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "f8f4b6608e19b9ccf24df082f74d71c69cc048cd59f3e9cde9cf5fe253ca045d",
+      "tokens_in": 388,
+      "tokens_out": 66,
+      "latency_s": 1.8508924000007028,
+      "diagram_hash": "cf88ba0fd1ea12ef67d347e0a2ad096aa82989fa7f0a8d6ddd0461cb6ffd29fc",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_191d3e2e550744c790520dbd7eaf3be4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not correctly represent the relationship between Enrollment and Course. According to the requirement, each Enrollment should reference exactly one Course, but the UML shows a direct relationship from Enrollment to Course without indicating that Enrollment is the one referencing it.\"],\"categories\":[\"UML Structure\",\"Relationship Constraints\"]}",
+      "critic_errors": [
+        "The UML does not correctly represent the relationship between Enrollment and Course. According to the requirement, each Enrollment should reference exactly one Course, but the UML shows a direct relationship from Enrollment to Course without indicating that Enrollment is the one referencing it."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Constraints"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2140,
+  "tokens_out": 575,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Student {\n  +id: String\n}\n\nclass Enrollment {\n  +id: String\n}\n\nclass EnrollmentService {\n  +id: String\n}\n\nclass Course {\n  +id: String\n}\n\nStudent \"1\" --> \"0..*\" Enrollment\nEnrollment \"1\" --> \"1\" EnrollmentService\nEnrollment \"1\" --> \"1\" Course\nEnrollmentService \"1\" --> \"0..*\" Course\nStudent \"1\" --> \"0..*\" Course\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 21.64461130000018,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "course",
+          "enrollment"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.38888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "enrollment",
+          "course"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.38888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollmentservice",
+          "course",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollment",
+          "course",
+          "association"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.16666666666666652,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "student",
+          "course",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollment",
+          "course",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "student",
+          "course",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.2777777777777778,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "course",
+          "enrollment"
+        ]
+      ]
+    },
+    "delta_rel_undirected_f1": 0.38888888888888895,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "enrollment",
+          "course"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": 0.38888888888888895,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollmentservice",
+          "course",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollment",
+          "course",
+          "association"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.16666666666666652,
+    "reference_rel_multiplicity": {
+      "precision": 0.2,
+      "recall": 0.25,
+      "f1": 0.22222222222222224,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "composition",
+          "1",
+          "1..*"
+        ],
+        [
+          "student",
+          "course",
+          "association",
+          "0..*",
+          "0..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "enrollment",
+          "course",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "enrollment",
+          "enrollmentservice",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "enrollmentservice",
+          "course",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "student",
+          "course",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.2777777777777778,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "end_to_end_seconds": 21.648773100000653,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

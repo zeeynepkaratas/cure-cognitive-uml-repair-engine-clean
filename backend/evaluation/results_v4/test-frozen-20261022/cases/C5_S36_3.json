@@ -1,0 +1,336 @@
+{
+  "case_id": "S36",
+  "dataset": "shared",
+  "srs": "The RoleManager controls user roles.",
+  "input_plantuml": "@startuml\nclass RoleManager {}\nclass RoleManager {}\nclass RoleManager {}\n@enduml",
+  "gold": null,
+  "defect_ids": [
+    "duplicate_three_times"
+  ],
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 3,
+  "output_plantuml": "@startuml\nclass User {\n    +age: int\n    +User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n        this.age = age\n    }\n}\n\nclass Order {\n    +OrderItem[] items\n    +Order() {\n        this.items = new OrderItem[0]\n    }\n    \n    +addItem(item: OrderItem) {\n        items.add(item)\n    }\n    \n    +getItems() {\n        return items\n    }\n}\n\nclass OrderItem {\n}\n\nOrder \"1\" -- \"*\" OrderItem : contains\n\nclass RoleManager {}\n@enduml",
+  "output_sha256": "316162856ac0425deed976338040673e2542628530ee21b631fd52e02bc6c06d",
+  "input_sha256": "d911efac62722baafa17269a641761b200d2452c403ea49d96f8d810d032b3db",
+  "project_valid": true,
+  "compiler_valid": false,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b536feae7e2aedbc239a0c045a09f266d89de5c4a0036093cc6213bf2acdec9b",
+      "tokens_in": 285,
+      "tokens_out": 55,
+      "latency_s": 1.6489274999998997,
+      "diagram_hash": "d911efac62722baafa17269a641761b200d2452c403ea49d96f8d810d032b3db",
+      "project_valid": false,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_f458cadd61b4484e94b85d3313425a40",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"RoleManager sınıfı gereksinimi karşılamıyor.\",\"UML diyagramında User ve Order sınıfları tanımlanmamış.\"],\"categories\":[\"UML Yapısı\",\"Gereksinim Uyumu\"]}",
+      "critic_errors": [
+        "RoleManager sınıfı gereksinimi karşılamıyor.",
+        "UML diyagramında User ve Order sınıfları tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Yapısı",
+        "Gereksinim Uyumu"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1dd4c0ba4bf1d72b21ebaaf5fe381ceb112895654733d9b371a5a1de5ea91320",
+      "tokens_in": 159,
+      "tokens_out": 22,
+      "latency_s": 1.0462393000002521,
+      "diagram_hash": "f3ccd420d4dd669dce3814cd394a76c0b8c4eebabf3dfa1b5bcd0de90b76a601",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_109d01f5b1",
+      "request_id": "req_bc998cac3b2748e4b10c0fd6a89200b8",
+      "response_text": "```plantuml\n@startuml\nclass User {}\nclass Order {}\nclass RoleManager {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {}\nclass Order {}\nclass RoleManager {}\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d43237653dcaa53eff585bbec0fe3a3e6232a0d62b04d9cd827abccb70d6b648",
+      "tokens_in": 283,
+      "tokens_out": 56,
+      "latency_s": 1.835000399999899,
+      "diagram_hash": "f3ccd420d4dd669dce3814cd394a76c0b8c4eebabf3dfa1b5bcd0de90b76a601",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.08333333333333333
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.07692307692307693
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_fd29cd03238943f3980fba522e658c4e",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not have an age attribute to enforce OCL Rule 1.\",\"Order class does not have a relationship with OrderItem to enforce OCL Rule 2.\"],\"categories\":[\"UML Structure\",\"Attribute Definition\",\"Association Definition\"]}",
+      "critic_errors": [
+        "User class does not have an age attribute to enforce OCL Rule 1.",
+        "Order class does not have a relationship with OrderItem to enforce OCL Rule 2."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Attribute Definition",
+        "Association Definition"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "7e0e409df3dd0fd4eaba08f30023fb39b3c2d9fe26306f1ea2ab37af173c32f8",
+      "tokens_in": 122,
+      "tokens_out": 46,
+      "latency_s": 1.503073299999869,
+      "diagram_hash": "ef65837973361f9d8047386a4cd999face4038665149955477da8ff2186a59c0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_b19bf6ee2fd34c48a03161631adcfbf4",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    +age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nOrder \"1\" -- \"*\" OrderItem : contains\n\nclass RoleManager {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    +age: int\n}\n\nclass Order {\n}\n\nclass OrderItem {\n}\n\nOrder \"1\" -- \"*\" OrderItem : contains\n\nclass RoleManager {}\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "0e836b595653b6a46c617930e2db87c5d342b77c1e46d7899f30d26ab2cdfbec",
+      "tokens_in": 307,
+      "tokens_out": 51,
+      "latency_s": 1.4618784999997843,
+      "diagram_hash": "ef65837973361f9d8047386a4cd999face4038665149955477da8ff2186a59c0",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.125
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.11764705882352941
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_1c06fffdff404f4683ef8da6ac67e4f4",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"User class does not enforce the age constraint (age >= 18)\",\"Order class does not enforce the constraint of having at least one OrderItem.\"],\"categories\":[\"UML Constraints\",\"Business Logic Violations\"]}",
+      "critic_errors": [
+        "User class does not enforce the age constraint (age >= 18)",
+        "Order class does not enforce the constraint of having at least one OrderItem."
+      ],
+      "critic_categories": [
+        "UML Constraints",
+        "Business Logic Violations"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "c3bb07cc4a38f97f8590241302f6eb56803ca92ee223278a85683964f0066098",
+      "tokens_in": 141,
+      "tokens_out": 143,
+      "latency_s": 3.0474067000000105,
+      "diagram_hash": "316162856ac0425deed976338040673e2542628530ee21b631fd52e02bc6c06d",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_0d55417811",
+      "request_id": "req_f6713b34a81b46c4906b29401efb23ca",
+      "response_text": "```plantuml\n@startuml\nclass User {\n    +age: int\n    +User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n        this.age = age\n    }\n}\n\nclass Order {\n    +OrderItem[] items\n    +Order() {\n        this.items = new OrderItem[0]\n    }\n    \n    +addItem(item: OrderItem) {\n        items.add(item)\n    }\n    \n    +getItems() {\n        return items\n    }\n}\n\nclass OrderItem {\n}\n\nOrder \"1\" -- \"*\" OrderItem : contains\n\nclass RoleManager {}\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass User {\n    +age: int\n    +User(age: int) {\n        if (age < 18) {\n            throw new IllegalArgumentException(\"Age must be at least 18\")\n        }\n        this.age = age\n    }\n}\n\nclass Order {\n    +OrderItem[] items\n    +Order() {\n        this.items = new OrderItem[0]\n    }\n    \n    +addItem(item: OrderItem) {\n        items.add(item)\n    }\n    \n    +getItems() {\n        return items\n    }\n}\n\nclass OrderItem {\n}\n\nOrder \"1\" -- \"*\" OrderItem : contains\n\nclass RoleManager {}\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "ac4579f3ed9642b8e0e0b8431a54d4fb87da6216eafd0176ae901cd9375dbd36",
+      "tokens_in": 404,
+      "tokens_out": 48,
+      "latency_s": 2.1059646999997312,
+      "diagram_hash": "316162856ac0425deed976338040673e2542628530ee21b631fd52e02bc6c06d",
+      "project_valid": true,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "Some diagram description contains errors"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.25
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.16129032258064516
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_54d2ccfdf8314a70ade224558fb09b2b",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği 18'den küçük olamaz."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 1701,
+  "tokens_out": 421,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [
+      "Tekrar eden sinif ismi: ['RoleManager']"
+    ],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['RoleManager', 'RoleManager', 'RoleManager']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['RoleManager', 'RoleManager', 'RoleManager']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "IHLAL: ['RoleManager', 'RoleManager', 'RoleManager']"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "Some diagram description contains errors"
+    ],
+    "project_errors": [],
+    "warnings": [
+      "Izole sinif: hicbir iliskisi yok: ['User', 'RoleManager']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "UYARI: ['User', 'RoleManager']",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "Some diagram description contains errors"
+      ],
+      "stderr": "Some diagram description contains errors",
+      "stdout": "",
+      "returncode": 200
+    }
+  },
+  "regression": true,
+  "output_if_reverted": "@startuml\nclass RoleManager {}\nclass RoleManager {}\nclass RoleManager {}\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": false,
+  "warnings_added": 1,
+  "warnings_removed": 1,
+  "elapsed_seconds": 16.167780400000083,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": null,
+  "metrics_if_reverted": null,
+  "end_to_end_seconds": 16.167812400000003,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

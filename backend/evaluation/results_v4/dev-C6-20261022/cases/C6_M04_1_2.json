@@ -1,0 +1,504 @@
+{
+  "case_id": "M04_1",
+  "scenario_id": "M04",
+  "srs": "The investigation workflow system records Investigation, Task, InvestigationModule, and CaseRecord; each has an id attribute. Each Investigation can have zero or more Task records, and each Task belongs to exactly one Investigation. Each Task uses exactly one InvestigationModule, and each InvestigationModule serves zero or more Task records. Each InvestigationModule manages one or more CaseRecord records by composition, and each CaseRecord belongs to exactly one InvestigationModule. Each Investigation can reference zero or more CaseRecord records, and each CaseRecord can be referenced by zero or more Investigation records.",
+  "gold": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nInvestigation \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defective": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "defect_ids": [
+    "D7"
+  ],
+  "seed": 1769,
+  "injections": [
+    {
+      "defect_id": "D7",
+      "seed": 1769,
+      "selected_class": "Investigation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass UnspecifiedEntity {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nUnspecifiedEntity \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigationModule \"1\" *-- \"1..*\" CaseRecord\nUnspecifiedEntity \"0..*\" --> \"0..*\" CaseRecord\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 2,
+  "output_plantuml": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\nInvestigationModule \"1\" --> \"0..*\" CaseRecord\n@enduml",
+  "output_sha256": "20c5322763c58eb6988d4e23a01021c44ed17ce3098880efaf9d6325e549ab69",
+  "input_sha256": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a743f7fb03fdc81d12911ffba44223c59a04d520a69a7c5a06eec4cff312a5a6",
+      "tokens_in": 396,
+      "tokens_out": 166,
+      "latency_s": 1.9081261000101222,
+      "diagram_hash": "2d9f71ff446bbce8bd87cc4d4a3101e2023600f731f6c4b013f2fe94b6d9985c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_b9103b0a0afd42d4ad6c8646f75a43c2",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not correctly represent the relationship between Investigation and Task. The UML shows 'UnspecifiedEntity' instead of 'Investigation'.\",\"The UML does not correctly represent the relationship between Investigation and CaseRecord. The UML shows 'UnspecifiedEntity' instead of 'Investigation'.\",\"The multiplicity of the relationship between Investigation and Task should be '1' to '0..*' instead of '1' to '0..*' on 'UnspecifiedEntity'.\",\"The multiplicity of the relationship between Investigation and CaseRecord should be '0..*' on Investigation instead of '0..*' on 'UnspecifiedEntity'.\",\"The UML does not specify that each Task belongs to exactly one Investigation.\"],\"categories\":[\"UML Structure\",\"Relationship Definitions\",\"Multiplicity Errors\"]}",
+      "critic_errors": [
+        "The UML does not correctly represent the relationship between Investigation and Task. The UML shows 'UnspecifiedEntity' instead of 'Investigation'.",
+        "The UML does not correctly represent the relationship between Investigation and CaseRecord. The UML shows 'UnspecifiedEntity' instead of 'Investigation'.",
+        "The multiplicity of the relationship between Investigation and Task should be '1' to '0..*' instead of '1' to '0..*' on 'UnspecifiedEntity'.",
+        "The multiplicity of the relationship between Investigation and CaseRecord should be '0..*' on Investigation instead of '0..*' on 'UnspecifiedEntity'.",
+        "The UML does not specify that each Task belongs to exactly one Investigation."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Definitions",
+        "Multiplicity Errors"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "bb1926498309a6520032624de4e9ff9a417b9a32f778a98598890c5f1b168f1a",
+      "tokens_in": 324,
+      "tokens_out": 92,
+      "latency_s": 1.5878571000066586,
+      "diagram_hash": "dac6abec561c229cb34fbbc710dcb0f191bb89a7e8d2064d1594029bc6e01374",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d91fb09e94",
+      "request_id": "req_21bb6bed13e54b32bb073487aefa31d7",
+      "response_text": "```plantuml\n@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" *-- \"0..*\" CaseRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" *-- \"0..*\" CaseRecord\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "64ce0c439f0fd16ad6a19d8e5499a3d696de812f151c46de99757d5c32816b74",
+      "tokens_in": 377,
+      "tokens_out": 67,
+      "latency_s": 1.4502681000012672,
+      "diagram_hash": "dac6abec561c229cb34fbbc710dcb0f191bb89a7e8d2064d1594029bc6e01374",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_8a19c89082a54c04a1529a60f1fab334",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the relationship between Investigation and CaseRecord correctly. The requirement states that each Investigation can reference zero or more CaseRecord records, but the UML shows a composition relationship which implies that CaseRecords cannot exist independently of InvestigationModules.\"],\"categories\":[\"UML Structure\",\"Relationship Representation\"]}",
+      "critic_errors": [
+        "The UML does not represent the relationship between Investigation and CaseRecord correctly. The requirement states that each Investigation can reference zero or more CaseRecord records, but the UML shows a composition relationship which implies that CaseRecords cannot exist independently of InvestigationModules."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Representation"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "2dce8f5dc1fe43865d2e3ed037ecf75899af34d7eceea4138a284c9bd857dd45",
+      "tokens_in": 205,
+      "tokens_out": 91,
+      "latency_s": 1.4356568999937735,
+      "diagram_hash": "34c52c5a779cdda38899055cd813685384ba29ec2ddfa205d8b4c1e0eeaaa79f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b1d2088886",
+      "request_id": "req_e5da9a2d043d442f8494aad7a80bb954",
+      "response_text": "```plantuml\n@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b57e3a2934e7a1055d40f95ce4cf79b63283064d8b8f5fa58e2074a58bfb11b9",
+      "tokens_in": 376,
+      "tokens_out": 41,
+      "latency_s": 1.4353877999965334,
+      "diagram_hash": "34c52c5a779cdda38899055cd813685384ba29ec2ddfa205d8b4c1e0eeaaa79f",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d4c42c8db7",
+      "request_id": "req_bbe1dd1a3bfd4cde8143f6d627b8f4b6",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"InvestigationModule should have a composition relationship with CaseRecord, but it is not defined in the UML.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "InvestigationModule should have a composition relationship with CaseRecord, but it is not defined in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4caecf08165d80fb62dc1765ed1534b76bd3b7dd5bf5f2f0aa746abbb63d7480",
+      "tokens_in": 177,
+      "tokens_out": 105,
+      "latency_s": 1.5336123000015505,
+      "diagram_hash": "20c5322763c58eb6988d4e23a01021c44ed17ce3098880efaf9d6325e549ab69",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_b1d2088886",
+      "request_id": "req_13e26ca7030344f1b1203031353b7d2a",
+      "response_text": "```plantuml\n@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\nInvestigationModule \"1\" --> \"0..*\" CaseRecord\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\nInvestigationModule \"1\" --> \"0..*\" CaseRecord\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "581188da48eca9d4870cf5f39828a51c7f3702985a4a09dba3d50de6e573044d",
+      "tokens_in": 390,
+      "tokens_out": 56,
+      "latency_s": 1.151489700001548,
+      "diagram_hash": "20c5322763c58eb6988d4e23a01021c44ed17ce3098880efaf9d6325e549ab69",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_4e864cdd326043ca8b39e655f4246bb6",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The UML does not represent the composition relationship between InvestigationModule and CaseRecord correctly. It should indicate that CaseRecord is part of InvestigationModule, which is not shown in the UML.\"],\"categories\":[\"UML Structure\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "The UML does not represent the composition relationship between InvestigationModule and CaseRecord correctly. It should indicate that CaseRecord is part of InvestigationModule, which is not shown in the UML."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2245,
+  "tokens_out": 618,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Investigation {\n  +id: String\n}\nclass Task {\n  +id: String\n}\nclass InvestigationModule {\n  +id: String\n}\nclass CaseRecord {\n  +id: String\n}\nInvestigation \"1\" --> \"0..*\" Task\nTask \"0..*\" --> \"1\" InvestigationModule\nInvestigation \"1\" --> \"0..*\" CaseRecord\nInvestigationModule \"1\" --> \"0..*\" CaseRecord\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.157019299993408,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.25,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.25,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.5,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.5,
+    "reference_rel_typed": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigationmodule",
+          "caserecord",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": 0.25,
+    "reference_rel_multiplicity": {
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "0..*",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ],
+        [
+          "investigationmodule",
+          "caserecord",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.25
+  }
+}

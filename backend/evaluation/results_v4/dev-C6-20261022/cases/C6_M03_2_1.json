@@ -1,0 +1,546 @@
+{
+  "case_id": "M03_2",
+  "scenario_id": "M03",
+  "srs": "The investigation assignment system records Complaint, Investigation, Investigator, and Evidence; each has an id attribute. Each Complaint can have zero or more Investigation records, and each Investigation belongs to exactly one Complaint. Each Investigation uses exactly one Investigator, and each Investigator serves zero or more Investigation records. Each Investigator manages one or more Evidence records by composition, and each Evidence belongs to exactly one Investigator. Each Complaint can reference zero or more Evidence records, and each Evidence can be referenced by zero or more Complaint records.",
+  "gold": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "defective": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "defect_ids": [
+    "D6"
+  ],
+  "seed": 1760,
+  "injections": [
+    {
+      "defect_id": "D6",
+      "seed": 1760,
+      "selected_class": "Investigation",
+      "original_relation": [
+        "Complaint",
+        "Investigation",
+        "association",
+        "1",
+        "0..*",
+        ""
+      ]
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": true,
+  "split": "dev",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --|> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "condition": "C6",
+  "condition_name": "critic_healer_norules",
+  "rep": 1,
+  "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" --> \"1\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" --> \"1\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "output_sha256": "07afab0d31fd379833e9926d91690485c80d07bb15063dff5755a848720eb771",
+  "input_sha256": "b39b52242f07186f4814f4040f5ada87ab0a6558277d6927d27cf2df540dc99c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "dcbb7fdf6e0d19a3e85aa23707cbd368a7001410dc75456699179480d657959e",
+      "tokens_in": 377,
+      "tokens_out": 50,
+      "latency_s": 1.1444293000095058,
+      "diagram_hash": "b39b52242f07186f4814f4040f5ada87ab0a6558277d6927d27cf2df540dc99c",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_520ec8bc70e14c16aabd4ae41c2f5172",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Investigation and Complaint is incorrectly represented as '1' --|> '0..*' instead of '1' --> '1'.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Investigation and Complaint is incorrectly represented as '1' --|> '0..*' instead of '1' --> '1'."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "f806c1cf3958fd6c3a1cbdd17b88328ac4d1ccc7f37321594d4ce78b581ebc87",
+      "tokens_in": 198,
+      "tokens_out": 100,
+      "latency_s": 2.2239294000028167,
+      "diagram_hash": "a7bb0db2ee76397173f6142c9fa16017c08c3ce2ab024d09a86117ceac66fe3e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_438567d0ff",
+      "request_id": "req_4eb89c5b7cba4b6b9c8641300b9b0f76",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"0..*\" --> \"1\" Investigator\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "39ad27e59fd6ba252733b9cfd7e1c36b7ea11a05f5c17ed5c3c17ded231dbbc2",
+      "tokens_in": 375,
+      "tokens_out": 52,
+      "latency_s": 1.221018100011861,
+      "diagram_hash": "a7bb0db2ee76397173f6142c9fa16017c08c3ce2ab024d09a86117ceac66fe3e",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_a78d3c4050194bac92ec3b9c6b40f806",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Investigation should have a composition relationship with Investigator, not an association.\",\"Investigator should have a one-to-many relationship with Investigation, not a many-to-one.\"],\"categories\":[\"UML Structure\",\"Relationship Cardinality\"]}",
+      "critic_errors": [
+        "Investigation should have a composition relationship with Investigator, not an association.",
+        "Investigator should have a one-to-many relationship with Investigation, not a many-to-one."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Relationship Cardinality"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "9402851cab3d730b5aaed65027a76c5621eb118c5275e23ff1b2018fc856825e",
+      "tokens_in": 198,
+      "tokens_out": 113,
+      "latency_s": 1.5947778999980073,
+      "diagram_hash": "578077b34bbd50f4de0289ae442b5db0b525095aed54231bd5d85811d4195469",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_d1fab217e1ce441e97b3d6b92d4f1cd7",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" *-- \"1..*\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" *-- \"1..*\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" *-- \"1..*\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "310d7bc2971b1d18ab2748b7a9d30bf755bec44c362b6cab495648d10e45aac0",
+      "tokens_in": 388,
+      "tokens_out": 96,
+      "latency_s": 1.7565849000093294,
+      "diagram_hash": "578077b34bbd50f4de0289ae442b5db0b525095aed54231bd5d85811d4195469",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_edcd9ce520d84595ba8103cbd21f890d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"The relationship between Investigation and Investigator is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 1' to indicate that each Investigation uses exactly one Investigator.\",\"The relationship between Investigator and Evidence is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 1' to indicate that each Evidence belongs to exactly one Investigator.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "The relationship between Investigation and Investigator is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 1' to indicate that each Investigation uses exactly one Investigator.",
+        "The relationship between Investigator and Evidence is incorrectly defined as '1 *-- 1..*'. It should be '1 --> 1' to indicate that each Evidence belongs to exactly one Investigator."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "1120b9f9ed929840000e1424b592063a552d32a038d8f727833df3e20bfb8928",
+      "tokens_in": 256,
+      "tokens_out": 109,
+      "latency_s": 1.6963335999898845,
+      "diagram_hash": "07afab0d31fd379833e9926d91690485c80d07bb15063dff5755a848720eb771",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_f1b0ec5777",
+      "request_id": "req_60c4b5fc17094ef3a9048891ebe65c25",
+      "response_text": "```plantuml\n@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" --> \"1\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" --> \"1\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" --> \"1\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" --> \"1\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "b410a433c3254cd2aabfa68aa07b9c6c2c76b1ad00fe9505ca1d532ed515e8b4",
+      "tokens_in": 384,
+      "tokens_out": 72,
+      "latency_s": 1.3237470000021858,
+      "diagram_hash": "07afab0d31fd379833e9926d91690485c80d07bb15063dff5755a848720eb771",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_41386b6650",
+      "request_id": "req_bb38951eb8f64ce6b0846d490a5eef0d",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"Investigator should manage one or more Evidence records by composition, but the UML shows a single association with '1' Evidence instead of '0..*'.\",\"The relationship between Investigator and Evidence should be a composition relationship, but it is currently represented as an association.\"],\"categories\":[\"UML Structure\",\"Association Relationships\"]}",
+      "critic_errors": [
+        "Investigator should manage one or more Evidence records by composition, but the UML shows a single association with '1' Evidence instead of '0..*'.",
+        "The relationship between Investigator and Evidence should be a composition relationship, but it is currently represented as an association."
+      ],
+      "critic_categories": [
+        "UML Structure",
+        "Association Relationships"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2176,
+  "tokens_out": 592,
+  "first_compiler_valid_iteration": 0,
+  "first_project_valid_iteration": 0,
+  "input_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [
+      "Dongusel bagimlilik tespit edildi: ['SCC: {Investigation, Investigator}']"
+    ],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "UYARI: ['SCC: {Investigation, Investigator}']",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Complaint {\n  +id: String\n}\nclass Investigation {\n  +id: String\n}\nclass Investigator {\n  +id: String\n}\nclass Evidence {\n  +id: String\n}\nComplaint \"1\" --> \"0..*\" Investigation\nInvestigation \"1\" --> \"1\" Investigator\nInvestigator \"1\" --> \"0..*\" Investigation\nInvestigator \"1\" --> \"1\" Evidence\nComplaint \"0..*\" --> \"0..*\" Evidence\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 1,
+  "warnings_removed": 0,
+  "elapsed_seconds": 13.447551100005512,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "investigator",
+          "investigation"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigator",
+          "evidence",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigator",
+          "evidence",
+          "association"
+        ],
+        [
+          "investigator",
+          "investigation",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigation",
+          "investigator",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "investigator",
+          "evidence",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "investigator",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "investigator",
+          "evidence",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "investigator",
+          "investigation",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 5,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "investigator",
+          "investigation"
+        ]
+      ]
+    },
+    "delta_rel_directed_f1": -0.11111111111111105,
+    "reference_rel_typed": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6666666666666665,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigator",
+          "evidence",
+          "composition"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigator",
+          "evidence",
+          "association"
+        ],
+        [
+          "investigator",
+          "investigation",
+          "association"
+        ]
+      ]
+    },
+    "delta_rel_typed_f1": -0.08333333333333348,
+    "reference_rel_multiplicity": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1": 0.4444444444444445,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [
+        [
+          "investigation",
+          "investigator",
+          "association",
+          "0..*",
+          "1"
+        ],
+        [
+          "investigator",
+          "evidence",
+          "composition",
+          "1",
+          "1..*"
+        ]
+      ],
+      "spurious": [
+        [
+          "investigation",
+          "investigator",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "investigator",
+          "evidence",
+          "association",
+          "1",
+          "1"
+        ],
+        [
+          "investigator",
+          "investigation",
+          "association",
+          "1",
+          "0..*"
+        ]
+      ]
+    },
+    "delta_rel_multiplicity_f1": -0.3055555555555555,
+    "reference_attribute": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_attribute_f1": 0.0
+  }
+}

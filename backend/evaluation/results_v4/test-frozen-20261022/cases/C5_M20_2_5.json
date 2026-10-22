@@ -1,0 +1,492 @@
+{
+  "case_id": "M20_2",
+  "scenario_id": "M20",
+  "srs": "The job applications system records Candidate, Application, RecruitmentService, and Vacancy; each has an id attribute. Each Candidate can have zero or more Application records, and each Application belongs to exactly one Candidate. Each Application uses exactly one RecruitmentService, and each RecruitmentService serves zero or more Application records. Each RecruitmentService manages one or more Vacancy records by composition, and each Vacancy belongs to exactly one RecruitmentService. Each Candidate can reference zero or more Vacancy records, and each Vacancy can be referenced by zero or more Candidate records.",
+  "gold": "@startuml\nclass Candidate {\n  +id: String\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n@enduml",
+  "defective": "@startuml\nclass Candidate {\n  +id: String\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n",
+  "defect_ids": [
+    "D10",
+    "D2"
+  ],
+  "seed": 1930,
+  "injections": [
+    {
+      "defect_id": "D10",
+      "seed": 1930,
+      "selected_class": "Application"
+    },
+    {
+      "defect_id": "D2",
+      "seed": 1931,
+      "selected_class": "Vacancy",
+      "added_class": "WeatherStation"
+    }
+  ],
+  "compiles_before": null,
+  "project_valid_before": false,
+  "split": "test",
+  "dataset": "semantic",
+  "input_plantuml": "@startuml\nclass Candidate {\n  +id: String\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n",
+  "condition": "C5",
+  "condition_name": "legacy_critic_healer",
+  "rep": 5,
+  "output_plantuml": "@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n\n' OCL Kuralı 1: Candidate nesnesinin age özelliği için bir kısıtlama eklenmiştir.\n@enduml",
+  "output_sha256": "ecffb2aa28b17e962a35d3ac44aa7e6e3a0e1c29e0ebfe68d7dd570fa88dc3b9",
+  "input_sha256": "cb45ed6e0154f5166178e0cb8b875e33e6f077f10f4156594705079998303f7c",
+  "project_valid": true,
+  "compiler_valid": true,
+  "critic_valid": false,
+  "agent_status": "ok",
+  "agent_error": null,
+  "provider_status_code": null,
+  "run_status": "completed",
+  "terminated_by": "budget_exhausted",
+  "repair_attempt_count": 3,
+  "trace": [
+    {
+      "iteration": 0,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "79914e86eba8aa8951f8af0be2261ed5e6cea9cc8deedb94fc712e73eb9558b4",
+      "tokens_in": 457,
+      "tokens_out": 74,
+      "latency_s": 2.4513803999998345,
+      "diagram_hash": "cb45ed6e0154f5166178e0cb8b875e33e6f077f10f4156594705079998303f7c",
+      "project_valid": false,
+      "compiler_valid": false,
+      "compiler_errors": [
+        "No diagram found"
+      ],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.0
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_cd0a5c81379e4439a337463e65073ee0",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.\",\"OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği tanımlanmamış.",
+        "OCL Kuralı 2 ihlal ediliyor: Order nesnesi ve OrderItem nesnesi tanımlanmamış."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 1,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "4e83fbf95a621cf48ec5b526d10fe4bf041698f4fee165587c44bfcae34c29a7",
+      "tokens_in": 246,
+      "tokens_out": 108,
+      "latency_s": 2.222907500000474,
+      "diagram_hash": "c336228f284ccfbbc82d6532529b7b7581523cd2db004af1a8b74ce0b7c22638",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_5c838cbcac",
+      "request_id": "req_5946228583fb41b281f731f38a78427c",
+      "response_text": "```plantuml\n@startuml\nclass Candidate {\n  +id: String\n  +age: Integer\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Candidate {\n  +id: String\n  +age: Integer\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n@enduml"
+    },
+    {
+      "iteration": 1,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "d6787d9d7b05884fe4d5527b5404a5831f4c7d8cfa59477a9eb2d79b68901c57",
+      "tokens_in": 466,
+      "tokens_out": 48,
+      "latency_s": 1.4432545999998183,
+      "diagram_hash": "c336228f284ccfbbc82d6532529b7b7581523cd2db004af1a8b74ce0b7c22638",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-02"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.05263157894736842
+        },
+        {
+          "id": "DOMAIN-02",
+          "score": 0.0
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_9f3b8d421ff0497794de1795be1a39b9",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 2,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "befe34d469596551cb31f4ed1ba25929cab391deec0dbe6cf3d24da90611e021",
+      "tokens_in": 221,
+      "tokens_out": 121,
+      "latency_s": 2.710073199999897,
+      "diagram_hash": "ab553bcbc5273ffbacb61e5a5c6ad6e29d6643cba9a87a037a61637af18f6d2a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_d91fb09e94",
+      "request_id": "req_b43f50b80d334dd396bd9d1c8c8d002e",
+      "response_text": "```plantuml\n@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n@enduml"
+    },
+    {
+      "iteration": 2,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "bafbc6540775d3e12aa8432d17ec7d10ecd6cf691930ae9ea66b57bfa0ba6691",
+      "tokens_in": 482,
+      "tokens_out": 48,
+      "latency_s": 1.5997479999996358,
+      "diagram_hash": "ab553bcbc5273ffbacb61e5a5c6ad6e29d6643cba9a87a037a61637af18f6d2a",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-03"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.125
+        },
+        {
+          "id": "DOMAIN-03",
+          "score": 0.08
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_242228cf5a",
+      "request_id": "req_40be8457b2464c099f03000c92806250",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    },
+    {
+      "iteration": 3,
+      "role": "healer",
+      "attempt": 1,
+      "prompt_hash": "8f72758f2e3e5cca2faa2b0569fca16f206fa0aa89fba6045b5529fe362f2685",
+      "tokens_in": 234,
+      "tokens_out": 148,
+      "latency_s": 3.4469634999995833,
+      "diagram_hash": "ecffb2aa28b17e962a35d3ac44aa7e6e3a0e1c29e0ebfe68d7dd570fa88dc3b9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": null,
+      "retrieved_rule_ids": [],
+      "retrieved_rules": [],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_8a3291817b",
+      "request_id": "req_3b83d33cc8c24f6d9b09cda08e320159",
+      "response_text": "```plantuml\n@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n\n' OCL Kuralı 1: Candidate nesnesinin age özelliği için bir kısıtlama eklenmiştir.\n@enduml\n```",
+      "output_plantuml": "@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n\n' OCL Kuralı 1: Candidate nesnesinin age özelliği için bir kısıtlama eklenmiştir.\n@enduml"
+    },
+    {
+      "iteration": 3,
+      "role": "critic",
+      "attempt": 1,
+      "prompt_hash": "a4034abefefdc4ae7cb2077787636acf5760d29b2a75e2bdb02125582db9d59a",
+      "tokens_in": 509,
+      "tokens_out": 48,
+      "latency_s": 1.8977005999995527,
+      "diagram_hash": "ecffb2aa28b17e962a35d3ac44aa7e6e3a0e1c29e0ebfe68d7dd570fa88dc3b9",
+      "project_valid": true,
+      "compiler_valid": true,
+      "compiler_errors": [],
+      "critic_valid": false,
+      "retrieved_rule_ids": [
+        "DOMAIN-01",
+        "DOMAIN-03"
+      ],
+      "retrieved_rules": [
+        {
+          "id": "DOMAIN-01",
+          "score": 0.09375
+        },
+        {
+          "id": "DOMAIN-03",
+          "score": 0.06060606060606061
+        }
+      ],
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "system_fingerprint": "fp_fd3020c6f0",
+      "request_id": "req_20b357a7d3e249e8948dadd5d2f550df",
+      "response_text": "{\"is_valid\":false,\"errors\":[\"OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok.\"],\"categories\":[\"UML Validation\",\"OCL Compliance\"]}",
+      "critic_errors": [
+        "OCL Kuralı 1 ihlal ediliyor: User nesnesinin age özelliği için bir kısıtlama yok."
+      ],
+      "critic_categories": [
+        "UML Validation",
+        "OCL Compliance"
+      ]
+    }
+  ],
+  "llm_call_count": 7,
+  "tokens_in": 2615,
+  "tokens_out": 595,
+  "first_compiler_valid_iteration": 1,
+  "first_project_valid_iteration": 1,
+  "input_validation": {
+    "project_valid": false,
+    "compiler_valid": false,
+    "compiler_available": true,
+    "compiler_errors": [
+      "No diagram found"
+    ],
+    "project_errors": [
+      "@enduml etiketi eksik",
+      "@enduml etiketi eksik"
+    ],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "IHLAL",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": false,
+      "errors": [
+        "No diagram found"
+      ],
+      "stderr": "No diagram found",
+      "stdout": "",
+      "returncode": 100
+    }
+  },
+  "output_validation": {
+    "project_valid": true,
+    "compiler_valid": true,
+    "compiler_available": true,
+    "compiler_errors": [],
+    "project_errors": [],
+    "warnings": [],
+    "rule_results": {
+      "OCL-01": "GECTI",
+      "OCL-02": "GECTI",
+      "OCL-03": "GECTI",
+      "OCL-04": "GECTI",
+      "OCL-05": "GECTI",
+      "OCL-06": "GECTI",
+      "OCL-07": "GECTI",
+      "OCL-08": "GECTI",
+      "OCL-09": "GECTI"
+    },
+    "compiler": {
+      "available": true,
+      "successful": true,
+      "errors": [],
+      "stderr": "",
+      "stdout": "",
+      "returncode": 0
+    }
+  },
+  "regression": false,
+  "output_if_reverted": "@startuml\nclass Candidate {\n  +id: String\n  +age: Integer [1..120] // Age must be within a valid range\n}\nclass Application {\n  +id: String\n}\nclass RecruitmentService {\n  +id: String\n}\nclass Vacancy {\n  +id: String\n}\nCandidate \"1\" --> \"0..*\" Application\nApplication \"0..*\" --> \"1\" RecruitmentService\nRecruitmentService \"1\" *-- \"1..*\" Vacancy\nCandidate \"0..*\" --> \"0..*\" Vacancy\n\n' OCL Kuralı 1: Candidate nesnesinin age özelliği için bir kısıtlama eklenmiştir.\n@enduml",
+  "compiler_valid_if_reverted": true,
+  "project_valid_if_reverted": true,
+  "warnings_added": 0,
+  "warnings_removed": 0,
+  "elapsed_seconds": 17.989454499999738,
+  "elapsed_scope": "repair loop; includes LLM-loop checks but excludes final independent validation; cached checks may be reused",
+  "actions": [],
+  "metrics": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "candidate",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "metrics_if_reverted": {
+    "metric_version": "gold-structural-v2",
+    "reference_class_count": 4,
+    "reference_relationship_count": 4,
+    "output_class_count": 4,
+    "output_relationship_count": 4,
+    "normalisation_collisions_or_duplicates": 0,
+    "reference_class": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_class_f1": 0.0,
+    "reference_rel_undirected": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_undirected_f1": 0.0,
+    "reference_rel_directed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_directed_f1": 0.0,
+    "reference_rel_typed": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_typed_f1": 0.0,
+    "reference_rel_multiplicity": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "reference_count": 4,
+      "predicted_count": 4,
+      "missing": [],
+      "spurious": []
+    },
+    "delta_rel_multiplicity_f1": 0.0,
+    "reference_attribute": {
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.888888888888889,
+      "reference_count": 4,
+      "predicted_count": 5,
+      "missing": [],
+      "spurious": [
+        [
+          "candidate",
+          "age"
+        ]
+      ]
+    },
+    "delta_attribute_f1": -0.11111111111111105
+  },
+  "end_to_end_seconds": 17.99781189999976,
+  "end_to_end_scope": "Initial validation through final validation and metrics, from worker dispatch; excludes task queue wait and file serialization"
+}

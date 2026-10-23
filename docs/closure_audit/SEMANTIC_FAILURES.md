@@ -2,7 +2,7 @@
 
 ## M11_2: first-class retained failure
 
-Raw files: `backend/evaluation/results_v4/test-frozen-20261022/cases/C7_M11_2_1.json` through `_5.json`; first case SRS line 4, output line 29, Critic flag line 34, raw response in trace. Verify with `python -m pytest -q tests/test_closure_regressions.py`.
+Raw files: `backend/evaluation/results_v4/test-frozen-20261022/cases/C7_M11_2_1.json` through `_5.json`; first case SRS line 4, output line 27, Critic flag line 32, raw response in trace. Verify with `python -m pytest -q tests/test_closure_regressions.py`.
 
 The SRS specifies Reader, Loan, LibraryService and Book. WeatherStation appears in neither SRS nor gold; it is an injected D2 class. All five C7 outputs keep it unchanged. TP=4 classes, predicted=5, reference=4, precision=4/5, recall=1, F1=2*4/(5+4)=8/9. Typed relationships remain exact for this case. Critic returns `{"is_valid":true,"errors":[],"categories":[]}`, zero repair attempts, termination `accepted`; compiler/project flags are also true. In this case, five runs repeat one failure scenario rather than five independent semantic examples.
 

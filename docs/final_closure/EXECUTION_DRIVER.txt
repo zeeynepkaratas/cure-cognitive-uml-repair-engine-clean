@@ -1,0 +1,98 @@
+"""Private execution driver. No model calls; portable checker is in tools/."""
+import datetime,hashlib,json,os,pathlib,re,shutil,subprocess,sys,time
+WORK=pathlib.Path(__file__).resolve().parent
+ROOT=WORK/'repo'; OUT=ROOT/'docs/final_closure'; LOG=WORK/'final-close-logs'
+OUT.mkdir(parents=True,exist_ok=True);LOG.mkdir(exist_ok=True)
+os.environ.pop('OPENAI_API_KEY',None)
+os.environ.pop('CURE_ALLOW_LEGACY_API',None)
+temp=WORK/'final-close-temp';temp.mkdir(exist_ok=True)
+os.environ['TEMP']=str(temp);os.environ['TMP']=str(temp)
+PY='../final-close-env/Scripts/python.exe';BASE='../closure-clean-env/Scripts/python.exe'
+phase=sys.argv[1];records=[]
+def now():return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
+def clean(text):
+    text=text.replace(str(ROOT),'<repo>').replace(str(WORK),'<work>')
+    return re.sub(r'[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+','<local-user>',text)
+def save():
+    (LOG/f'{phase}.json').write_text(json.dumps(records,indent=2),encoding='utf8')
+def run(name,args,cwd=ROOT,timeout=600,required=True):
+    started=now();t=time.monotonic()
+    try:
+        r=subprocess.run(args,cwd=cwd,env=os.environ.copy(),capture_output=True,text=True,encoding='utf8',errors='replace',timeout=timeout)
+        exitcode=r.returncode;stdout=r.stdout;stderr=r.stderr
+    except (OSError,subprocess.TimeoutExpired) as exc:
+        exitcode=None;stdout='';stderr=type(exc).__name__+': execution did not complete'
+    rec={'name':name,'command':args,'cwd':'frontend' if cwd==ROOT/'frontend' else '.','started_at':started,'finished_at':now(),'timezone':'Europe/Istanbul','duration_seconds':time.monotonic()-t,'exit_code':exitcode,'status':'PASS' if exitcode==0 else 'FAIL' if exitcode is not None else 'INCONCLUSIVE','stdout':clean(stdout),'stderr':clean(stderr)}
+    records.append(rec);save();print(json.dumps({'check':name,'exit_code':exitcode,'status':rec['status']}),flush=True)
+    if required and exitcode!=0:raise SystemExit(1)
+    return exitcode
+
+if phase=='checks':
+    for script in ['tools/finalize_v4.py','tools/check_numbers.py','tools/verify_retained_evidence.py']:
+        run('help '+script,[BASE,script,'--help'])
+    run('independent and preservation verification',[BASE,'tools/verify_v4_artifact.py','--output','docs/final_closure/verification'])
+    run('original check_numbers CLI',[BASE,'tools/check_numbers.py','--run-dir','backend/evaluation/results_v4/test-frozen-20261022'])
+    run('original retained verifier CLI',[BASE,'tools/verify_retained_evidence.py','--output','docs/final_closure/RETAINED_VERIFICATION.json'])
+elif phase=='python':
+    if (WORK/'final-close-env').exists():raise SystemExit('Fresh environment already exists; do not silently reuse it')
+    os.environ.pop('PLANTUML_JAR',None)
+    run('fresh Python venv',[BASE,'-m','venv','../final-close-env'])
+    run('fresh locked Python install',[PY,'-m','pip','--isolated','install','--index-url','https://pypi.org/simple','-r','requirements.lock.txt','-r','requirements-dev.txt','--disable-pip-version-check'])
+    run('Python version',[PY,'--version'])
+    run('pip check',[PY,'-m','pip','check'])
+    run('pytest',[PY,'-m','pytest','-q'])
+    run('ruff',[PY,'-m','ruff','check','.'])
+elif phase=='frontend':
+    run('node version',['node','--version'])
+    run('npm version',['cmd','/d','/c','npm','--version'])
+    code=run('fresh npm ci offline',['cmd','/d','/c','npm','ci','--offline','--no-audit','--no-fund'],cwd=ROOT/'frontend',required=False)
+    if code!=0:
+        run('fresh npm ci dependency fallback',['cmd','/d','/c','npm','ci','--no-audit','--no-fund'],cwd=ROOT/'frontend')
+    run('frontend lint',['cmd','/d','/c','npm','run','lint'],cwd=ROOT/'frontend')
+    run('frontend build',['cmd','/d','/c','npm','run','build'],cwd=ROOT/'frontend')
+elif phase=='live':
+    os.environ['PLANTUML_JAR']=str(pathlib.Path.home()/'tools/plantuml/plantuml.jar')
+    run('Java version',['java','-version'],timeout=30)
+    run('live JAR and HTTP checks',[BASE,'../final_close_runner.py','live-child'],timeout=120)
+    docker=shutil.which('docker')
+    if not docker:
+        records.append({'name':'Docker build/container smoke','command':None,'status':'NOT_TESTED','exit_code':None,'started_at':now(),'finished_at':now(),'stdout':'BULUNAMADI: Docker executable on PATH','stderr':'No build or container start executed'});save()
+    else:
+        run('Docker version',[docker,'--version'])
+        records.append({'name':'Docker build/container smoke','command':None,'status':'NOT_TESTED','exit_code':None,'started_at':now(),'finished_at':now(),'stdout':'Docker present; requires explicit local build procedure','stderr':''});save()
+elif phase=='live-child':
+    sys.path.insert(0,str(ROOT))
+    from tools import closure_live_checks as live
+    redirect=WORK/'final-live-output';(redirect/'docs/closure_audit').mkdir(parents=True,exist_ok=True)
+    live.ROOT=redirect
+    live.main()
+    shutil.copyfile(redirect/'docs/closure_audit/LIVE_RUNTIME_CHECKS.json',OUT/'LIVE_RUNTIME_CHECKS.json')
+elif phase=='replay':
+    os.environ['PLANTUML_JAR']=str(pathlib.Path.home()/'tools/plantuml/plantuml.jar')
+    run('existing finalizer on isolated copy',[BASE,'../final_close_runner.py','replay-child'],timeout=600)
+elif phase=='replay-child':
+    sys.path.insert(0,str(ROOT))
+    from tools import finalize_v4 as f
+    actual_root=ROOT
+    # Verify the real checkout first; changing only I/O ROOT below must not
+    # redirect this check to the deliberately Git-free computational copy.
+    f.verify_generation_freeze('1ead72ff7071e1f6de5867aaa250b0483d91431f')
+    replica=WORK/'final-closure-replay'
+    if replica.exists():raise SystemExit('Replay copy already exists; refuse overwrite')
+    target=replica/'backend/evaluation/results_v4';target.mkdir(parents=True)
+    original=ROOT/'backend/evaluation/results_v4'
+    for directory in original.iterdir():
+        if (directory/'manifest.json').is_file() and (directory/'cases').is_dir():
+            shutil.copytree(directory,target/directory.name)
+    earlier=target/'validator-audit-20261022';earlier.mkdir()
+    shutil.copyfile(original/'validator-audit-20261022/audit.json',earlier/'audit.json')
+    shutil.copytree(ROOT/'backend/evaluation/results',replica/'backend/evaluation/results')
+    def real_guard(commit):
+        changed=subprocess.check_output(['git','diff','--name-only',commit,'--',*f.GENERATION_PATHS],cwd=actual_root,text=True,timeout=30)
+        if changed.strip():raise ValueError('Frozen generation changed')
+    f.ROOT=replica;f.verify_generation_freeze=real_guard
+    proof=f.finalize(target/'test-frozen-20261022',target/'final-replay-audit')
+    proof['closure_replay_scope']='Original algorithm; only output root redirected to an identified full result copy outside checkout; Git guard explicitly reads genuine checkout. Existing measured compiler flags reused by exact hash; not new experiments or2353newcompilations.'
+    (OUT/'FINALIZER_REPLAY.json').write_text(json.dumps(proof,indent=2),encoding='utf8')
+    print(json.dumps(proof))
+else:raise SystemExit('Unknown phase')

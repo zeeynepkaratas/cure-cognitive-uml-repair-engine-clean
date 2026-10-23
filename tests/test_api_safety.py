@@ -12,7 +12,7 @@ def compile_result(code):
 
 def test_api_explicit_error_does_not_report_success(monkeypatch):
     agent = UMLRepairAgent(RepairConfig(max_retries=0), ScriptedClient([RuntimeError("offline")]), validation)
-    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args: agent)
+    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args, **kwargs: agent)
     monkeypatch.setattr(endpoints, "_compile_test", compile_result)
     result = endpoints.autonomous_repair(endpoints.AutonomousRepairRequest(plantuml_kodu=BAD))
     assert result["agent_status"] == "api_error"
@@ -22,7 +22,7 @@ def test_api_explicit_error_does_not_report_success(monkeypatch):
 
 def test_api_returns_safe_output_and_retains_raw_regression(monkeypatch):
     agent = UMLRepairAgent(RepairConfig(mode="single_pass"), ScriptedClient([BAD]), validation)
-    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args: agent)
+    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args, **kwargs: agent)
     monkeypatch.setattr(endpoints, "_compile_test", compile_result)
     monkeypatch.setattr(endpoints, "render_plantuml", lambda code: {"svg": "<svg/>"})
     result = endpoints.autonomous_repair(
@@ -43,7 +43,7 @@ def test_compiler_pass_with_critic_rejection_is_not_accepted(monkeypatch):
     agent = UMLRepairAgent(
         RepairConfig(max_iterations=1), ScriptedClient([rejection, GOOD, rejection]), validation
     )
-    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args: agent)
+    monkeypatch.setattr(endpoints, "UMLRepairAgent", lambda *args, **kwargs: agent)
     monkeypatch.setattr(endpoints, "_compile_test", compile_result)
     monkeypatch.setattr(endpoints, "render_plantuml", lambda code: {"svg": "<svg/>"})
     result = endpoints.autonomous_repair(endpoints.AutonomousRepairRequest(plantuml_kodu=BAD))

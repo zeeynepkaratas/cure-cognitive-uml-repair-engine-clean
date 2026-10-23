@@ -16,6 +16,34 @@ from backend.evaluation.run_matrix import JAR_SHA, dump, load_cases
 from backend.evaluation.validator_audit import measured_cache, run as audit
 from tools.check_numbers import check
 
+# Closure-audit hardening: the original v4 guard omitted its own runner and
+# some agent dependencies. This broadens verification, not the frozen method.
+GENERATION_PATHS = [
+    "ai_core/src",
+    "ai_core/prompts",
+    "ai_core/rules",
+    "backend/evaluation/run_matrix.py",
+    "backend/evaluation/reference_metrics.py",
+    "backend/evaluation/shared_repair_benchmark_cases.py",
+    "backend/evaluation/pure_external_repair_cases.py",
+    "backend/evaluation/semantic_benchmark",
+    "backend/src/ocl_engine",
+    "backend/src/utils",
+    "backend/src/repair",
+    "backend/src/plantuml_runtime.py",
+]
+
+
+def verify_generation_freeze(commit):
+    changed = subprocess.check_output(
+        ["git", "diff", "--name-only", commit, "--", *GENERATION_PATHS],
+        cwd=ROOT,
+        text=True,
+        timeout=30,
+    )
+    if changed.strip():
+        raise ValueError("Generation/validator sources changed after freeze: " + changed)
+
 
 def coverage(rows, cases, conditions, repetitions):
     expected = {
@@ -68,26 +96,7 @@ def finalize(directory, audit_directory):
     if hashlib.sha256(json.dumps(cases, sort_keys=True).encode()).hexdigest() != manifest["input_sha256"]:
         raise ValueError("Input dataset changed after the registered run")
     proof = coverage(rows, cases, config["conditions"], config["reps"])
-    generation_paths = [
-        "ai_core/prompts",
-        "ai_core/rules",
-        "ai_core/src/ai/repair_agent.py",
-        "ai_core/src/ai/plantuml_normalizer.py",
-        "ai_core/src/rag/local_rules.py",
-        "backend/src/ocl_engine",
-        "backend/src/utils",
-        "backend/src/repair",
-        "backend/src/plantuml_runtime.py",
-        "backend/evaluation/reference_metrics.py",
-        "backend/evaluation/shared_repair_benchmark_cases.py",
-        "backend/evaluation/pure_external_repair_cases.py",
-        "backend/evaluation/semantic_benchmark",
-    ]
-    changed = subprocess.check_output(
-        ["git", "diff", "--name-only", manifest["git_commit"], "--", *generation_paths], cwd=ROOT, text=True
-    )
-    if changed.strip():
-        raise ValueError("Generation/validator sources changed after freeze: " + changed)
+    verify_generation_freeze(manifest["git_commit"])
     analyze(["--run-dir", str(directory)])
     proof["derived_numbers"] = check(directory)
     audit_directory.mkdir(parents=True)

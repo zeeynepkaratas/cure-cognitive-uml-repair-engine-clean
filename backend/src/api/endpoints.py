@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from typing import Optional
 import sys
 import os
@@ -15,8 +15,15 @@ from parsers.srs_parser import srs_to_plantuml
 from evaluators.semantic_eval import calculate_semantic_fidelity
 from ocl_engine.ocl_validator import validate_ocl
 from ocl_engine.error_handler import hata_normalize_et, plantuml_syntax_kontrol, exception_logla
-from renderers.plantuml_renderer import render_plantuml
-from plantuml_runtime import validate_with_plantuml
+from backend.src.security_runtime_v5 import (
+    BoundedBodyMiddleware,
+    input_policy,
+    MAX_UML_CHARS,
+    MAX_SRS_CHARS,
+    validate_untrusted_plantuml as validate_with_plantuml,
+    render_untrusted_plantuml as render_plantuml,
+    check_untrusted_diagram,
+)
 from api.error_log_endpoint import router as error_log_router, hata_kaydet, HataLogGirdisi
 from api.performance import olcum_kaydet, performans_raporu, olcumleri_sifirla
 from ai.agent_workflow import UMLMultiAgentSystem
@@ -45,34 +52,54 @@ app.add_middleware(
 
 # Hata log endpointleri ayri dosyada tutulur, burada ana API'ye baglanir.
 app.include_router(error_log_router)
+app.add_middleware(BoundedBodyMiddleware)
+
+
+class BoundedRequest(BaseModel):
+    """API-only v5 bounds; frozen research evaluation inputs are untouched."""
+
+    @model_validator(mode="after")
+    def check_api_limits(self):
+        if getattr(self, "legacy", False) and os.getenv("CURE_ALLOW_LEGACY_API") != "1":
+            raise ValueError("Legacy HTTP execution is disabled; use the trusted research checkout")
+        for name in ("srs_metni", "metin"):
+            text = getattr(self, name, None)
+            if text is not None and (len(text) > MAX_SRS_CHARS or "\x00" in text):
+                raise ValueError("SRS exceeds API limits or contains a null character")
+        code = getattr(self, "plantuml_kodu", None)
+        if code is not None:
+            if len(code) > MAX_UML_CHARS:
+                raise ValueError("PlantUML exceeds API limits")
+            input_policy(code)
+        return self
 
 
 # Request modelleri: Gelen JSON verisini dogrular ve Swagger schema'sini olusturur.
-class SRSGirdisi(BaseModel):
+class SRSGirdisi(BoundedRequest):
     # Kullanici/frontend gereksinim metnini bu alanla gonderir.
     metin: str = Field(..., min_length=10, description="SRS belgesi metni")
     dil: str = Field(default="en", description="Metin dili (en/tr)")
 
 
-class UMLDogrulamaGirdisi(BaseModel):
+class UMLDogrulamaGirdisi(BoundedRequest):
     # Render, validate ve compile test endpointlerinde kullanilan PlantUML girdisi.
     plantuml_kodu: str = Field(..., description="Dogrulanacak PlantUML kodu")
 
 
-class TamAnalizGirdisi(BaseModel):
+class TamAnalizGirdisi(BoundedRequest):
     # Semantik karsilastirma icin kaynak SRS ve mevcut UML birlikte alinir.
     srs_metni: str = Field(..., min_length=10, description="SRS metni")
     plantuml_kodu: Optional[str] = Field(None, description="Varsa mevcut PlantUML")
 
 
-class IterasyonGirdisi(BaseModel):
+class IterasyonGirdisi(BoundedRequest):
     # Her onarim denemesinde compile ve semantik test icin kullanilir.
     plantuml_kodu: str = Field(..., description="Test edilecek PlantUML kodu")
     iterasyon_no: int = Field(default=1, ge=1, le=3, description="Kacinci iterasyon (1-3)")
     srs_metni: Optional[str] = Field(None, description="Semantik degerlendirme icin SRS")
 
 
-class AutonomousRepairRequest(BaseModel):
+class AutonomousRepairRequest(BoundedRequest):
     # Max iterasyon 3 ile sinirli; bu sonsuz dongu riskini engeller.
     plantuml_kodu: str = Field(..., description="Onarilacak PlantUML kodu")
     srs_metni: Optional[str] = Field(None, description="Final semantik skor icin SRS metni")
@@ -496,7 +523,9 @@ def autonomous_repair(girdi: AutonomousRepairRequest):
     if girdi.legacy:
         return _autonomous_repair_legacy(girdi)
     started = time.perf_counter()
-    agent = UMLRepairAgent(RepairConfig(max_iterations=girdi.max_iterations))
+    agent = UMLRepairAgent(
+        RepairConfig(max_iterations=girdi.max_iterations), None, check_untrusted_diagram
+    )
     state = agent.run(
         girdi.srs_metni or "", girdi.plantuml_kodu, return_state=True, force_repair=girdi.force_repair
     )
